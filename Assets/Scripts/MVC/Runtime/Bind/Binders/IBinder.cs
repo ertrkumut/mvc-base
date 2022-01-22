@@ -2,11 +2,12 @@
 
 namespace MVC.Runtime.Bind.Binders
 {
-    public interface IBinder
+    public interface IBinder<TBindingType>
+        where TBindingType : IBinding, new()
     {
-        IBinding Bind<TKeyType>();
-        IBinding Bind(object key);
-        IBinding GetBinding(object key);
-        IBinding GetBinding<TKeyType>();
+        TBindingType Bind<TKeyType>();
+        TBindingType Bind(object key);
+        TBindingType GetBinding(object key);
+        TBindingType GetBinding<TKeyType>();
     }
 }

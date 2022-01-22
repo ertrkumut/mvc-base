@@ -1,4 +1,5 @@
-﻿using UnityEngine;
+﻿using MVC.Runtime.Injectable.Binders;
+using UnityEngine;
 
 namespace MVC.Runtime.Contexts
 {
@@ -6,6 +7,8 @@ namespace MVC.Runtime.Contexts
     {
         protected GameObject _gameObject;
 
+        protected MediationBinder _mediationBinder;
+        
         public int InitializeOrder { get; set; }
 
         public void Initialize(GameObject contextGameObject, int initializeOrder)
@@ -16,12 +19,14 @@ namespace MVC.Runtime.Contexts
 
         public void Start()
         {
+            CoreBindings();
             MapBindings();
             PostBindings();
         }
 
-        public void Launch()
+        private void CoreBindings()
         {
+            _mediationBinder = new MediationBinder();
         }
 
         public virtual void MapBindings()
@@ -32,6 +37,10 @@ namespace MVC.Runtime.Contexts
         public virtual void PostBindings()
         {
             
+        }
+        
+        public void Launch()
+        {
         }
     }
 }
