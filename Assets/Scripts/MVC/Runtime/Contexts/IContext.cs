@@ -4,7 +4,9 @@ namespace MVC.Runtime.Contexts
 {
     public interface IContext
     {
-        void Initialize(GameObject contextGameObject);
+        int InitializeOrder { get; set; }
+        
+        void Initialize(GameObject contextGameObject, int initializeOrder);
         void Start();
         void Launch();
         
