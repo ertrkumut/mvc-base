@@ -1,8 +1,7 @@
-﻿using System;
-using Runtime.Context;
+﻿using MVC.Runtime.Contexts;
 using UnityEngine;
 
-namespace Runtime.Root
+namespace MVC.Runtime.Root
 {
     public class ContextRoot<TContextType> : MonoBehaviour 
         where TContextType : IContext, new()

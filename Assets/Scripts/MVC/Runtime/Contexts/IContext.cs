@@ -1,6 +1,6 @@
 ﻿using UnityEngine;
 
-namespace Runtime.Context
+namespace MVC.Runtime.Contexts
 {
     public interface IContext
     {
