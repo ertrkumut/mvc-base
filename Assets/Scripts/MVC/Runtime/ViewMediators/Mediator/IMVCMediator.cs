@@ -2,6 +2,7 @@
 {
     public interface IMVCMediator
     {
-        
+        void OnRegister();
+        void OnRemove();
     }
 }

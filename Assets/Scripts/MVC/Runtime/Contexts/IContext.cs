@@ -1,4 +1,5 @@
-﻿using MVC.Runtime.Injectable.Binders;
+﻿using MVC.Runtime.Injectable;
+using MVC.Runtime.Injectable.Binders;
 using UnityEngine;
 
 namespace MVC.Runtime.Contexts
@@ -8,6 +9,7 @@ namespace MVC.Runtime.Contexts
         int InitializeOrder { get; set; }
         
         MediatorBinder MediatorBinder { get; set; }
+        InjectionBinder InjectionBinder { get; set; }
         
         void Initialize(GameObject contextGameObject, int initializeOrder);
         void Start();

@@ -9,6 +9,8 @@ namespace MVC.Examples.Contexts
         {
             base.MapBindings();
 
+            InjectionBinder.BindCrossContextSingletonSafely<TestClass>();
+            
             BindViews();
         }
 
@@ -16,5 +18,10 @@ namespace MVC.Examples.Contexts
         {
             MediatorBinder.Bind<PlayerControllerView>().To<PlayerControllerMediator>();
         }
+    }
+
+    public class TestClass
+    {
+        
     }
 }

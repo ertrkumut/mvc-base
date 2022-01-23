@@ -1,8 +1,11 @@
 ﻿using System;
 using MVC.Runtime.Contexts;
+using MVC.Runtime.Injectable.Utils;
 using MVC.Runtime.Root;
+using MVC.Runtime.ViewMediators.Mediator;
 using MVC.Runtime.ViewMediators.View;
 using UnityEngine;
+using Object = UnityEngine.Object;
 
 namespace MVC.Runtime.ViewMediators.Utils
 {
@@ -26,7 +29,16 @@ namespace MVC.Runtime.ViewMediators.Utils
             }
             
             var mediatorType = binding.Value as Type;
-            var mediator = view.gameObject.AddComponent(mediatorType);
+            var mediatorIsMono = mediatorType.IsSubclassOf(typeof(Object));
+
+            IMVCMediator mediator;
+            
+            if(mediatorIsMono)
+                mediator = view.gameObject.AddComponent(mediatorType) as IMVCMediator;
+            else
+                mediator = (IMVCMediator) Activator.CreateInstance(mediatorType);
+
+            viewContext.TryToInjectMediator(mediator, view);
         }
 
         public static IContext FindViewContext(this IMVCView view)
