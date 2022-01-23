@@ -1,8 +1,8 @@
 ﻿using MVC.Runtime.ViewMediators.Mediator;
 
-namespace MVC.Runtime.Bind.Bindings.Mediation
+namespace MVC.Runtime.Bind.Bindings.Mediator
 {
-    public class MediationBinding : Binding
+    public class MediatorBinding : Binding
     {
         public new virtual void To<TValueType>()
             where TValueType : IMVCMediator

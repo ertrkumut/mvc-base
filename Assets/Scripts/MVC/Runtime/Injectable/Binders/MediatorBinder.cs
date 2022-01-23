@@ -1,14 +1,13 @@
 ﻿using MVC.Runtime.Bind.Binders;
-using MVC.Runtime.Bind.Bindings;
-using MVC.Runtime.Bind.Bindings.Mediation;
+using MVC.Runtime.Bind.Bindings.Mediator;
 using MVC.Runtime.ViewMediators.View;
 using UnityEngine;
 
 namespace MVC.Runtime.Injectable.Binders
 {
-    public class MediationBinder : Binder<MediationBinding>
+    public class MediatorBinder : Binder<MediatorBinding>
     {
-        public override MediationBinding Bind<TKeyType>()
+        public override MediatorBinding Bind<TKeyType>()
         {
             var viewType = typeof(TKeyType);
             if (!viewType.IsSubclassOf(typeof(IMVCView)))
@@ -20,7 +19,7 @@ namespace MVC.Runtime.Injectable.Binders
             return base.Bind<TKeyType>();
         }
         
-        public override MediationBinding Bind(object key)
+        public override MediatorBinding Bind(object key)
         {
             var viewType = key.GetType();
             if (!viewType.IsSubclassOf(typeof(IMVCView)))
