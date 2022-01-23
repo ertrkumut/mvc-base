@@ -7,7 +7,7 @@ namespace MVC.Runtime.Contexts
     {
         protected GameObject _gameObject;
 
-        protected MediatorBinder _mediationBinder;
+        protected MediatorBinder _mediatorBinder;
         
         public int InitializeOrder { get; set; }
 
@@ -26,7 +26,7 @@ namespace MVC.Runtime.Contexts
 
         private void CoreBindings()
         {
-            _mediationBinder = new MediatorBinder();
+            _mediatorBinder = new MediatorBinder();
         }
 
         public virtual void MapBindings()
