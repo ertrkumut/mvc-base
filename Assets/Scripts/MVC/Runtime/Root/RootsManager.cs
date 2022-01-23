@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 
 namespace MVC.Runtime.Root
@@ -20,6 +21,10 @@ namespace MVC.Runtime.Root
             }
         }
 
+        public Action OnContextsReady;
+        
+        public bool ContextsReady { get; private set; }
+        
         private bool _contextsStarted;
         
         private List<IContextRoot> _contextRootList;
@@ -36,7 +41,7 @@ namespace MVC.Runtime.Root
 
         public void StartContexts()
         {
-            if(!_contextsStarted)
+            if(_contextsStarted)
                 return;
 
             _contextsStarted = true;
@@ -46,6 +51,10 @@ namespace MVC.Runtime.Root
             {
                 contextRoot.StartContext();
             }
+
+            ContextsReady = true;
+            OnContextsReady?.Invoke();
+            
             foreach (var contextRoot in _contextRootList)
             {
                 contextRoot.GetContext().Launch();

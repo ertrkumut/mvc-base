@@ -50,14 +50,14 @@ namespace MVC.Runtime.Bind.Binders
 
         public TBindingType GetBinding(object key)
         {
-            return IsBindingExist(key) ? default : _bindings[key];
+            return !IsBindingExist(key) ? default : _bindings[key];
         }
 
         public TBindingType GetBinding<TKeyType>()
         {
             var keyType = typeof(TKeyType);
 
-            return IsBindingExist(keyType) ? default : _bindings[keyType];
+            return !IsBindingExist(keyType) ? default : _bindings[keyType];
         }
 
         #endregion

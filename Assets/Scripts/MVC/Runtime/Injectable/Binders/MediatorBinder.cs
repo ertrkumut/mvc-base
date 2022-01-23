@@ -7,22 +7,16 @@ namespace MVC.Runtime.Injectable.Binders
 {
     public class MediatorBinder : Binder<MediatorBinding>
     {
-        public override MediatorBinding Bind<TKeyType>()
+        public new virtual MediatorBinding Bind<TKeyType>()
+            where TKeyType : IMVCView
         {
-            var viewType = typeof(TKeyType);
-            if (!viewType.IsSubclassOf(typeof(IMVCView)))
-            {
-                Debug.LogError("Binding View require to inherit from IMVCView interface! " + viewType.Name);
-                return null;
-            }
-            
             return base.Bind<TKeyType>();
         }
         
         public override MediatorBinding Bind(object key)
         {
             var viewType = key.GetType();
-            if (!viewType.IsSubclassOf(typeof(IMVCView)))
+            if (!typeof(IMVCView).IsAssignableFrom(viewType))
             {
                 Debug.LogError("Binding View require to inherit from IMVCView interface! " + viewType.Name);
                 return null;

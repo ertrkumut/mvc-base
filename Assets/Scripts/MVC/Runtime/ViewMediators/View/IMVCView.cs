@@ -1,7 +1,6 @@
 ﻿namespace MVC.Runtime.ViewMediators.View
 {
-    public interface IMVCView
+    public interface IMVCView : IMVCTransform
     {
-        
     }
 }

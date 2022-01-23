@@ -15,6 +15,9 @@ namespace MVC.Runtime.Bind.Bindings
         public virtual void To<TValueType>()
         {
             var values = Value as List<object>;
+            if (values == null)
+                values = new List<object>();
+            
             values.Add(typeof(TValueType));
             Value = values;
         }

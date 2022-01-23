@@ -14,7 +14,7 @@ namespace MVC.Examples.Contexts
 
         private void BindViews()
         {
-            _mediatorBinder.Bind<PlayerControllerView>().To<PlayerControllerMediator>();
+            MediatorBinder.Bind<PlayerControllerView>().To<PlayerControllerMediator>();
         }
     }
 }

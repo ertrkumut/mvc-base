@@ -7,7 +7,7 @@ namespace MVC.Runtime.Bind.Bindings.Mediator
         public new virtual void To<TValueType>()
             where TValueType : IMVCMediator
         {
-            base.To<TValueType>();
+            Value = typeof(TValueType);
         }
     }
 }
