@@ -1,19 +1,18 @@
 ﻿using System.Collections.Generic;
-using System.Linq;
 using MVC.Runtime.Root;
 using MVC.Runtime.ViewMediators.Utils;
 using MVC.Runtime.ViewMediators.View;
+using MVC.Runtime.ViewMediators.View.Data;
 using UnityEngine;
 
 namespace MVC.Runtime.Injectable.Components
 {
     public class ViewInjectorComponent : MonoBehaviour
     {
-        private List<IMVCView> _viewComponents;
+        public List<ViewInjectorData> viewDataList;
         
         private void Awake()
         {
-            FindViews();
             var rootsManager = RootsManager.Instance;
             if (rootsManager.ContextsReady)
                 RegisterViews();
@@ -27,22 +26,18 @@ namespace MVC.Runtime.Injectable.Components
             RegisterViews();
         }
 
-        private void FindViews()
-        {
-            _viewComponents = GetComponents<IMVCView>().ToList();
-        }
-
         private void RegisterViews()
         {
-            foreach (var viewComponent in _viewComponents)
+            foreach (var viewInjectorData in viewDataList)
             {
-                InjectMediator(viewComponent);
+                if(viewInjectorData.autoInject)
+                    viewInjectorData.isInjected = InjectMediator(viewInjectorData.view as IMVCView);
             }
         }
         
-        private void InjectMediator(IMVCView viewComponent)
+        private bool InjectMediator(IMVCView viewComponent)
         {
-            viewComponent.InitializeView();
+            return viewComponent.InitializeView();
         }
     }
 }

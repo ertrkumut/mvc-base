@@ -10,7 +10,7 @@ namespace MVC.Runtime.Injectable.Utils
 {
     public static class InjectionExtensions
     {
-        public static void TryToInjectMediator(this IContext context, IMVCMediator mediator, IMVCView view)
+        public static bool TryToInjectMediator(this IContext context, IMVCMediator mediator, IMVCView view)
         {
             var mediatorBinder = context.MediatorBinder;
             var injectionBinder = context.InjectionBinder;
@@ -45,6 +45,7 @@ namespace MVC.Runtime.Injectable.Utils
             }
             
             mediator.OnRegister();
+            return true;
         }
     }
 }

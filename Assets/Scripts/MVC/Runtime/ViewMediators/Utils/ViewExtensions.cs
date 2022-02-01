@@ -11,13 +11,13 @@ namespace MVC.Runtime.ViewMediators.Utils
 {
     public static class ViewExtensions
     {
-        public static void InitializeView(this IMVCView view)
+        public static bool InitializeView(this IMVCView view)
         {
             var viewContext = view.FindViewContext();
             if (viewContext == null)
             {
                 Debug.LogError("There is no Context");
-                return;
+                return false;
             }
 
             var mediatorBinder = viewContext.MediatorBinder;
@@ -25,7 +25,7 @@ namespace MVC.Runtime.ViewMediators.Utils
             if (binding == null)
             {
                 Debug.LogError("There is no view binding! " + view.GetType());
-                return;
+                return false;
             }
             
             var mediatorType = binding.Value as Type;
@@ -38,7 +38,7 @@ namespace MVC.Runtime.ViewMediators.Utils
             else
                 mediator = (IMVCMediator) Activator.CreateInstance(mediatorType);
 
-            viewContext.TryToInjectMediator(mediator, view);
+            return viewContext.TryToInjectMediator(mediator, view);
         }
 
         public static IContext FindViewContext(this IMVCView view)
