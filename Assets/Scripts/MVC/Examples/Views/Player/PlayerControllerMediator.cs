@@ -9,7 +9,7 @@ namespace MVC.Examples.Views.Player
     public class PlayerControllerMediator : MonoBehaviour, IMVCMediator
     {
         [Inject] private PlayerControllerView _view { get; set; }
-        [Inject] private TestClass _testClass;
+        [Inject(Name = "Test")] private TestClass _testClass;
         [Inject] private ITestModel _testModel;
         
         public void OnRegister()

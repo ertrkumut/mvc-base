@@ -6,19 +6,19 @@ namespace MVC.Runtime.Injectable
 {
     public class InjectionBinder
     {
-        protected Dictionary<Type, object> _container;
+        protected Dictionary<Type, List<InjectionData>> _container;
 
         public InjectionBinder()
         {
-            _container = new Dictionary<Type, object>();
+            _container = new Dictionary<Type, List<InjectionData>>();
         }
 
         #region BindCrossContextSingletonSafely
 
-        public TBindingType BindCrossContextSingletonSafely<TBindingType>()
+        public TBindingType BindCrossContextSingletonSafely<TBindingType>(string name = "")
             where TBindingType : new()
         {
-            return GetOrCreateInstance<TBindingType>();
+            return GetOrCreateInstance<TBindingType>(name);
         }
 
         public TAbstract BindCrossContextSingletonSafely<TAbstract, TConcrete>()
@@ -29,19 +29,26 @@ namespace MVC.Runtime.Injectable
 
         #endregion
 
-        protected TBindingType GetInstance<TBindingType>()
+        protected TBindingType GetInstance<TBindingType>(string name)
         {
-            return (TBindingType) _container[typeof(TBindingType)];
+            var bindingType = typeof(TBindingType);
+            var injectionData = _container[bindingType].FirstOrDefault(x => x.name == name);
+            return injectionData != null ? (TBindingType) injectionData.value : default;
         }
 
-        public object GetInstance(Type instanceType)
+        public object GetInstance(Type instanceType, string name = "")
         {
-            return _container.ContainsKey(instanceType) ? _container[instanceType] : null;
+            if (!_container.ContainsKey(instanceType))
+                return null;
+            
+            var values = _container[instanceType];
+            var injectionData = values.FirstOrDefault(x => x.name == name);
+            return injectionData == null ? null : injectionData.value;
         }
 
         #region GetOrCreateInstance
 
-        protected TBindingType GetOrCreateInstance<TBindingType>()
+        protected TBindingType GetOrCreateInstance<TBindingType>(string name = "")
             where TBindingType : new()
         {
             var bindingType = typeof(TBindingType);
@@ -50,9 +57,9 @@ namespace MVC.Runtime.Injectable
             TBindingType instance;
 
             if (!hasInstanceExist)
-                instance = CreateInstance<TBindingType>();
+                instance = CreateInstance<TBindingType>(name);
             else
-                instance = (TBindingType) _container[bindingType];
+                instance = (TBindingType) GetInstance(bindingType, name);
             
             return instance;
         }
@@ -68,7 +75,7 @@ namespace MVC.Runtime.Injectable
             if (!hasInstanceExist)
                 instance = CreateInstance<TAbstract, TConcrete>();
             else
-                instance = (TAbstract) _container[bindingType];
+                instance = (TAbstract) GetInstance(bindingType);
             
             return instance;
         }
@@ -77,20 +84,40 @@ namespace MVC.Runtime.Injectable
 
         #region CreateInstance
 
-        private TBindingType CreateInstance<TBindingType>()
+        private TBindingType CreateInstance<TBindingType>(string name = "")
             where TBindingType : new()
         {
             var instance = new TBindingType();
-            _container.Add(typeof(TBindingType), instance);
+            var injectionType = typeof(TBindingType);
             
+            if(!_container.ContainsKey(injectionType))
+                _container.Add(injectionType, new List<InjectionData>());
+
+            _container[injectionType].Add(new InjectionData
+            {
+                name = name,
+                type = injectionType,
+                value = instance
+            });
+
             return instance;
         }
 
-        private TAbstract CreateInstance<TAbstract, TConcrete>()
+        private TAbstract CreateInstance<TAbstract, TConcrete>(string name = "")
             where TConcrete : TAbstract, new()
         {
             var instance = new TConcrete();
-            _container.Add(typeof(TAbstract), instance);
+            var injectionType = typeof(TAbstract);
+            
+            if(!_container.ContainsKey(injectionType))
+                _container.Add(injectionType, new List<InjectionData>());
+
+            _container[injectionType].Add(new InjectionData
+            {
+                name = name,
+                type = injectionType,
+                value = instance
+            });
             return instance;
         }
 
@@ -98,7 +125,12 @@ namespace MVC.Runtime.Injectable
 
         internal List<object> GetInjectedInstances()
         {
-            return _container.Values.ToList();
+            return _container.Values
+                .ToList()
+                .SelectMany(list => list)
+                .ToList()
+                .Select(x => x.value)
+                .ToList();
         }
         
         protected bool HasInstanceExist<TBindingType>()

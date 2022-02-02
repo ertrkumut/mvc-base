@@ -11,7 +11,7 @@ namespace MVC.Examples.Contexts
         {
             base.MapBindings();
 
-            InjectionBinder.BindCrossContextSingletonSafely<TestClass>();
+            InjectionBinder.BindCrossContextSingletonSafely<TestClass>("Test");
             
             BindViews();
             BindModels();
