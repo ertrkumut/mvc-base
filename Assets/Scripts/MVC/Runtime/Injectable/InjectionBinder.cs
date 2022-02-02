@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 
 namespace MVC.Runtime.Injectable
 {
@@ -94,6 +95,11 @@ namespace MVC.Runtime.Injectable
         }
 
         #endregion
+
+        internal List<object> GetInjectedInstances()
+        {
+            return _container.Values.ToList();
+        }
         
         protected bool HasInstanceExist<TBindingType>()
         {

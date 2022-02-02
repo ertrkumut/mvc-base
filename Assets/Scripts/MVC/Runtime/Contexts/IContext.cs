@@ -13,6 +13,7 @@ namespace MVC.Runtime.Contexts
         
         void Initialize(GameObject contextGameObject, int initializeOrder);
         void Start();
+        internal void ExecutePostConstructMethods();
         void Launch();
         
         void MapBindings();

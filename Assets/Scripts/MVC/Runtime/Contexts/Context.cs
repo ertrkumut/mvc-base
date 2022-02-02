@@ -1,4 +1,7 @@
-﻿using MVC.Runtime.Injectable;
+﻿using System.Linq;
+using System.Reflection;
+using MVC.Runtime.Injectable;
+using MVC.Runtime.Injectable.Attributes;
 using MVC.Runtime.Injectable.Binders;
 using UnityEngine;
 
@@ -26,6 +29,24 @@ namespace MVC.Runtime.Contexts
             PostBindings();
         }
 
+        void IContext.ExecutePostConstructMethods()
+        {
+            var injectedTypes = InjectionBinder.GetInjectedInstances();
+            foreach (object injectedType in injectedTypes)
+            {
+                var type = injectedType.GetType();
+                var postConstructMethods =
+                    type.GetMethods(BindingFlags.Instance | BindingFlags.NonPublic | BindingFlags.Public)
+                        .Where(methodInfo => methodInfo.GetCustomAttributes(typeof(PostConstructAttribute), true).Length != 0)
+                        .ToList();
+
+                foreach (var postConstructMethod in postConstructMethods)
+                {
+                    postConstructMethod.Invoke(injectedType, null);
+                }
+            }
+        }
+
         private void CoreBindings()
         {
             MediatorBinder = new MediatorBinder();
@@ -41,6 +62,7 @@ namespace MVC.Runtime.Contexts
         {
             
         }
+
         
         public void Launch()
         {

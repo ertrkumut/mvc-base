@@ -1,4 +1,6 @@
-﻿using MVC.Examples.Views.Player;
+﻿using MVC.Examples.Entity;
+using MVC.Examples.Models;
+using MVC.Examples.Views.Player;
 using MVC.Runtime.Contexts;
 
 namespace MVC.Examples.Contexts
@@ -12,16 +14,17 @@ namespace MVC.Examples.Contexts
             InjectionBinder.BindCrossContextSingletonSafely<TestClass>();
             
             BindViews();
+            BindModels();
         }
 
         private void BindViews()
         {
             MediatorBinder.Bind<PlayerControllerView>().To<PlayerControllerMediator>();
         }
-    }
-
-    public class TestClass
-    {
         
+        private void BindModels()
+        {
+            InjectionBinder.BindCrossContextSingletonSafely<ITestModel, TestModel>();
+        }
     }
 }
