@@ -1,4 +1,6 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
 using MVC.Runtime.Root;
 using MVC.Runtime.ViewMediators.Utils;
 using MVC.Runtime.ViewMediators.View;
@@ -30,14 +32,35 @@ namespace MVC.Runtime.Injectable.Components
         {
             foreach (var viewInjectorData in viewDataList)
             {
-                if(viewInjectorData.autoInject)
-                    viewInjectorData.isInjected = InjectMediator(viewInjectorData.view as IMVCView);
+                if (viewInjectorData.autoInject)
+                    TryToInject(viewInjectorData.view as IMVCView);
             }
         }
         
-        private bool InjectMediator(IMVCView viewComponent)
+        public bool TryToInject(IMVCView viewComponent)
         {
-            return viewComponent.InitializeView();
+            var injectorData = GetViewInjectorData(viewComponent);
+            if (injectorData.isInjected)
+                return false;
+
+            var injectResult = viewComponent.InitializeView();
+            injectorData.isInjected = injectResult;
+            return injectResult;
         }
+
+        private ViewInjectorData GetViewInjectorData(IMVCView view)
+        {
+            var data = viewDataList.FirstOrDefault(x => Equals(x.view, view));
+            return data;
+        }
+
+        // TEST
+        // private void Update()
+        // {
+        //     if (Input.GetKeyDown(KeyCode.A))
+        //     {
+        //         TryToInject(viewDataList[0].view as IMVCView);
+        //     }
+        // }
     }
 }
