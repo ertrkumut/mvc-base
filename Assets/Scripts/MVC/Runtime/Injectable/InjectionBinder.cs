@@ -15,13 +15,13 @@ namespace MVC.Runtime.Injectable
 
         #region BindCrossContextSingletonSafely
 
-        public TBindingType BindCrossContextSingletonSafely<TBindingType>(string name = "")
+        public TBindingType Bind<TBindingType>(string name = "")
             where TBindingType : new()
         {
             return GetOrCreateInstance<TBindingType>(name);
         }
 
-        public TAbstract BindCrossContextSingletonSafely<TAbstract, TConcrete>()
+        public TAbstract Bind<TAbstract, TConcrete>()
             where TConcrete : TAbstract, new()
         {
             return GetOrCreateInstance<TAbstract, TConcrete>();

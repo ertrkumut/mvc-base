@@ -3,6 +3,7 @@ using System.Reflection;
 using MVC.Runtime.Injectable;
 using MVC.Runtime.Injectable.Attributes;
 using MVC.Runtime.Injectable.Binders;
+using MVC.Runtime.Injectable.CrossContext;
 using UnityEngine;
 
 namespace MVC.Runtime.Contexts
@@ -13,13 +14,15 @@ namespace MVC.Runtime.Contexts
 
         public MediatorBinder MediatorBinder { get; set; }
         public InjectionBinder InjectionBinder { get; set; }
+        public CrossContextInjectionBinder CrossContextInjectionBinder { get; set; }
 
         public int InitializeOrder { get; set; }
 
-        public void Initialize(GameObject contextGameObject, int initializeOrder)
+        public void Initialize(GameObject contextGameObject, int initializeOrder, CrossContextInjectionBinder crossContextInjectionBinder)
         {
             _gameObject = contextGameObject;
             InitializeOrder = initializeOrder;
+            CrossContextInjectionBinder = crossContextInjectionBinder;
         }
 
         public void Start()

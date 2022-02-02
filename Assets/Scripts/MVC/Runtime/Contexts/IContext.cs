@@ -1,5 +1,6 @@
 ﻿using MVC.Runtime.Injectable;
 using MVC.Runtime.Injectable.Binders;
+using MVC.Runtime.Injectable.CrossContext;
 using UnityEngine;
 
 namespace MVC.Runtime.Contexts
@@ -10,8 +11,9 @@ namespace MVC.Runtime.Contexts
         
         MediatorBinder MediatorBinder { get; set; }
         InjectionBinder InjectionBinder { get; set; }
+        CrossContextInjectionBinder CrossContextInjectionBinder { get; set; }
         
-        void Initialize(GameObject contextGameObject, int initializeOrder);
+        void Initialize(GameObject contextGameObject, int initializeOrder, CrossContextInjectionBinder crossContextInjectionBinder);
         void Start();
         internal void ExecutePostConstructMethods();
         void Launch();

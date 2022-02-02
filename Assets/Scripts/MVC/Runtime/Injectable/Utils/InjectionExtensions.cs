@@ -13,16 +13,14 @@ namespace MVC.Runtime.Injectable.Utils
     {
         public static bool TryToInjectMediator(this IContext context, IMVCMediator mediator, IMVCView view)
         {
-            var injectionBinder = context.InjectionBinder;
-
-            InjectFields(mediator, view, injectionBinder);
-            InjectProperties(mediator, view, injectionBinder);
+            InjectFields(mediator, view, context);
+            InjectProperties(mediator, view, context);
             
             mediator.OnRegister();
             return true;
         }
 
-        private static void InjectFields(object mediator, object view, InjectionBinder injectionBinder)
+        private static void InjectFields(object mediator, object view, IContext context)
         {
             var viewType = view.GetType();
             var mediatorType = mediator.GetType();
@@ -44,7 +42,7 @@ namespace MVC.Runtime.Injectable.Utils
                 }
                 else
                 {
-                    var injectionValue = injectionBinder.GetInstance(fieldType, injectAttribute.Name);
+                    var injectionValue = context.GetInjectedObject(fieldType, injectAttribute.Name);
                     if (injectionValue == null)
                     {
                         Debug.LogError("Injection Failed! There is no injected property in container! \n ViewType: " + viewType + "\n Injection Type: " + fieldType);
@@ -56,7 +54,7 @@ namespace MVC.Runtime.Injectable.Utils
             }
         }
         
-        private static void InjectProperties(object mediator, object view, InjectionBinder injectionBinder)
+        private static void InjectProperties(object mediator, object view, IContext context)
         {
             var viewType = view.GetType();
             var mediatorType = mediator.GetType();
@@ -78,7 +76,7 @@ namespace MVC.Runtime.Injectable.Utils
                 }
                 else
                 {
-                    var injectionValue = injectionBinder.GetInstance(fieldType, injectAttribute.Name);
+                    var injectionValue = context.GetInjectedObject(fieldType, injectAttribute.Name);
                     if (injectionValue == null)
                     {
                         Debug.LogError("Injection Failed! There is no injected property in container! \n ViewType: " + viewType + "\n Injection Type: " + fieldType);
@@ -88,6 +86,18 @@ namespace MVC.Runtime.Injectable.Utils
                     injectableFieldInfo.SetValue(mediator, injectionValue);
                 }
             }
+        }
+
+        private static object GetInjectedObject(this IContext context, Type injectionType, string name = "")
+        {
+            var injectionBinder = context.InjectionBinder;
+            var crossContextInjectionBinder = context.CrossContextInjectionBinder;
+            
+            var injectionValue = injectionBinder.GetInstance(injectionType, name);
+            if (injectionValue == null)
+                injectionValue = crossContextInjectionBinder.GetInstance(injectionType, name);
+
+            return injectionValue;
         }
     }
 }

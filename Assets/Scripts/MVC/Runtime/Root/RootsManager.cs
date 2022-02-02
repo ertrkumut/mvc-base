@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using MVC.Runtime.Injectable.CrossContext;
 
 namespace MVC.Runtime.Root
 {
@@ -21,6 +22,8 @@ namespace MVC.Runtime.Root
             }
         }
 
+        public CrossContextInjectionBinder crossContextInjectionBinder;
+        
         public Action OnContextsReady;
         
         public bool ContextsReady { get; private set; }
@@ -32,6 +35,7 @@ namespace MVC.Runtime.Root
         public void Initialize()
         {
             _contextRootList = new List<IContextRoot>();
+            crossContextInjectionBinder = new CrossContextInjectionBinder();
         }
 
         public void RegisterContext(IContextRoot contextRoot)
