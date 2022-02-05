@@ -12,6 +12,7 @@ namespace MVC.Examples.Contexts
             base.MapBindings();
 
             InjectionBinder.Bind<TestClass>("Test");
+            // InjectionBinder.Bind<TestClass>();
             
             BindViews();
             BindModels();

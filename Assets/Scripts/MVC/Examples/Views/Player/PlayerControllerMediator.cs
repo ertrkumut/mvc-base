@@ -6,20 +6,35 @@ using UnityEngine;
 
 namespace MVC.Examples.Views.Player
 {
-    public class PlayerControllerMediator : MonoBehaviour, IMVCMediator
+    public class PlayerControllerMediator : MediatorBaseTest
     {
         [Inject] private PlayerControllerView _view { get; set; }
         [Inject(Name = "Test")] private TestClass _testClass;
         [Inject] private ITestModel _testModel;
         
-        public void OnRegister()
+        public override void OnRegister()
         {
+            base.OnRegister();
             Debug.Log("OnRegister");
         }
 
-        public void OnRemove()
+        public override void OnRemove()
         {
             Debug.Log("OnRemove");
+        }
+    }
+
+    public class MediatorBaseTest : MonoBehaviour, IMVCMediator
+    {
+        [Inject] private ITestModel _testModel;
+        
+        public virtual void OnRegister()
+        {
+            Debug.Log("Base mediator Registered");
+        }
+
+        public virtual void OnRemove()
+        {
         }
     }
 }

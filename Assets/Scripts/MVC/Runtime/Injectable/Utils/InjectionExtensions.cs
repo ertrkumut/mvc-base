@@ -79,29 +79,49 @@ namespace MVC.Runtime.Injectable.Utils
 
         private static List<FieldInfo> GetFieldInfoList(object instance)
         {
-            var injectableFields = instance.GetType().GetFields(BindingFlags.Instance | 
-                                                                BindingFlags.Public | 
-                                                                BindingFlags.NonPublic)
-                .Where(x => x.GetCustomAttributes(typeof(InjectAttribute)).ToList().Count != 0)
-                .ToList();
+            var injectableTypes = instance.GetType().GetAllChildClasses();
+
+            var injectableFields = new List<FieldInfo>();
+            foreach (var injectableType in injectableTypes)
+            {
+                var fields = injectableType.GetFields(BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic)
+                    .Where(x => 
+                        x.GetCustomAttributes(typeof(InjectAttribute)).ToList().Count != 0)
+                    .ToList();
+
+                injectableFields = injectableFields.Concat(fields).ToList();
+            }
 
             return injectableFields;
         }
 
         private static List<PropertyInfo> GetPropertyInfoList(object instance)
         {
-            var injectableProperties = instance.GetType().GetProperties(BindingFlags.Instance | 
-                                       BindingFlags.Public | 
-                                       BindingFlags.NonPublic)
-                .Where(x => x.GetCustomAttributes(typeof(InjectAttribute)).ToList().Count != 0)
-                .ToList();
+            var injectableTypes = instance.GetType().GetAllChildClasses();
+
+            var injectableProperties = new List<PropertyInfo>();
+            foreach (var injectableType in injectableTypes)
+            {
+                var properties = injectableType
+                    .GetProperties(BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic)
+                    .Where(x => 
+                        x.GetCustomAttributes(typeof(InjectAttribute)).ToList().Count != 0)
+                    .ToList();
+
+                injectableProperties = injectableProperties.Concat(properties).ToList();
+            }
 
             return injectableProperties;
         }
         
         private static object GetInjectedObject(this IContext context, MemberInfo memberInfo)
         {
-            var injectionType = memberInfo.DeclaringType;
+            Type injectionType = null;
+            if (memberInfo.MemberType == MemberTypes.Field)
+                injectionType = (memberInfo as FieldInfo).FieldType;
+            else if(memberInfo.MemberType == MemberTypes.Property)
+                injectionType = (memberInfo as PropertyInfo).PropertyType;
+            
             var injectAttribute = memberInfo.GetCustomAttributes(typeof(InjectAttribute)).ToList()[0] as InjectAttribute;
             
             var injectionBinder = context.InjectionBinder;
@@ -112,6 +132,17 @@ namespace MVC.Runtime.Injectable.Utils
                 injectionValue = crossContextInjectionBinder.GetInstance(injectionType, injectAttribute.Name);
 
             return injectionValue;
+        }
+
+        public static List<Type> GetAllChildClasses(this Type type)
+        {
+            var childTypes = Assembly
+                .GetAssembly(type)
+                .GetTypes()
+                .Where(x => x.IsInstanceOfType(type) && !x.IsInterface)
+                .ToList();
+
+            return childTypes;
         }
     }
 }
