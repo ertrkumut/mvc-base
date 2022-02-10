@@ -52,7 +52,7 @@ namespace MVC.Runtime.Injectable
             where TBindingType : new()
         {
             var bindingType = typeof(TBindingType);
-            var hasInstanceExist = HasInstanceExist<TBindingType>();
+            var hasInstanceExist = HasInstanceExist<TBindingType>(name);
 
             TBindingType instance;
 
@@ -133,10 +133,14 @@ namespace MVC.Runtime.Injectable
                 .ToList();
         }
         
-        protected bool HasInstanceExist<TBindingType>()
+        protected bool HasInstanceExist<TBindingType>(string name = "")
         {
             var bindingType = typeof(TBindingType);
-            return _container.ContainsKey(bindingType);
+            if (!_container.ContainsKey(bindingType))
+                return false;
+            
+            var instanceList = _container[bindingType];
+            return instanceList.FirstOrDefault(x => x.name == name) != null;
         }
     }
 }

@@ -10,6 +10,7 @@ namespace MVC.Examples.Views.Player
     {
         [Inject] private PlayerControllerView _view { get; set; }
         [Inject(Name = "Test")] private TestClass _testClass;
+        [Inject(Name = "Test2")] private TestClass _testClass2;
         [Inject] private ITestModel _testModel;
         
         public override void OnRegister()

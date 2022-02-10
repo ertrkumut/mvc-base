@@ -139,7 +139,7 @@ namespace MVC.Runtime.Injectable.Utils
             var childTypes = Assembly
                 .GetAssembly(type)
                 .GetTypes()
-                .Where(x => x.IsInstanceOfType(type) && !x.IsInterface)
+                .Where(x => x.IsAssignableFrom(type) && !x.IsInterface)
                 .ToList();
 
             return childTypes;
