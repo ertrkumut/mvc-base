@@ -35,6 +35,10 @@ namespace MVC.Runtime.Contexts
         void IContext.ExecutePostConstructMethods()
         {
             var injectedTypes = InjectionBinder.GetInjectedInstances();
+            var injectedCrossContextTypes = CrossContextInjectionBinder.GetInjectedInstances();
+
+            injectedTypes = injectedTypes.Concat(injectedCrossContextTypes).ToList();
+            
             foreach (object injectedType in injectedTypes)
             {
                 var type = injectedType.GetType();
