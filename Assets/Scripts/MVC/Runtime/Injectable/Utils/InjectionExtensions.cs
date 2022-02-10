@@ -16,17 +16,19 @@ namespace MVC.Runtime.Injectable.Utils
         {
             return true;
         }
-        
+
+        #region InjectMediator
+
         public static bool TryToInjectMediator(this IContext context, IMediator mediator, IView view)
         {
-            InjectFields(mediator, view, context);
-            InjectProperties(mediator, view, context);
+            InjectMediatorFields(mediator, view, context);
+            InjectMediatorProperties(mediator, view, context);
             
             mediator.OnRegister();
             return true;
         }
 
-        private static void InjectFields(object mediator, object view, IContext context)
+        private static void InjectMediatorFields(object mediator, object view, IContext context)
         {
             var viewType = view.GetType();
 
@@ -42,19 +44,12 @@ namespace MVC.Runtime.Injectable.Utils
                 }
                 else
                 {
-                    var injectionValue = context.GetInjectedObject(injectableFieldInfo);
-                    if (injectionValue == null)
-                    {
-                        Debug.LogError("Injection Failed! There is no injected property in container! \n ViewType: " + viewType + "\n Injection Type: " + fieldType);
-                        continue;
-                    }
-                    
-                    injectableFieldInfo.SetValue(mediator, injectionValue);
+                    SetInjectedValue(mediator, context, injectableFieldInfo);
                 }
             }
         }
         
-        private static void InjectProperties(object mediator, object view, IContext context)
+        private static void InjectMediatorProperties(object mediator, object view, IContext context)
         {
             var viewType = view.GetType();
 
@@ -70,17 +65,14 @@ namespace MVC.Runtime.Injectable.Utils
                 }
                 else
                 {
-                    var injectionValue = context.GetInjectedObject(injectableProperty);
-                    if (injectionValue == null)
-                    {
-                        Debug.LogError("Injection Failed! There is no injected property in container! \n ViewType: " + viewType + "\n Injection Type: " + fieldType);
-                        continue;
-                    }
-                    
-                    injectableProperty.SetValue(mediator, injectionValue);
+                    SetInjectedValue(mediator, context, injectableProperty);
                 }
             }
         }
+
+        #endregion
+
+        #region GetInjectable Fields-Properties
 
         private static List<FieldInfo> GetFieldInfoList(object instance)
         {
@@ -118,6 +110,30 @@ namespace MVC.Runtime.Injectable.Utils
 
             return injectableProperties;
         }
+
+        #endregion
+
+        private static void SetInjectedValue(object objectInstance, IContext context, MemberInfo injectedMemberInfo)
+        {
+            Type injectionType = null;
+            if (injectedMemberInfo.MemberType == MemberTypes.Field)
+                injectionType = (injectedMemberInfo as FieldInfo).FieldType;
+            else if(injectedMemberInfo.MemberType == MemberTypes.Property)
+                injectionType = (injectedMemberInfo as PropertyInfo).PropertyType;
+            
+            var injectionValue = context.GetInjectedObject(injectedMemberInfo);
+            if (injectionValue == null)
+            {
+                Debug.LogError("Injection Failed! There is no injected property in container! " +
+                               "\n Instance Type: " + objectInstance.GetType().Name + 
+                               "\n Injection Type: " + injectionType.Name);
+            }
+            
+            if (injectedMemberInfo.MemberType == MemberTypes.Field)
+                (injectedMemberInfo as FieldInfo).SetValue(objectInstance, injectionValue);
+            else if(injectedMemberInfo.MemberType == MemberTypes.Property)
+                (injectedMemberInfo as PropertyInfo).SetValue(objectInstance, injectionValue);
+        }
         
         private static object GetInjectedObject(this IContext context, MemberInfo memberInfo)
         {
@@ -139,7 +155,7 @@ namespace MVC.Runtime.Injectable.Utils
             return injectionValue;
         }
 
-        public static List<Type> GetAllChildClasses(this Type type)
+        private static List<Type> GetAllChildClasses(this Type type)
         {
             var childTypes = Assembly
                 .GetAssembly(type)

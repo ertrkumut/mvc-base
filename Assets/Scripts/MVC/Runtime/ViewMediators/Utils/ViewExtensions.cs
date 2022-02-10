@@ -1,5 +1,6 @@
 ﻿using System;
 using MVC.Runtime.Contexts;
+using MVC.Runtime.Injectable.Components;
 using MVC.Runtime.Injectable.Utils;
 using MVC.Runtime.Root;
 using MVC.Runtime.ViewMediators.Mediator;
@@ -11,7 +12,7 @@ namespace MVC.Runtime.ViewMediators.Utils
 {
     public static class ViewExtensions
     {
-        public static bool InitializeView(this IView view)
+        public static bool InjectView(this IView view)
         {
             var viewContext = view.FindViewContext();
             if (viewContext == null)
@@ -38,7 +39,13 @@ namespace MVC.Runtime.ViewMediators.Utils
             else
                 mediator = (IMediator) Activator.CreateInstance(mediatorType);
 
-            return viewContext.TryToInjectMediator(mediator, view);
+            var injectionResult = viewContext.TryToInjectMediator(mediator, view);
+            if (injectionResult)
+            {
+                var viewInjectorComponent = view.transform.GetComponent<ViewInjectorComponent>();
+                viewInjectorComponent.ViewInjectionCompleted(view);
+            }
+            return injectionResult;
         }
 
         public static IContext FindViewContext(this IView view)

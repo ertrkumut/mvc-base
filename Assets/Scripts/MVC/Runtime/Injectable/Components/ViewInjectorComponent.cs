@@ -1,5 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
 using MVC.Runtime.Root;
 using MVC.Runtime.ViewMediators.Utils;
@@ -37,13 +36,13 @@ namespace MVC.Runtime.Injectable.Components
             }
         }
         
-        public bool TryToInject(IView viewComponent)
+        private bool TryToInject(IView viewComponent)
         {
             var injectorData = GetViewInjectorData(viewComponent);
             if (injectorData.isInjected)
                 return false;
 
-            var injectResult = viewComponent.InitializeView();
+            var injectResult = viewComponent.InjectView();
             injectorData.isInjected = injectResult;
             return injectResult;
         }
@@ -52,6 +51,15 @@ namespace MVC.Runtime.Injectable.Components
         {
             var data = viewDataList.FirstOrDefault(x => Equals(x.view, view));
             return data;
+        }
+
+        public void ViewInjectionCompleted(IView view)
+        {
+            var injectorData = GetViewInjectorData(view);
+            if(injectorData == null)
+                return;
+            
+            injectorData.isInjected = true;
         }
 
         // TEST
