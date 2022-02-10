@@ -33,11 +33,11 @@ namespace MVC.Runtime.Injectable.Components
             foreach (var viewInjectorData in viewDataList)
             {
                 if (viewInjectorData.autoInject)
-                    TryToInject(viewInjectorData.view as IMVCView);
+                    TryToInject(viewInjectorData.view as IView);
             }
         }
         
-        public bool TryToInject(IMVCView viewComponent)
+        public bool TryToInject(IView viewComponent)
         {
             var injectorData = GetViewInjectorData(viewComponent);
             if (injectorData.isInjected)
@@ -48,7 +48,7 @@ namespace MVC.Runtime.Injectable.Components
             return injectResult;
         }
 
-        private ViewInjectorData GetViewInjectorData(IMVCView view)
+        private ViewInjectorData GetViewInjectorData(IView view)
         {
             var data = viewDataList.FirstOrDefault(x => Equals(x.view, view));
             return data;

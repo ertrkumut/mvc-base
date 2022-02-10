@@ -11,7 +11,7 @@ namespace MVC.Runtime.ViewMediators.Utils
 {
     public static class ViewExtensions
     {
-        public static bool InitializeView(this IMVCView view)
+        public static bool InitializeView(this IView view)
         {
             var viewContext = view.FindViewContext();
             if (viewContext == null)
@@ -31,17 +31,17 @@ namespace MVC.Runtime.ViewMediators.Utils
             var mediatorType = binding.Value as Type;
             var mediatorIsMono = mediatorType.IsSubclassOf(typeof(Object));
 
-            IMVCMediator mediator;
+            IMediator mediator;
             
             if(mediatorIsMono)
-                mediator = view.gameObject.AddComponent(mediatorType) as IMVCMediator;
+                mediator = view.gameObject.AddComponent(mediatorType) as IMediator;
             else
-                mediator = (IMVCMediator) Activator.CreateInstance(mediatorType);
+                mediator = (IMediator) Activator.CreateInstance(mediatorType);
 
             return viewContext.TryToInjectMediator(mediator, view);
         }
 
-        public static IContext FindViewContext(this IMVCView view)
+        public static IContext FindViewContext(this IView view)
         {
             var parent = view.transform.parent;
             if (parent == null)

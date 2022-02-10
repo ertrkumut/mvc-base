@@ -5,7 +5,7 @@ using UnityEngine;
 namespace MVC.Examples.Views.Player
 {
     [RequireComponent(typeof(ViewInjectorComponent))]
-    public class PlayerControllerView : MonoBehaviour, IMVCView
+    public class PlayerControllerView : MonoBehaviour, IView
     {
         
     }

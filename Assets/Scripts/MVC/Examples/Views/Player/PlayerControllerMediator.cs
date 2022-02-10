@@ -25,7 +25,7 @@ namespace MVC.Examples.Views.Player
         }
     }
 
-    public class MediatorBaseTest : MonoBehaviour, IMVCMediator
+    public class MediatorBaseTest : MonoBehaviour, IMediator
     {
         [Inject] private ITestModel _testModel;
         

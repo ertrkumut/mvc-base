@@ -1,6 +1,6 @@
 ﻿namespace MVC.Runtime.ViewMediators.Mediator
 {
-    public interface IMVCMediator
+    public interface IMediator
     {
         void OnRegister();
         void OnRemove();

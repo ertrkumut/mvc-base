@@ -8,7 +8,7 @@ namespace MVC.Runtime.Injectable.Binders
     public class MediatorBinder : Binder<MediatorBinding>
     {
         public new virtual MediatorBinding Bind<TKeyType>()
-            where TKeyType : IMVCView
+            where TKeyType : IView
         {
             return base.Bind<TKeyType>();
         }
@@ -16,7 +16,7 @@ namespace MVC.Runtime.Injectable.Binders
         public override MediatorBinding Bind(object key)
         {
             var viewType = key.GetType();
-            if (!typeof(IMVCView).IsAssignableFrom(viewType))
+            if (!typeof(IView).IsAssignableFrom(viewType))
             {
                 Debug.LogError("Binding View require to inherit from IMVCView interface! " + viewType.Name);
                 return null;

@@ -14,7 +14,7 @@ namespace MVC.Runtime.ViewMediators.View.Editor
     [CanEditMultipleObjects]
     public class ViewInjectorEditor : UnityEditor.Editor
     {
-        private List<IMVCView> _viewList;
+        private List<IView> _viewList;
         private ViewInjectorComponent _target;
         
         private void OnEnable()
@@ -33,7 +33,7 @@ namespace MVC.Runtime.ViewMediators.View.Editor
 
         private void FindViews()
         {
-            _viewList = _target.GetComponents<IMVCView>().ToList();
+            _viewList = _target.GetComponents<IView>().ToList();
         }
         
         private void CreateOrDeleteViewInjectorData()

@@ -12,7 +12,12 @@ namespace MVC.Runtime.Injectable.Utils
 {
     public static class InjectionExtensions
     {
-        public static bool TryToInjectMediator(this IContext context, IMVCMediator mediator, IMVCView view)
+        public static bool TryToInjectObject(object injectedObject)
+        {
+            return true;
+        }
+        
+        public static bool TryToInjectMediator(this IContext context, IMediator mediator, IView view)
         {
             InjectFields(mediator, view, context);
             InjectProperties(mediator, view, context);
