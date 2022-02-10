@@ -14,6 +14,8 @@ namespace MVC.Runtime.ViewMediators.View.Editor
     [CanEditMultipleObjects]
     public class ViewInjectorEditor : UnityEditor.Editor
     {
+        private Vector2 _guiScrollValue;
+        
         private List<IView> _viewList;
         private ViewInjectorComponent _target;
         
@@ -85,6 +87,8 @@ namespace MVC.Runtime.ViewMediators.View.Editor
             }
 
             EditorGUI.BeginChangeCheck();
+
+            _guiScrollValue = EditorGUILayout.BeginScrollView(_guiScrollValue);
             
             foreach (var viewInjectorData in _target.viewDataList)
             {
@@ -107,6 +111,8 @@ namespace MVC.Runtime.ViewMediators.View.Editor
                 
                 EditorGUILayout.EndVertical();
             }
+            
+            EditorGUILayout.EndScrollView();
             
             MarkDirty();
         }
