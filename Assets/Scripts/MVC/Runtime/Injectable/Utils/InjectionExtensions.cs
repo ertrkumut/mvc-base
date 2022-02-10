@@ -12,8 +12,14 @@ namespace MVC.Runtime.Injectable.Utils
 {
     public static class InjectionExtensions
     {
-        public static bool TryToInjectObject(object injectedObject)
+        public static bool TryToInjectObject(this IContext context, object injectedObject)
         {
+            var injectableFields = GetInjectableFieldInfoList(injectedObject);
+            var injectableProperties = GetInjectablePropertyInfoList(injectedObject);
+            
+            injectableFields.ForEach(x => SetInjectedValue(injectedObject, context, x));
+            injectableProperties.ForEach(x => SetInjectedValue(injectedObject, context, x));
+            
             return true;
         }
 
@@ -32,7 +38,7 @@ namespace MVC.Runtime.Injectable.Utils
         {
             var viewType = view.GetType();
 
-            var injectableFields = GetFieldInfoList(mediator);
+            var injectableFields = GetInjectableFieldInfoList(mediator);
             
             foreach (var injectableFieldInfo in injectableFields)
             {
@@ -53,7 +59,7 @@ namespace MVC.Runtime.Injectable.Utils
         {
             var viewType = view.GetType();
 
-            var injectablePropertyList = GetPropertyInfoList(mediator);
+            var injectablePropertyList = GetInjectablePropertyInfoList(mediator);
             
             foreach (var injectableProperty in injectablePropertyList)
             {
@@ -74,7 +80,7 @@ namespace MVC.Runtime.Injectable.Utils
 
         #region GetInjectable Fields-Properties
 
-        private static List<FieldInfo> GetFieldInfoList(object instance)
+        private static List<FieldInfo> GetInjectableFieldInfoList(object instance)
         {
             var injectableTypes = instance.GetType().GetAllChildClasses();
 
@@ -92,7 +98,7 @@ namespace MVC.Runtime.Injectable.Utils
             return injectableFields;
         }
 
-        private static List<PropertyInfo> GetPropertyInfoList(object instance)
+        private static List<PropertyInfo> GetInjectablePropertyInfoList(object instance)
         {
             var injectableTypes = instance.GetType().GetAllChildClasses();
 

@@ -4,6 +4,7 @@ using MVC.Runtime.Injectable;
 using MVC.Runtime.Injectable.Attributes;
 using MVC.Runtime.Injectable.Binders;
 using MVC.Runtime.Injectable.CrossContext;
+using MVC.Runtime.Injectable.Utils;
 using UnityEngine;
 
 namespace MVC.Runtime.Contexts
@@ -32,6 +33,22 @@ namespace MVC.Runtime.Contexts
             PostBindings();
         }
 
+        void IContext.InjectAllInstances()
+        {
+            var injectedTypes = InjectionBinder.GetInjectedInstances();
+            var injectedCrossContextTypes = CrossContextInjectionBinder.GetInjectedInstances();
+
+            injectedTypes = injectedTypes.Concat(injectedCrossContextTypes).ToList();
+
+            foreach (object injectedType in injectedTypes)
+            {
+                if(injectedType == null)
+                    continue;
+
+                this.TryToInjectObject(injectedType);
+            }
+        }
+        
         void IContext.ExecutePostConstructMethods()
         {
             var injectedTypes = InjectionBinder.GetInjectedInstances();

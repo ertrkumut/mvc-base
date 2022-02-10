@@ -39,6 +39,7 @@ namespace MVC.Runtime.Root
             AfterCreateBeforeStartContext();
 
             _context.Start();
+            _context.InjectAllInstances();
             _context.ExecutePostConstructMethods();
                 
             AfterStarBeforeLaunchContext();
