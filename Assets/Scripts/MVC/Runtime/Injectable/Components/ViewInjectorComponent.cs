@@ -47,7 +47,7 @@ namespace MVC.Runtime.Injectable.Components
             return injectResult;
         }
 
-        private ViewInjectorData GetViewInjectorData(IView view)
+        public ViewInjectorData GetViewInjectorData(IView view)
         {
             var data = viewDataList.FirstOrDefault(x => Equals(x.view, view));
             return data;

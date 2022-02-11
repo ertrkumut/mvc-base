@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using MVC.Runtime.Injectable.CrossContext;
+using MVC.Runtime.ViewMediators.Mediator;
 
 namespace MVC.Runtime.Root
 {
@@ -23,6 +24,7 @@ namespace MVC.Runtime.Root
         }
 
         public CrossContextInjectionBinder crossContextInjectionBinder;
+        public MediatorCreatorController mediatorCreatorController;
         
         public Action OnContextsReady;
         
@@ -36,6 +38,7 @@ namespace MVC.Runtime.Root
         {
             _contextRootList = new List<IContextRoot>();
             crossContextInjectionBinder = new CrossContextInjectionBinder();
+            mediatorCreatorController = new MediatorCreatorController();
         }
 
         public void RegisterContext(IContextRoot contextRoot)

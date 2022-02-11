@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using MVC.Runtime.Injectable.Components;
+using MVC.Runtime.ViewMediators.Utils;
 using MVC.Runtime.ViewMediators.View.Data;
 using UnityEditor;
 using UnityEditor.SceneManagement;
@@ -74,6 +75,9 @@ namespace MVC.Runtime.ViewMediators.View.Editor
 
         private void MarkDirty()
         {
+            if(Application.isPlaying)
+                return;
+
             if (EditorGUI.EndChangeCheck())
                 EditorSceneManager.MarkSceneDirty(EditorSceneManager.GetActiveScene());
         }
@@ -92,29 +96,68 @@ namespace MVC.Runtime.ViewMediators.View.Editor
             
             foreach (var viewInjectorData in _target.viewDataList)
             {
-                EditorGUILayout.BeginVertical("box");
-
-                GUI.enabled = false;
-                EditorGUILayout.BeginHorizontal();
-                EditorGUILayout.LabelField(viewInjectorData.view.GetType().Name);
-                EditorGUILayout.Space(3);
-                EditorGUILayout.ObjectField(viewInjectorData.view, typeof(Object));
-
-                EditorGUILayout.EndHorizontal();
-                GUI.enabled = true;
-
-                viewInjectorData.autoInject = EditorGUILayout.Toggle(new GUIContent("Auto Inject"), viewInjectorData.autoInject);
-                
-                GUI.enabled = false;
-                EditorGUILayout.Toggle(new GUIContent("Is Injected"), viewInjectorData.isInjected);
-                GUI.enabled = true;
-                
-                EditorGUILayout.EndVertical();
+                ViewGUI(viewInjectorData);
             }
             
             EditorGUILayout.EndScrollView();
             
             MarkDirty();
+        }
+
+        private void ViewGUI(ViewInjectorData viewInjectorData)
+        {
+            EditorGUILayout.BeginVertical("box");
+
+            GUI.enabled = false;
+            EditorGUILayout.BeginHorizontal();
+            EditorGUILayout.LabelField(viewInjectorData.view.GetType().Name, EditorStyles.boldLabel);
+            EditorGUILayout.Space(3);
+            EditorGUILayout.ObjectField(viewInjectorData.view, typeof(Object));
+
+            EditorGUILayout.EndHorizontal();
+            EditorGUILayout.Space(5);
+            GUI.enabled = true;
+
+            EditorGUILayout.BeginHorizontal();
+
+            EditorGUILayout.BeginVertical();
+            viewInjectorData.autoInject = EditorGUILayout.Toggle(new GUIContent("Auto Inject"), viewInjectorData.autoInject);
+                
+            GUI.enabled = false;
+            EditorGUILayout.Toggle(new GUIContent("Is Injected"), viewInjectorData.isInjected);
+            GUI.enabled = true;
+            
+            EditorGUILayout.EndVertical();
+
+            if (Application.isPlaying)
+            {
+                EditorGUILayout.BeginVertical();
+                GUI.backgroundColor = Color.red;
+                GUI.enabled = viewInjectorData.isInjected;
+                var removeButton = GUILayout.Button("Remove Registration");
+                GUI.backgroundColor = Color.white;
+            
+                if (removeButton)
+                {
+                    (viewInjectorData.view as IView).RemoveRegistration();
+                }
+
+                GUI.enabled = !viewInjectorData.isInjected;
+                GUI.backgroundColor = Color.green;
+                var registerButton = GUILayout.Button("Register");
+                if (registerButton)
+                {
+                    (viewInjectorData.view as IView).InjectView();
+                }
+                
+                GUI.backgroundColor = Color.white;
+                GUI.enabled = true;
+            
+                EditorGUILayout.EndVertical();
+            }
+            EditorGUILayout.EndHorizontal();
+                
+            EditorGUILayout.EndVertical();
         }
     }
 }

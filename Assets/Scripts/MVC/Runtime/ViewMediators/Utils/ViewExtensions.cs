@@ -37,17 +37,50 @@ namespace MVC.Runtime.ViewMediators.Utils
             if(mediatorIsMono)
                 mediator = view.gameObject.AddComponent(mediatorType) as IMediator;
             else
-                mediator = (IMediator) Activator.CreateInstance(mediatorType);
+                mediator = mediatorBinder.GetMediatorFromPool(mediatorType);
 
             var injectionResult = viewContext.TryToInjectMediator(mediator, view);
             if (injectionResult)
             {
-                var viewInjectorComponent = view.transform.GetComponent<ViewInjectorComponent>();
-                viewInjectorComponent.ViewInjectionCompleted(view);
+                var injectedMediatorData = mediatorBinder.GetOrCreateInjectedMediatorData(view);
+                injectedMediatorData.viewInjectorComponent.ViewInjectionCompleted(view);
+                injectedMediatorData.mediator = mediator;
             }
             return injectionResult;
         }
 
+        public static void RemoveRegistration(this IView view)
+        {
+            var viewContext = view.FindViewContext();
+            if (viewContext == null)
+            {
+                Debug.LogError("There is no Context");
+                return;
+            }
+            
+            var mediatorBinder = viewContext.MediatorBinder;
+            var injectedMediatorData = mediatorBinder.GetOrCreateInjectedMediatorData(view);
+            if (injectedMediatorData.mediator == null)
+                return;
+            
+            var viewInjectorComponent = injectedMediatorData.viewInjectorComponent;
+
+            var viewInjectorData = viewInjectorComponent.GetViewInjectorData(view);
+            if (!viewInjectorData.isInjected)
+                return;
+
+            var mediator = injectedMediatorData.mediator;
+            mediator.OnRemove();
+
+            injectedMediatorData.mediator = null;
+            viewInjectorData.isInjected = false;
+
+            if (mediator is Object mediatorObject)
+                Object.Destroy(mediatorObject as Component);
+            else
+                mediatorBinder.SendMediatorToPool(mediator);
+        }
+        
         public static IContext FindViewContext(this IView view)
         {
             var parent = view.transform.parent;
@@ -62,6 +95,11 @@ namespace MVC.Runtime.ViewMediators.Utils
             }
             
             return contextRoot == null ? null : contextRoot.GetContext();
+        }
+
+        internal static bool IsMediatorMono(this IMediator mediator)
+        {
+            return mediator is Object;
         }
     }
 }
