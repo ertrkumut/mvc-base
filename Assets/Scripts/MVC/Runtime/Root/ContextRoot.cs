@@ -11,6 +11,8 @@ namespace MVC.Runtime.Root
         
         protected TContextType _context;
 
+        #region UnityMethods
+
         private void Awake()
         {
             if(_context != null)
@@ -30,6 +32,8 @@ namespace MVC.Runtime.Root
         {
             DestroyContext();
         }
+
+        #endregion
 
         private void CreateContext()
         {
@@ -52,7 +56,9 @@ namespace MVC.Runtime.Root
         
         public virtual void DestroyContext()
         {
+            _rootsManager.UnRegisterContext(this);
             _context.DestroyContext();
+            _context = default;
         } 
             
         public IContext GetContext()

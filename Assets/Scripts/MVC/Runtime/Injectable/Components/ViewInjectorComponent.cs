@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using MVC.Runtime.Root;
 using MVC.Runtime.ViewMediators.Utils;
@@ -11,7 +12,9 @@ namespace MVC.Runtime.Injectable.Components
     public class ViewInjectorComponent : MonoBehaviour
     {
         public List<ViewInjectorData> viewDataList;
-        
+
+        #region Unity Methods
+
         private void Awake()
         {
             var rootsManager = RootsManager.Instance;
@@ -20,6 +23,20 @@ namespace MVC.Runtime.Injectable.Components
             else
                 rootsManager.OnContextsReady += OnContextsReadyListener;
         }
+
+        protected virtual void OnDestroy()
+        {
+            for (var ii = 0; ii < viewDataList.Count; ii++)
+            {
+                var viewInjectorData = viewDataList[ii];
+                var view = viewInjectorData.view as IView;
+                view.RemoveRegistration();
+            }
+        }
+
+        #endregion
+
+        #region Injection
 
         private void OnContextsReadyListener()
         {
@@ -61,5 +78,7 @@ namespace MVC.Runtime.Injectable.Components
             
             injectorData.isInjected = true;
         }
+
+        #endregion
     }
 }

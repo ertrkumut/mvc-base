@@ -50,6 +50,11 @@ namespace MVC.Runtime.Root
             _contextRootList.Add(contextRoot);
         }
 
+        public void UnRegisterContext(IContextRoot contextRoot)
+        {
+            _contextRootList.Remove(contextRoot);
+        }
+
         public void StartContexts()
         {
             if(_contextsStarted)
