@@ -1,6 +1,5 @@
 ﻿using System;
 using MVC.Runtime.Contexts;
-using MVC.Runtime.Injectable.Components;
 using MVC.Runtime.Injectable.Utils;
 using MVC.Runtime.Root;
 using MVC.Runtime.ViewMediators.Mediator;
