@@ -61,14 +61,5 @@ namespace MVC.Runtime.Injectable.Components
             
             injectorData.isInjected = true;
         }
-
-        // TEST
-        // private void Update()
-        // {
-        //     if (Input.GetKeyDown(KeyCode.A))
-        //     {
-        //         TryToInject(viewDataList[0].view as IMVCView);
-        //     }
-        // }
     }
 }

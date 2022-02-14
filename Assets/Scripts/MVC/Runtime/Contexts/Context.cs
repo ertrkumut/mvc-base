@@ -95,7 +95,8 @@ namespace MVC.Runtime.Contexts
 
         public virtual void DestroyContext()
         {
-
+            MediatorBinder.UnBindAll();
+            InjectionBinder.UnBindAll();
         }
     }
 }

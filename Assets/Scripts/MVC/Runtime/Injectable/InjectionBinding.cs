@@ -2,7 +2,7 @@
 
 namespace MVC.Runtime.Injectable
 {
-    public class InjectionData : IBinding
+    public class InjectionBinding : IBinding
     {
         public string Name;
         public object Key { get; set; }

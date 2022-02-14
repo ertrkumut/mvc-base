@@ -3,22 +3,23 @@ using System.Collections.Generic;
 using System.Linq;
 using MVC.Runtime.Bind.Bindings.Pool;
 using MVC.Runtime.Root;
+using UnityEngine;
 
 namespace MVC.Runtime.Injectable
 {
     public class InjectionBinder
     {
-        protected Dictionary<Type, List<InjectionData>> _container;
+        protected Dictionary<Type, List<InjectionBinding>> _container;
 
         protected BindingPoolController _bindingPoolController;
         
         public InjectionBinder()
         {
-            _container = new Dictionary<Type, List<InjectionData>>();
+            _container = new Dictionary<Type, List<InjectionBinding>>();
             _bindingPoolController = RootsManager.Instance.bindingPoolController;
         }
 
-        #region BindCrossContextSingletonSafely
+        #region Bind
 
         public TBindingType Bind<TBindingType>(string name = "")
             where TBindingType : new()
@@ -41,18 +42,58 @@ namespace MVC.Runtime.Injectable
             var injectionType = instance.GetType();
             
             if(!_container.ContainsKey(injectionType))
-                _container.Add(injectionType, new List<InjectionData>());
+                _container.Add(injectionType, new List<InjectionBinding>());
 
-            var injectionData = _bindingPoolController.GetAvailableBinding<InjectionData>();
-            injectionData.Name = name;
-            injectionData.Value = instance;
-            injectionData.Key = injectionType;
+            var injectionBinding = _bindingPoolController.GetAvailableBinding<InjectionBinding>();
+            injectionBinding.Name = name;
+            injectionBinding.Value = instance;
+            injectionBinding.Key = injectionType;
             
-            _container[injectionType].Add(injectionData);    
+            _container[injectionType].Add(injectionBinding);    
         }
 
         #endregion
 
+        #region UnBind
+
+        public virtual void UnBind<TBindingType>(string name = "")
+            where TBindingType : new()
+        {
+            var hasBindingExist = HasInstanceExist<TBindingType>(name);
+            if (!hasBindingExist)
+                return;
+
+            UnBind(typeof(TBindingType), name);
+        }
+
+        public virtual void UnBindAll()
+        {
+            foreach (var injectionBindingList in _container)
+            {
+                var injectionList = injectionBindingList.Value;
+                for (var ii = 0; ii < injectionList.Count; ii++)
+                {
+                    var injectionBinding = injectionList[0];
+                    var key = injectionBinding.Key is Type
+                        ? injectionBinding.Key as Type
+                        : injectionBinding.Key.GetType();
+
+                    UnBind(key, injectionBinding.Name);
+                }
+            }
+        }
+
+        protected void UnBind(Type key, string name = "")
+        {
+            var injectionBinding = GetInjectionBinding(key, name);
+            _container[key].Remove(injectionBinding);
+            _bindingPoolController.ReturnBindingToPool(injectionBinding);
+            
+            Debug.LogWarning("UnBind: " + key.Name + "- name: " + name);
+        }
+
+        #endregion
+        
         #region GetInstance
 
         protected TBindingType GetInstance<TBindingType>(string name)
@@ -119,9 +160,9 @@ namespace MVC.Runtime.Injectable
             var injectionType = typeof(TBindingType);
             
             if(!_container.ContainsKey(injectionType))
-                _container.Add(injectionType, new List<InjectionData>());
+                _container.Add(injectionType, new List<InjectionBinding>());
 
-            var injectionData = _bindingPoolController.GetAvailableBinding<InjectionData>();
+            var injectionData = _bindingPoolController.GetAvailableBinding<InjectionBinding>();
             injectionData.Name = name;
             injectionData.Value = instance;
             injectionData.Key = injectionType;
@@ -138,9 +179,9 @@ namespace MVC.Runtime.Injectable
             var injectionType = typeof(TAbstract);
             
             if(!_container.ContainsKey(injectionType))
-                _container.Add(injectionType, new List<InjectionData>());
+                _container.Add(injectionType, new List<InjectionBinding>());
 
-            var injectionData = _bindingPoolController.GetAvailableBinding<InjectionData>();
+            var injectionData = _bindingPoolController.GetAvailableBinding<InjectionBinding>();
             injectionData.Name = name;
             injectionData.Value = instance;
             injectionData.Key = injectionType;
@@ -159,6 +200,12 @@ namespace MVC.Runtime.Injectable
                 .ToList()
                 .Select(x => x.Value)
                 .ToList();
+        }
+
+        internal InjectionBinding GetInjectionBinding(Type key, string name = "")
+        {
+            var injectionBinding = _container[key].FirstOrDefault(x => x.Name == name);
+            return injectionBinding;
         }
         
         protected bool HasInstanceExist<TBindingType>(string name = "")
