@@ -26,6 +26,11 @@ namespace MVC.Runtime.Root
             _rootsManager.StartContexts();
         }
 
+        private void OnDestroy()
+        {
+            DestroyContext();
+        }
+
         private void CreateContext()
         {
             BeforeCreateContext();
@@ -34,7 +39,7 @@ namespace MVC.Runtime.Root
             _context.Initialize(gameObject, initializeOrder, _rootsManager.crossContextInjectionBinder);
         }
         
-        public void StartContext()
+        public virtual void StartContext()
         {
             AfterCreateBeforeStartContext();
 
@@ -44,7 +49,12 @@ namespace MVC.Runtime.Root
                 
             AfterStarBeforeLaunchContext();
         }
-
+        
+        public virtual void DestroyContext()
+        {
+            _context.DestroyContext();
+        } 
+            
         public IContext GetContext()
         {
             return _context;

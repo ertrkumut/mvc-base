@@ -7,6 +7,11 @@ namespace MVC.Runtime.Bind.Bindings.Pool
     {
         private Dictionary<Type, List<IBinding>> _pool;
 
+        public BindingPoolController()
+        {
+            _pool = new Dictionary<Type, List<IBinding>>();
+        }
+        
         private List<IBinding> GetPoolList(Type bindingType)
         {
             if(!_pool.ContainsKey(bindingType))
@@ -26,6 +31,25 @@ namespace MVC.Runtime.Bind.Bindings.Pool
             else
             {
                 availableBinding = bindingPoolList[0];
+                bindingPoolList.Remove(availableBinding);
+            }
+
+            return availableBinding;
+        }
+        
+        internal TBindingType GetAvailableBinding<TBindingType>()
+            where TBindingType : IBinding
+        {
+            var bindingType = typeof(TBindingType);
+            var bindingPoolList = GetPoolList(bindingType);
+
+            TBindingType availableBinding;
+            
+            if (bindingPoolList.Count == 0)
+                availableBinding = (TBindingType) Activator.CreateInstance(bindingType);
+            else
+            {
+                availableBinding = (TBindingType) bindingPoolList[0];
                 bindingPoolList.Remove(availableBinding);
             }
 

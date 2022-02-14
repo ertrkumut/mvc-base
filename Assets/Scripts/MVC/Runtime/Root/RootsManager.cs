@@ -40,9 +40,9 @@ namespace MVC.Runtime.Root
         {
             _contextRootList = new List<IContextRoot>();
             
+            bindingPoolController = new BindingPoolController();
             crossContextInjectionBinder = new CrossContextInjectionBinder();
             mediatorCreatorController = new MediatorCreatorController();
-            bindingPoolController = new BindingPoolController();
         }
 
         public void RegisterContext(IContextRoot contextRoot)

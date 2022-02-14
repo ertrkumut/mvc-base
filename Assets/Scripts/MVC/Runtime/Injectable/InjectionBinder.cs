@@ -1,6 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using MVC.Runtime.Bind.Bindings.Pool;
+using MVC.Runtime.Root;
 
 namespace MVC.Runtime.Injectable
 {
@@ -8,9 +10,12 @@ namespace MVC.Runtime.Injectable
     {
         protected Dictionary<Type, List<InjectionData>> _container;
 
+        protected BindingPoolController _bindingPoolController;
+        
         public InjectionBinder()
         {
             _container = new Dictionary<Type, List<InjectionData>>();
+            _bindingPoolController = RootsManager.Instance.bindingPoolController;
         }
 
         #region BindCrossContextSingletonSafely
@@ -27,13 +32,34 @@ namespace MVC.Runtime.Injectable
             return GetOrCreateInstance<TAbstract, TConcrete>();
         }
 
+        public void BindInstance(object instance, string name = "")
+        {
+            var hasInstanceExist = GetInstance(instance.GetType(), name);
+            if (hasInstanceExist != null)
+                return;
+            
+            var injectionType = instance.GetType();
+            
+            if(!_container.ContainsKey(injectionType))
+                _container.Add(injectionType, new List<InjectionData>());
+
+            var injectionData = _bindingPoolController.GetAvailableBinding<InjectionData>();
+            injectionData.Name = name;
+            injectionData.Value = instance;
+            injectionData.Key = injectionType;
+            
+            _container[injectionType].Add(injectionData);    
+        }
+
         #endregion
+
+        #region GetInstance
 
         protected TBindingType GetInstance<TBindingType>(string name)
         {
             var bindingType = typeof(TBindingType);
-            var injectionData = _container[bindingType].FirstOrDefault(x => x.name == name);
-            return injectionData != null ? (TBindingType) injectionData.value : default;
+            var injectionData = _container[bindingType].FirstOrDefault(x => x.Name == name);
+            return injectionData != null ? (TBindingType) injectionData.Value : default;
         }
 
         public object GetInstance(Type instanceType, string name = "")
@@ -42,9 +68,11 @@ namespace MVC.Runtime.Injectable
                 return null;
             
             var values = _container[instanceType];
-            var injectionData = values.FirstOrDefault(x => x.name == name);
-            return injectionData == null ? null : injectionData.value;
+            var injectionData = values.FirstOrDefault(x => x.Name == name);
+            return injectionData == null ? null : injectionData.Value;
         }
+
+        #endregion
 
         #region GetOrCreateInstance
 
@@ -93,12 +121,12 @@ namespace MVC.Runtime.Injectable
             if(!_container.ContainsKey(injectionType))
                 _container.Add(injectionType, new List<InjectionData>());
 
-            _container[injectionType].Add(new InjectionData
-            {
-                name = name,
-                type = injectionType,
-                value = instance
-            });
+            var injectionData = _bindingPoolController.GetAvailableBinding<InjectionData>();
+            injectionData.Name = name;
+            injectionData.Value = instance;
+            injectionData.Key = injectionType;
+            
+            _container[injectionType].Add(injectionData);
 
             return instance;
         }
@@ -112,12 +140,12 @@ namespace MVC.Runtime.Injectable
             if(!_container.ContainsKey(injectionType))
                 _container.Add(injectionType, new List<InjectionData>());
 
-            _container[injectionType].Add(new InjectionData
-            {
-                name = name,
-                type = injectionType,
-                value = instance
-            });
+            var injectionData = _bindingPoolController.GetAvailableBinding<InjectionData>();
+            injectionData.Name = name;
+            injectionData.Value = instance;
+            injectionData.Key = injectionType;
+            
+            _container[injectionType].Add(injectionData);
             return instance;
         }
 
@@ -129,7 +157,7 @@ namespace MVC.Runtime.Injectable
                 .ToList()
                 .SelectMany(list => list)
                 .ToList()
-                .Select(x => x.value)
+                .Select(x => x.Value)
                 .ToList();
         }
         
@@ -140,7 +168,7 @@ namespace MVC.Runtime.Injectable
                 return false;
             
             var instanceList = _container[bindingType];
-            return instanceList.FirstOrDefault(x => x.name == name) != null;
+            return instanceList.FirstOrDefault(x => x.Name == name) != null;
         }
     }
 }

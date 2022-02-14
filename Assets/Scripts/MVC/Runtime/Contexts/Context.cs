@@ -71,10 +71,12 @@ namespace MVC.Runtime.Contexts
             }
         }
 
-        private void CoreBindings()
+        protected virtual void CoreBindings()
         {
-            MediatorBinder = new MediatorBinder();
             InjectionBinder = new InjectionBinder();
+            MediatorBinder = InjectionBinder.Bind<MediatorBinder>();
+            
+            CrossContextInjectionBinder.BindInstance(CrossContextInjectionBinder);
         }
 
         public virtual void MapBindings()
@@ -86,10 +88,14 @@ namespace MVC.Runtime.Contexts
         {
             
         }
-
         
-        public void Launch()
+        public virtual void Launch()
         {
+        }
+
+        public virtual void DestroyContext()
+        {
+
         }
     }
 }
