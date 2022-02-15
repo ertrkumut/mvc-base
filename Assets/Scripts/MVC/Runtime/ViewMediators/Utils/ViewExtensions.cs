@@ -16,7 +16,7 @@ namespace MVC.Runtime.ViewMediators.Utils
             var viewContext = view.FindViewContext();
             if (viewContext == null)
             {
-                Debug.LogError("There is no Context");
+                Debug.LogError("There is no Context \nviewType: " + view.GetType().Name);
                 return false;
             }
 
@@ -53,7 +53,7 @@ namespace MVC.Runtime.ViewMediators.Utils
             var viewContext = view.FindViewContext();
             if (viewContext == null)
             {
-                Debug.LogError("There is no Context");
+                Debug.LogError("There is no Context \nviewType: " + view.GetType().Name);
                 return;
             }
             

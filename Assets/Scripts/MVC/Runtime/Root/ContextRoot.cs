@@ -1,5 +1,6 @@
 ﻿using MVC.Runtime.Contexts;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 
 namespace MVC.Runtime.Root
 {
@@ -58,7 +59,6 @@ namespace MVC.Runtime.Root
         {
             _rootsManager.UnRegisterContext(this);
             _context.DestroyContext();
-            _context = default;
         } 
             
         public IContext GetContext()

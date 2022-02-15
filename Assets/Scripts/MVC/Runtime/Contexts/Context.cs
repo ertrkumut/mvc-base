@@ -13,6 +13,8 @@ namespace MVC.Runtime.Contexts
     {
         protected GameObject _gameObject;
 
+        public bool ContextStarted { get; set; }
+        
         public MediatorBinder MediatorBinder { get; set; }
         public InjectionBinder InjectionBinder { get; set; }
         public CrossContextInjectionBinder CrossContextInjectionBinder { get; set; }
@@ -28,6 +30,8 @@ namespace MVC.Runtime.Contexts
 
         public void Start()
         {
+            ContextStarted = true;
+            
             CoreBindings();
             MapBindings();
             PostBindings();
@@ -95,6 +99,7 @@ namespace MVC.Runtime.Contexts
 
         public virtual void DestroyContext()
         {
+            ContextStarted = false;
             MediatorBinder.UnBindAll();
             InjectionBinder.UnBindAll();
         }

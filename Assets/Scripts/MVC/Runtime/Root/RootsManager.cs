@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using MVC.Runtime.Bind.Bindings.Pool;
+using MVC.Runtime.Contexts;
 using MVC.Runtime.Injectable.CrossContext;
 using MVC.Runtime.ViewMediators.Mediator;
 
@@ -28,10 +29,8 @@ namespace MVC.Runtime.Root
         public MediatorCreatorController mediatorCreatorController;
         public BindingPoolController bindingPoolController;
         
-        public Action OnContextsReady;
-        
-        public bool ContextsReady { get; private set; }
-        
+        public Action<IContext> OnContextReady;
+
         private bool _contextsStarted;
         
         private List<IContextRoot> _contextRootList;
@@ -52,6 +51,7 @@ namespace MVC.Runtime.Root
 
         public void UnRegisterContext(IContextRoot contextRoot)
         {
+            _contextsStarted = false;
             _contextRootList.Remove(contextRoot);
         }
 
@@ -62,20 +62,28 @@ namespace MVC.Runtime.Root
 
             _contextsStarted = true;
 
-            _contextRootList = _contextRootList.OrderBy(x => x.GetContext().InitializeOrder).ToList();
-            foreach (var contextRoot in _contextRootList)
+            var unreadyContextList = _contextRootList.
+                Where(context => !context.GetContext().ContextStarted)
+                .OrderBy(x => x.GetContext().InitializeOrder)
+                .ToList();
+            
+            foreach (var contextRoot in unreadyContextList)
             {
                 contextRoot.StartContext();
+                OnContextReady?.Invoke(contextRoot.GetContext());
             }
 
-            ContextsReady = true;
-            OnContextsReady?.Invoke();
-            
             foreach (var contextRoot in _contextRootList)
             {
                 contextRoot.GetContext().Launch();
             }
-            
+        }
+
+        public bool IsContextReady(IContext context)
+        {
+            return _contextRootList
+                .FirstOrDefault(contextRoot => contextRoot.GetContext() == context).GetContext()
+                .ContextStarted;
         }
     }
 }

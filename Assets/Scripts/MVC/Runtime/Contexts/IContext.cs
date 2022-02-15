@@ -8,7 +8,7 @@ namespace MVC.Runtime.Contexts
     public interface IContext
     {
         int InitializeOrder { get; set; }
-        
+        bool ContextStarted { get; set; }
         MediatorBinder MediatorBinder { get; set; }
         InjectionBinder InjectionBinder { get; set; }
         CrossContextInjectionBinder CrossContextInjectionBinder { get; set; }

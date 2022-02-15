@@ -1,6 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
+using MVC.Runtime.Contexts;
 using MVC.Runtime.Root;
 using MVC.Runtime.ViewMediators.Utils;
 using MVC.Runtime.ViewMediators.View;
@@ -13,19 +13,27 @@ namespace MVC.Runtime.Injectable.Components
     {
         public List<ViewInjectorData> viewDataList;
 
+        private IContext _context;
+        
         #region Unity Methods
 
         private void Awake()
         {
+            _context = (viewDataList[0].view as IView).FindViewContext();
+            if (_context == null)
+                return;
+            
             var rootsManager = RootsManager.Instance;
-            if (rootsManager.ContextsReady)
+            if (rootsManager.IsContextReady(_context))
                 RegisterViews();
             else
-                rootsManager.OnContextsReady += OnContextsReadyListener;
+                rootsManager.OnContextReady += OnContextsReadyListener;
         }
 
         protected virtual void OnDestroy()
         {
+            RootsManager.Instance.OnContextReady -= OnContextsReadyListener;
+            
             for (var ii = 0; ii < viewDataList.Count; ii++)
             {
                 var viewInjectorData = viewDataList[ii];
@@ -38,9 +46,12 @@ namespace MVC.Runtime.Injectable.Components
 
         #region Injection
 
-        private void OnContextsReadyListener()
+        private void OnContextsReadyListener(IContext context)
         {
-            RootsManager.Instance.OnContextsReady -= OnContextsReadyListener;
+            if (!_context.Equals(context))
+                return;
+
+            RootsManager.Instance.OnContextReady -= OnContextsReadyListener;
             RegisterViews();
         }
 
