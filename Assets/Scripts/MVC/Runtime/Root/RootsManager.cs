@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using MVC.Runtime.Bind.Bindings.Pool;
 using MVC.Runtime.Contexts;
+using MVC.Runtime.Controller.Binder;
 using MVC.Runtime.Injectable.CrossContext;
 using MVC.Runtime.ViewMediators.Mediator;
 
@@ -28,6 +29,7 @@ namespace MVC.Runtime.Root
         public CrossContextInjectionBinder crossContextInjectionBinder;
         public MediatorCreatorController mediatorCreatorController;
         public BindingPoolController bindingPoolController;
+        public CommandBinder commandBinder;
         
         public Action<IContext> OnContextReady;
 
@@ -42,6 +44,7 @@ namespace MVC.Runtime.Root
             bindingPoolController = new BindingPoolController();
             crossContextInjectionBinder = new CrossContextInjectionBinder();
             mediatorCreatorController = new MediatorCreatorController();
+            commandBinder = new CommandBinder();
         }
 
         public void RegisterContext(IContextRoot contextRoot)

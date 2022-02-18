@@ -46,8 +46,8 @@ namespace MVC.Runtime.Injectable
 
             var injectionBinding = _bindingPoolController.GetAvailableBinding<InjectionBinding>();
             injectionBinding.Name = name;
-            injectionBinding.Value = instance;
-            injectionBinding.Key = injectionType;
+            injectionBinding.SetValue(instance);
+            injectionBinding.SetKey(injectionType);
             
             _container[injectionType].Add(injectionBinding);    
         }
@@ -164,8 +164,8 @@ namespace MVC.Runtime.Injectable
 
             var injectionData = _bindingPoolController.GetAvailableBinding<InjectionBinding>();
             injectionData.Name = name;
-            injectionData.Value = instance;
-            injectionData.Key = injectionType;
+            injectionData.SetValue(instance);
+            injectionData.SetKey(injectionType);
             
             _container[injectionType].Add(injectionData);
 
@@ -183,8 +183,8 @@ namespace MVC.Runtime.Injectable
 
             var injectionData = _bindingPoolController.GetAvailableBinding<InjectionBinding>();
             injectionData.Name = name;
-            injectionData.Value = instance;
-            injectionData.Key = injectionType;
+            injectionData.SetValue(instance);
+            injectionData.SetKey(injectionType);
             
             _container[injectionType].Add(injectionData);
             return instance;

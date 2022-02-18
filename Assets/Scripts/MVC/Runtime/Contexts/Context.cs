@@ -1,5 +1,6 @@
 ﻿using System.Linq;
 using System.Reflection;
+using MVC.Runtime.Controller.Binder;
 using MVC.Runtime.Injectable;
 using MVC.Runtime.Injectable.Attributes;
 using MVC.Runtime.Injectable.Binders;
@@ -18,14 +19,16 @@ namespace MVC.Runtime.Contexts
         public MediatorBinder MediatorBinder { get; set; }
         public InjectionBinder InjectionBinder { get; set; }
         public CrossContextInjectionBinder CrossContextInjectionBinder { get; set; }
+        public CommandBinder CommandBinder { get; set; }
 
         public int InitializeOrder { get; set; }
 
-        public void Initialize(GameObject contextGameObject, int initializeOrder, CrossContextInjectionBinder crossContextInjectionBinder)
+        public void Initialize(GameObject contextGameObject, int initializeOrder, CrossContextInjectionBinder crossContextInjectionBinder, CommandBinder commandBinder)
         {
             _gameObject = contextGameObject;
             InitializeOrder = initializeOrder;
             CrossContextInjectionBinder = crossContextInjectionBinder;
+            CommandBinder = commandBinder;
         }
 
         public void Start()
@@ -79,7 +82,6 @@ namespace MVC.Runtime.Contexts
         {
             InjectionBinder = new InjectionBinder();
             MediatorBinder = InjectionBinder.Bind<MediatorBinder>();
-            
             CrossContextInjectionBinder.BindInstance(CrossContextInjectionBinder);
         }
 

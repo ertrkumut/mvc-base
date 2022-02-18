@@ -60,6 +60,7 @@ namespace MVC.Runtime.Bind.Bindings.Pool
         {
             var bindingType = binding.GetType();
             var poolList = GetPoolList(bindingType);
+            binding.Clear();
             _pool[bindingType].Add(binding);
         }
     }

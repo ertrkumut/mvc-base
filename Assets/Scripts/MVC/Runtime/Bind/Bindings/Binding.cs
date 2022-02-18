@@ -11,6 +11,11 @@ namespace MVC.Runtime.Bind.Bindings
         {
             Key = key;
         }
+
+        public virtual void SetValue(object value)
+        {
+            Value = value;
+        }
         
         public virtual void To<TValueType>()
         {
@@ -20,6 +25,12 @@ namespace MVC.Runtime.Bind.Bindings
             
             values.Add(typeof(TValueType));
             Value = values;
+        }
+
+        public virtual void Clear()
+        {
+            Key = null;
+            Value = null;
         }
     }
 }

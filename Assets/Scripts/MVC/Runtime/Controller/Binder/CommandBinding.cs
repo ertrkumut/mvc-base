@@ -21,5 +21,11 @@ namespace MVC.Runtime.Controller.Binder
         {
             ExecutionType = CommandExecutionType.Parallel;
         }
+
+        public override void Clear()
+        {
+            ExecutionType = CommandExecutionType.Parallel;
+            base.Clear();
+        }
     }
 }
