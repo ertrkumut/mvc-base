@@ -4,6 +4,13 @@ namespace MVC.Runtime.Signals
 {
     public class Signal : ISignal
     {
+        private Action<ISignalBody, object[]> _internalCallback;
+        Action<ISignalBody, object[]> ISignalBody.InternalCallback
+        {
+            get => _internalCallback;
+            set => _internalCallback = value;
+        }
+        
         private event Action callback;
         
         public void AddListener(Action listener)
@@ -18,6 +25,7 @@ namespace MVC.Runtime.Signals
 
         public void Dispatch()
         {
+            _internalCallback?.Invoke(this, null);
             callback?.Invoke();
         }
     }

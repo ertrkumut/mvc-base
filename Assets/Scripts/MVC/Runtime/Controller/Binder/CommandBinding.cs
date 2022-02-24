@@ -1,4 +1,7 @@
-﻿using MVC.Runtime.Bind.Bindings;
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using MVC.Runtime.Bind.Bindings;
 
 namespace MVC.Runtime.Controller.Binder
 {
@@ -20,6 +23,13 @@ namespace MVC.Runtime.Controller.Binder
         public void InParallel()
         {
             ExecutionType = CommandExecutionType.Parallel;
+        }
+
+        List<Type> ICommandBinding.GetBindedCommands()
+        {
+            return (Value as List<object>)
+                .Cast<Type>()
+                .ToList();
         }
 
         public override void Clear()

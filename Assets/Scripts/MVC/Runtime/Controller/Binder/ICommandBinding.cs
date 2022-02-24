@@ -1,4 +1,7 @@
-﻿namespace MVC.Runtime.Controller.Binder
+﻿using System;
+using System.Collections.Generic;
+
+namespace MVC.Runtime.Controller.Binder
 {
     public interface ICommandBinding
     {
@@ -9,5 +12,7 @@
 
         void InSequence();
         void InParallel();
+
+        internal List<Type> GetBindedCommands();
     }
 }

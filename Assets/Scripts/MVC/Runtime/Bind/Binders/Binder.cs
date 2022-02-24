@@ -45,6 +45,7 @@ namespace MVC.Runtime.Bind.Binders
 
             var binding = (TBindingType) _bindingPoolController.GetAvailableBinding(typeof(TBindingType));
             binding.SetKey(key);
+            _bindings.Add(key, binding);
             return binding;
         }
 
