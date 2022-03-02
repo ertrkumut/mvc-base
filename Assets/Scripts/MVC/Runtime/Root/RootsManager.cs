@@ -45,6 +45,8 @@ namespace MVC.Runtime.Root
             crossContextInjectionBinder = new CrossContextInjectionBinder();
             mediatorCreatorController = new MediatorCreatorController();
             commandBinder = new CommandBinder();
+            
+            crossContextInjectionBinder.BindInstance(commandBinder);
         }
 
         public void RegisterContext(IContextRoot contextRoot)

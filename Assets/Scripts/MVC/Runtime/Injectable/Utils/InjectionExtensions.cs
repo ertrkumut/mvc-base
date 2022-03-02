@@ -2,8 +2,13 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
+using System.Windows.Input;
 using MVC.Runtime.Contexts;
+using MVC.Runtime.Controller;
+using MVC.Runtime.Controller.Binder;
 using MVC.Runtime.Injectable.Attributes;
+using MVC.Runtime.Injectable.CrossContext;
+using MVC.Runtime.Root;
 using MVC.Runtime.ViewMediators.Mediator;
 using MVC.Runtime.ViewMediators.View;
 using UnityEngine;
@@ -78,6 +83,36 @@ namespace MVC.Runtime.Injectable.Utils
 
         #endregion
 
+        #region InjectCommands
+
+        public static void InjectCommand(ICommandBody commandBody)
+        {
+            var injectedFields = GetInjectableFieldInfoList(commandBody);
+            var injectedProperties = GetInjectablePropertyInfoList(commandBody);
+            
+            injectedFields.ForEach(x => SetInjectableCommandValue(commandBody, RootsManager.Instance.crossContextInjectionBinder, x));
+            injectedProperties.ForEach(x => SetInjectableCommandValue(commandBody, RootsManager.Instance.crossContextInjectionBinder, x));
+        }
+
+        private static void SetInjectableCommandValue(object objectInstance, CrossContextInjectionBinder injectionBinder, MemberInfo injectableMemberInfo)
+        {
+            Type injectionType = null;
+            if (injectableMemberInfo.MemberType == MemberTypes.Field)
+                injectionType = (injectableMemberInfo as FieldInfo).FieldType;
+            else if(injectableMemberInfo.MemberType == MemberTypes.Property)
+                injectionType = (injectableMemberInfo as PropertyInfo).PropertyType;
+
+            var injectAttribute = injectableMemberInfo.GetCustomAttributes(typeof(InjectAttribute)).ToList()[0] as InjectAttribute;
+            
+            var injectionValue = injectionBinder.GetInstance(injectionType, injectAttribute.Name);
+            if (injectableMemberInfo.MemberType == MemberTypes.Field)
+                (injectableMemberInfo as FieldInfo).SetValue(objectInstance, injectionValue);
+            else if(injectableMemberInfo.MemberType == MemberTypes.Property)
+                (injectableMemberInfo as PropertyInfo).SetValue(objectInstance, injectionValue);
+        }
+        
+        #endregion
+        
         #region GetInjectable Fields-Properties
 
         private static List<FieldInfo> GetInjectableFieldInfoList(object instance)

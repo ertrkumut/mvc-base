@@ -3,7 +3,7 @@
     public interface ICommandBody
     {
         bool Retain { get; set; }
-        
+
         int SequenceId { get; set; }
 
         void RetainCommand();

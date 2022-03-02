@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using MVC.Runtime.Controller.Binder;
+using MVC.Runtime.Injectable.Utils;
 
 namespace MVC.Runtime.Controller
 {
@@ -40,8 +41,19 @@ namespace MVC.Runtime.Controller
         {
             var commandType = GetCurrentCommandType();
             var command = _commandBinder.GetCommand(commandType);
+            
+            InjectionExtensions.InjectCommand(command);
+            
             ExecuteCommand(command);
             ReleaseCommand(command);
+        }
+        
+        public void ReleaseCommand(ICommandBody command)
+        {
+            if(command.Retain)
+                return;
+            
+            _commandBinder.ReturnCommandToPool(command);
             NextCommand(command);
         }
         
@@ -54,14 +66,6 @@ namespace MVC.Runtime.Controller
                 else
                     SequenceCompleted();
             }
-        }
-
-        private void ReleaseCommand(ICommandBody command)
-        {
-            if(command.Retain)
-                return;
-            
-            _commandBinder.ReturnCommandToPool(command);
         }
 
         private void ExecuteCommand(ICommandBody commandBody, params object[] parameters)

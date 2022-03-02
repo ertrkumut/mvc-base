@@ -7,7 +7,10 @@ namespace MVC.Examples.Controller
     {
         public override void Execute()
         {
+            RetainCommand();
             Debug.Log("Command 1");
+            
+            ReleaseCommand();
         }
     }
     
