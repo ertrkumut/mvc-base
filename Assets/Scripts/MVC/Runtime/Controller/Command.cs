@@ -20,7 +20,7 @@ namespace MVC.Runtime.Controller
 
         public virtual void ReleaseCommand(params object[] sequenceData)
         {
-            // _commandSequencer.ReleaseCommand(this);
+            CommandBinder.ReleaseCommand(this, sequenceData);
         }
 
         public virtual void FailCommand()

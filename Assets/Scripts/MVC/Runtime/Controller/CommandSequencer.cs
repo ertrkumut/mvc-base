@@ -8,10 +8,11 @@ namespace MVC.Runtime.Controller
     internal class CommandSequencer
     {
         public Action<CommandSequencer> SequenceFinished;
+
+        public ICommandBody currentCommand;
         
         private CommandBinder _commandBinder;
         
-        private ICommandBinding _commandBinding;
         private List<Type> _commands;
 
         private int _sequenceId;
@@ -21,15 +22,13 @@ namespace MVC.Runtime.Controller
             _commandBinder = commandBinder;
             
             _sequenceId = 0;
-            _commandBinding = commandBinding;
-            _commands = _commandBinding.GetBindedCommands();
+            _commands = commandBinding.GetBindedCommands();
         }
 
         public void Clear()
         {
             _sequenceId = default;
             _commands = default;
-            _commandBinding = default;
         }
         
         public void RunCommands()
@@ -41,31 +40,36 @@ namespace MVC.Runtime.Controller
         {
             var commandType = GetCurrentCommandType();
             var command = _commandBinder.GetCommand(commandType);
+            currentCommand = command;
             
             InjectionExtensions.InjectCommand(command);
             
             ExecuteCommand(command);
-            ReleaseCommand(command);
+            AutoReleaseCommand(command);
         }
         
-        public void ReleaseCommand(ICommandBody command)
+        private void AutoReleaseCommand(ICommandBody command, params object[] commandParameters)
         {
             if(command.Retain)
                 return;
             
             _commandBinder.ReturnCommandToPool(command);
-            NextCommand(command);
+            NextCommand();
+        }
+
+        public void ReleaseCommand(ICommandBody command, params object[] commandParameters)
+        {
+            _commandBinder.ReturnCommandToPool(command);
+            NextCommand();
         }
         
-        private void NextCommand(ICommandBody command)
+        private void NextCommand()
         {
-            if(!command.Retain)
-            {
-                if(!IsSequenceCompleted())
-                    ExecuteCommand();
-                else
-                    SequenceCompleted();
-            }
+            _sequenceId++;
+            if(!IsSequenceCompleted())
+                ExecuteCommand();
+            else
+                SequenceCompleted();
         }
 
         private void ExecuteCommand(ICommandBody commandBody, params object[] parameters)
@@ -73,7 +77,6 @@ namespace MVC.Runtime.Controller
             var commandType = commandBody.GetType();
             var executeMethodInfo = commandType.GetMethod("Execute");
             executeMethodInfo.Invoke(commandBody, parameters);
-            _sequenceId++;
         }
         
         private void SequenceCompleted()
