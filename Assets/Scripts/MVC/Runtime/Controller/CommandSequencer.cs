@@ -33,9 +33,34 @@ namespace MVC.Runtime.Controller
         
         public void RunCommands()
         {
+            ExecuteCommand();
+        }
+
+        private void ExecuteCommand()
+        {
             var commandType = GetCurrentCommandType();
             var command = _commandBinder.GetCommand(commandType);
             ExecuteCommand(command);
+            ReleaseCommand(command);
+            NextCommand(command);
+        }
+        
+        private void NextCommand(ICommandBody command)
+        {
+            if(!command.Retain)
+            {
+                if(!IsSequenceCompleted())
+                    ExecuteCommand();
+                else
+                    SequenceCompleted();
+            }
+        }
+
+        private void ReleaseCommand(ICommandBody command)
+        {
+            if(command.Retain)
+                return;
+            
             _commandBinder.ReturnCommandToPool(command);
         }
 
@@ -43,12 +68,18 @@ namespace MVC.Runtime.Controller
         {
             var commandType = commandBody.GetType();
             var executeMethodInfo = commandType.GetMethod("Execute");
-            executeMethodInfo.Invoke(commandBody, null);
+            executeMethodInfo.Invoke(commandBody, parameters);
+            _sequenceId++;
         }
         
         private void SequenceCompleted()
         {
             SequenceFinished?.Invoke(this);
+        }
+
+        private bool IsSequenceCompleted()
+        {
+            return _sequenceId >= _commands.Count;
         }
         
         private Type GetCurrentCommandType()

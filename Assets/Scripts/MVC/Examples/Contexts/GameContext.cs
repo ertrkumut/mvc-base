@@ -23,7 +23,8 @@ namespace MVC.Examples.Contexts
             _gameSignals = CrossContextInjectionBinder.Bind<GameSignals>();
             
             CommandBinder.Bind(_gameSignals.Start)
-                .To<TestCommand1>();
+                .To<TestCommand1>()
+                .To<TestCommand2>();
             
             BindViews();
             BindModels();

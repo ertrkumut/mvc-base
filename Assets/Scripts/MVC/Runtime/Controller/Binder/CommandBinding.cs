@@ -9,10 +9,11 @@ namespace MVC.Runtime.Controller.Binder
     {
         public CommandExecutionType ExecutionType { get; protected set; }
 
-        public new virtual void To<TValueType>()
+        public new virtual CommandBinding To<TValueType>()
             where TValueType : ICommandBody
         {
             base.To<TValueType>();
+            return this;
         }
 
         public void InSequence()
