@@ -15,9 +15,9 @@ namespace MVC.Examples.Contexts
         {
             base.MapBindings();
 
-            InjectionBinder.Bind<TestClass>();
-            InjectionBinder.Bind<TestClass>("Test");
-            InjectionBinder.Bind<TestClass>("Test2");
+            CrossContextInjectionBinder.Bind<TestClass>();
+            CrossContextInjectionBinder.Bind<TestClass>("Test");
+            CrossContextInjectionBinder.Bind<TestClass>("Test2");
             // InjectionBinder.Bind<TestClass>();
 
             _gameSignals = CrossContextInjectionBinder.Bind<GameSignals>();
