@@ -2,8 +2,8 @@
 using System.Collections.Generic;
 using System.Linq;
 using MVC.Runtime.Bind.Binders;
+using MVC.Runtime.Contexts;
 using MVC.Runtime.Signals;
-using UnityEngine;
 
 namespace MVC.Runtime.Controller.Binder
 {
@@ -13,8 +13,11 @@ namespace MVC.Runtime.Controller.Binder
         private List<CommandSequencer> _sequencePool;
         private List<CommandSequencer> _activeSequenceList;
 
-        public CommandBinder()
+        protected IContext _context;
+        
+        public CommandBinder(IContext context)
         {
+            _context = context;
             _commandPool = new Dictionary<Type, List<ICommandBody>>();
             
             _sequencePool = new List<CommandSequencer>();
@@ -27,6 +30,7 @@ namespace MVC.Runtime.Controller.Binder
             key.InternalCallback = null;
             key.InternalCallback += SignalDispatcher;
             var binding = base.Bind(key);
+            binding.SetContext(_context);
             return binding;
         }
 
@@ -37,7 +41,7 @@ namespace MVC.Runtime.Controller.Binder
                 return;
 
             var sequence = GetAvailableSequence();
-            sequence.Initialize(binding, this);
+            sequence.Initialize(binding, this, commandParameters);
             sequence.SequenceFinished += sequencer =>
             {
                 ReturnSequenceToPool(sequencer);

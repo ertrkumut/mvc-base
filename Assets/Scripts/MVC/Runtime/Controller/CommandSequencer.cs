@@ -10,16 +10,21 @@ namespace MVC.Runtime.Controller
         public Action<CommandSequencer> SequenceFinished;
 
         public ICommandBody currentCommand;
-        
+        private ICommandBinding _commandBinding;
+
         private CommandBinder _commandBinder;
-        
+
         private List<Type> _commands;
 
+        private object[] _commandParamters;
         private int _sequenceId;
 
-        public void Initialize(ICommandBinding commandBinding, CommandBinder commandBinder)
+        public void Initialize(ICommandBinding commandBinding, CommandBinder commandBinder, params object[] commandParameters)
         {
             _commandBinder = commandBinder;
+            _commandBinding = commandBinding;
+
+            _commandParamters = commandParameters;
             
             _sequenceId = 0;
             _commands = commandBinding.GetBindedCommands();
@@ -41,14 +46,15 @@ namespace MVC.Runtime.Controller
             var commandType = GetCurrentCommandType();
             var command = _commandBinder.GetCommand(commandType);
             currentCommand = command;
-            
-            InjectionExtensions.InjectCommand(command);
+
+            var context = _commandBinding.Context;
+            context.InjectCommand(command, _commandParamters);
             
             ExecuteCommand(command);
             AutoReleaseCommand(command);
         }
         
-        private void AutoReleaseCommand(ICommandBody command, params object[] commandParameters)
+        private void AutoReleaseCommand(ICommandBody command)
         {
             if(command.Retain)
                 return;

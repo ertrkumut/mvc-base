@@ -41,7 +41,7 @@ namespace MVC.Runtime.Root
             BeforeCreateContext();
             
             _context = new TContextType();
-            _context.Initialize(gameObject, initializeOrder, _rootsManager.crossContextInjectionBinder, _rootsManager.commandBinder);
+            _context.Initialize(gameObject, initializeOrder, _rootsManager.crossContextInjectionBinder);
         }
         
         public virtual void StartContext()

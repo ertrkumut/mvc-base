@@ -10,7 +10,7 @@ namespace MVC.Examples.Controller
         [Inject] private TestClass _testClass;
 
         [SignalParam] private int _intParam;
-        [SignalParam] private int _stringParam;
+        
         public override void Execute()
         {
             RetainCommand();
@@ -23,7 +23,6 @@ namespace MVC.Examples.Controller
     public class TestCommand2 : Command
     {
         [SignalParam] private int _intParam;
-        [SignalParam] private int _stringParam;
         
         public override void Execute()
         {

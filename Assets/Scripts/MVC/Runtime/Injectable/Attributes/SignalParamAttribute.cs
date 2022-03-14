@@ -3,7 +3,7 @@
 namespace MVC.Runtime.Injectable.Attributes
 {
     [AttributeUsage(AttributeTargets.Property | AttributeTargets.Field)]
-    public class SignalParam : Attribute
+    public class SignalParamAttribute : Attribute
     {
         
     }

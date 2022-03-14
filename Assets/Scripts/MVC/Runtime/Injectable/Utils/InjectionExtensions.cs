@@ -2,13 +2,9 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
-using System.Windows.Input;
 using MVC.Runtime.Contexts;
 using MVC.Runtime.Controller;
-using MVC.Runtime.Controller.Binder;
 using MVC.Runtime.Injectable.Attributes;
-using MVC.Runtime.Injectable.CrossContext;
-using MVC.Runtime.Root;
 using MVC.Runtime.ViewMediators.Mediator;
 using MVC.Runtime.ViewMediators.View;
 using UnityEngine;
@@ -19,8 +15,8 @@ namespace MVC.Runtime.Injectable.Utils
     {
         public static bool TryToInjectObject(this IContext context, object injectedObject)
         {
-            var injectableFields = GetInjectableFieldInfoList(injectedObject);
-            var injectableProperties = GetInjectablePropertyInfoList(injectedObject);
+            var injectableFields = GetInjectableFieldInfoList<InjectAttribute>(injectedObject);
+            var injectableProperties = GetInjectablePropertyInfoList<InjectAttribute>(injectedObject);
             
             injectableFields.ForEach(x => SetInjectedValue(injectedObject, context, x));
             injectableProperties.ForEach(x => SetInjectedValue(injectedObject, context, x));
@@ -43,7 +39,7 @@ namespace MVC.Runtime.Injectable.Utils
         {
             var viewType = view.GetType();
 
-            var injectableFields = GetInjectableFieldInfoList(mediator);
+            var injectableFields = GetInjectableFieldInfoList<InjectAttribute>(mediator);
             
             foreach (var injectableFieldInfo in injectableFields)
             {
@@ -64,7 +60,7 @@ namespace MVC.Runtime.Injectable.Utils
         {
             var viewType = view.GetType();
 
-            var injectablePropertyList = GetInjectablePropertyInfoList(mediator);
+            var injectablePropertyList = GetInjectablePropertyInfoList<InjectAttribute>(mediator);
             
             foreach (var injectableProperty in injectablePropertyList)
             {
@@ -85,37 +81,50 @@ namespace MVC.Runtime.Injectable.Utils
 
         #region InjectCommands
 
-        public static void InjectCommand(ICommandBody commandBody)
+        public static void InjectCommand(this IContext context, ICommandBody command, params object[] signalParams)
         {
-            var injectedFields = GetInjectableFieldInfoList(commandBody);
-            var injectedProperties = GetInjectablePropertyInfoList(commandBody);
-            
-            injectedFields.ForEach(x => SetInjectableCommandValue(commandBody, RootsManager.Instance.crossContextInjectionBinder, x));
-            injectedProperties.ForEach(x => SetInjectableCommandValue(commandBody, RootsManager.Instance.crossContextInjectionBinder, x));
+            var injectableFields = GetInjectableFieldInfoList<InjectAttribute>(command);
+            var injectableProperties = GetInjectablePropertyInfoList<InjectAttribute>(command);
+
+            foreach (var injectableField in injectableFields)
+            {
+                SetInjectedValue(command, context, injectableField);
+            }
+
+            foreach (var injectableProperty in injectableProperties)
+            {
+                SetInjectedValue(command, context, injectableProperty);
+            }
+
+            InjectSignalParamsToCommand(context, command, signalParams);
         }
 
-        private static void SetInjectableCommandValue(object objectInstance, CrossContextInjectionBinder injectionBinder, MemberInfo injectableMemberInfo)
+        private static void InjectSignalParamsToCommand(IContext context, ICommandBody command, params object[] signalParams)
         {
-            Type injectionType = null;
-            if (injectableMemberInfo.MemberType == MemberTypes.Field)
-                injectionType = (injectableMemberInfo as FieldInfo).FieldType;
-            else if(injectableMemberInfo.MemberType == MemberTypes.Property)
-                injectionType = (injectableMemberInfo as PropertyInfo).PropertyType;
+            var signalFields = GetInjectableFieldInfoList<SignalParamAttribute>(command);
+            var signalProperties = GetInjectablePropertyInfoList<SignalParamAttribute>(command);
 
-            var injectAttribute = injectableMemberInfo.GetCustomAttributes(typeof(InjectAttribute)).ToList()[0] as InjectAttribute;
+            foreach (var signalField in signalFields)
+            {
+                var paramType = signalField.FieldType;
+                var param = signalParams.FirstOrDefault(x => x.GetType() == paramType);
+                signalField.SetValue(command, param);
+            }
             
-            var injectionValue = injectionBinder.GetInstance(injectionType, injectAttribute.Name);
-            if (injectableMemberInfo.MemberType == MemberTypes.Field)
-                (injectableMemberInfo as FieldInfo).SetValue(objectInstance, injectionValue);
-            else if(injectableMemberInfo.MemberType == MemberTypes.Property)
-                (injectableMemberInfo as PropertyInfo).SetValue(objectInstance, injectionValue);
+            foreach (var signalProperty in signalProperties)
+            {
+                var paramType = signalProperty.PropertyType;
+                var param = signalParams.FirstOrDefault(x => x.GetType() == paramType);
+                signalProperty.SetValue(command, param);
+            }
         }
         
         #endregion
         
         #region GetInjectable Fields-Properties
 
-        private static List<FieldInfo> GetInjectableFieldInfoList(object instance)
+        private static List<FieldInfo> GetInjectableFieldInfoList<TAttribute>(object instance)
+            where TAttribute : Attribute
         {
             var injectableTypes = instance.GetType().GetAllChildClasses();
 
@@ -124,7 +133,7 @@ namespace MVC.Runtime.Injectable.Utils
             {
                 var fields = injectableType.GetFields(BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic)
                     .Where(x => 
-                        x.GetCustomAttributes(typeof(InjectAttribute)).ToList().Count != 0)
+                        x.GetCustomAttributes(typeof(TAttribute)).ToList().Count != 0)
                     .ToList();
 
                 injectableFields = injectableFields.Concat(fields).ToList();
@@ -133,7 +142,8 @@ namespace MVC.Runtime.Injectable.Utils
             return injectableFields;
         }
 
-        private static List<PropertyInfo> GetInjectablePropertyInfoList(object instance)
+        private static List<PropertyInfo> GetInjectablePropertyInfoList<TAttribute>(object instance)
+            where TAttribute : Attribute
         {
             var injectableTypes = instance.GetType().GetAllChildClasses();
 
@@ -143,7 +153,7 @@ namespace MVC.Runtime.Injectable.Utils
                 var properties = injectableType
                     .GetProperties(BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic)
                     .Where(x => 
-                        x.GetCustomAttributes(typeof(InjectAttribute)).ToList().Count != 0)
+                        x.GetCustomAttributes(typeof(TAttribute)).ToList().Count != 0)
                     .ToList();
 
                 injectableProperties = injectableProperties.Concat(properties).ToList();

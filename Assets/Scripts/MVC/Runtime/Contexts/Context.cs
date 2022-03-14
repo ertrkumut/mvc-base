@@ -23,12 +23,11 @@ namespace MVC.Runtime.Contexts
 
         public int InitializeOrder { get; set; }
 
-        public void Initialize(GameObject contextGameObject, int initializeOrder, CrossContextInjectionBinder crossContextInjectionBinder, CommandBinder commandBinder)
+        public void Initialize(GameObject contextGameObject, int initializeOrder, CrossContextInjectionBinder crossContextInjectionBinder)
         {
             _gameObject = contextGameObject;
             InitializeOrder = initializeOrder;
             CrossContextInjectionBinder = crossContextInjectionBinder;
-            CommandBinder = commandBinder;
         }
 
         public void Start()
@@ -80,9 +79,14 @@ namespace MVC.Runtime.Contexts
 
         protected virtual void CoreBindings()
         {
+            CommandBinder = new CommandBinder(this);
             InjectionBinder = new InjectionBinder();
             MediatorBinder = InjectionBinder.Bind<MediatorBinder>();
+            
             CrossContextInjectionBinder.BindInstance(CrossContextInjectionBinder);
+            CrossContextInjectionBinder.BindInstance(CommandBinder, GetType().Name);
+            
+            InjectionBinder.BindInstance(CommandBinder);
         }
 
         public virtual void MapBindings()

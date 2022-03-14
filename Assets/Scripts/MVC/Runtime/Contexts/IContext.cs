@@ -14,7 +14,7 @@ namespace MVC.Runtime.Contexts
         InjectionBinder InjectionBinder { get; set; }
         CrossContextInjectionBinder CrossContextInjectionBinder { get; set; }
         CommandBinder CommandBinder { get; set; }
-        void Initialize(GameObject contextGameObject, int initializeOrder, CrossContextInjectionBinder crossContextInjectionBinder, CommandBinder commandBinder);
+        void Initialize(GameObject contextGameObject, int initializeOrder, CrossContextInjectionBinder crossContextInjectionBinder);
         void Start();
 
         internal void InjectAllInstances();
