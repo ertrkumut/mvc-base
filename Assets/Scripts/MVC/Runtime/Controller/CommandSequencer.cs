@@ -17,15 +17,15 @@ namespace MVC.Runtime.Controller
 
         private List<Type> _commands;
 
-        private object[] _commandParamters;
+        private object[] _signalParameters;
         private int _sequenceId;
 
-        public void Initialize(ICommandBinding commandBinding, CommandBinder commandBinder, params object[] commandParameters)
+        public void Initialize(ICommandBinding commandBinding, CommandBinder commandBinder, params object[] signalParameters)
         {
             _commandBinder = commandBinder;
             _commandBinding = commandBinding;
 
-            _commandParamters = commandParameters;
+            _signalParameters = signalParameters;
             
             _sequenceId = 0;
             _commands = commandBinding.GetBindedCommands();
@@ -36,18 +36,18 @@ namespace MVC.Runtime.Controller
             ExecuteCommand();
         }
 
-        private void ExecuteCommand()
+        private void ExecuteCommand(params object[] commandParameters)
         {
             var commandType = GetCurrentCommandType();
             var command = _commandBinder.GetCommand(commandType);
             currentCommand = command;
 
             var context = _commandBinding.Context;
-            context.InjectCommand(command, _commandParamters);
+            context.InjectCommand(command, _signalParameters);
 
             var isItLastCommand = _commands.Last() == commandType;
             
-            ExecuteCommand(command);
+            ExecuteCommand(command, commandParameters);
             if(!isItLastCommand)
                 AutoReleaseCommand(command);
         }
@@ -64,14 +64,14 @@ namespace MVC.Runtime.Controller
         public void ReleaseCommand(ICommandBody command, params object[] commandParameters)
         {
             _commandBinder.ReturnCommandToPool(command);
-            NextCommand();
+            NextCommand(commandParameters);
         }
         
-        private void NextCommand()
+        private void NextCommand(params object[] commandParameters)
         {
             _sequenceId++;
             if(!IsSequenceCompleted())
-                ExecuteCommand();
+                ExecuteCommand(commandParameters);
             else
                 SequenceCompleted();
         }
@@ -102,7 +102,7 @@ namespace MVC.Runtime.Controller
         {
             SequenceFinished = null;
             _commands = null;
-            _commandParamters = null;
+            _signalParameters = null;
             _sequenceId = default;
         }
     }

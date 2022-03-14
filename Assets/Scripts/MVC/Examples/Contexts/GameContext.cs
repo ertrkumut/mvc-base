@@ -29,6 +29,10 @@ namespace MVC.Examples.Contexts
             CommandBinder.Bind(_gameSignals.IntTestSignal)
                 .To<TestCommand1>()
                 .To<TestCommand2>();
+
+            CommandBinder.Bind(_gameSignals.IntTest2Signal)
+                .To<TestCommand2>()
+                .To<TestCommand3>();
             
             BindViews();
             BindModels();
@@ -49,7 +53,8 @@ namespace MVC.Examples.Contexts
             base.Launch();
             
             // _gameSignals.Start.Dispatch();
-            _gameSignals.IntTestSignal.Dispatch(10);
+            // _gameSignals.IntTestSignal.Dispatch(10);
+            _gameSignals.IntTest2Signal.Dispatch(25);
         }
     }
 }

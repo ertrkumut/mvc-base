@@ -6,5 +6,6 @@ namespace MVC.Examples.Signals
     {
         public Signal Start = new Signal();
         public Signal<int> IntTestSignal = new Signal<int>();
+        public Signal<int> IntTest2Signal = new Signal<int>();
     }
 }

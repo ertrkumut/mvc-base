@@ -26,7 +26,19 @@ namespace MVC.Examples.Controller
         
         public override void Execute()
         {
+            RetainCommand();
             Debug.Log("Command 2 " + _intParam);
+            ReleaseCommand("Hello World", 15.0f);
+        }
+    }
+
+    public class TestCommand3 : Command<string, float>
+    {
+        [SignalParam] private int _intParam;
+        
+        public override void Execute(string param1, float param2)
+        {
+            Debug.Log("Command 3 : " + param1 + " - " + param2 + " signalParam: " + _intParam);
         }
     }
 }
