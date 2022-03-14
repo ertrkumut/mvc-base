@@ -14,7 +14,7 @@ namespace MVC.Examples.Controller
         public override void Execute()
         {
             RetainCommand();
-            Debug.Log("Command 1");
+            Debug.Log("Command 1 " + _intParam);
             
             ReleaseCommand();
         }
@@ -26,7 +26,7 @@ namespace MVC.Examples.Controller
         
         public override void Execute()
         {
-            Debug.Log("Command 2");
+            Debug.Log("Command 2 " + _intParam);
         }
     }
 }

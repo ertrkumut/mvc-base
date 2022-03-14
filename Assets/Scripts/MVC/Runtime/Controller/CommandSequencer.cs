@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using MVC.Runtime.Controller.Binder;
 using MVC.Runtime.Injectable.Utils;
 
@@ -43,9 +44,12 @@ namespace MVC.Runtime.Controller
 
             var context = _commandBinding.Context;
             context.InjectCommand(command, _commandParamters);
+
+            var isItLastCommand = _commands.Last() == commandType;
             
             ExecuteCommand(command);
-            AutoReleaseCommand(command);
+            if(!isItLastCommand)
+                AutoReleaseCommand(command);
         }
         
         private void AutoReleaseCommand(ICommandBody command)
