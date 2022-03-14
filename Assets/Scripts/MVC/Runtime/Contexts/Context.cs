@@ -46,12 +46,12 @@ namespace MVC.Runtime.Contexts
 
             injectedTypes = injectedTypes.Concat(injectedCrossContextTypes).ToList();
 
-            foreach (object injectedType in injectedTypes)
+            foreach (InjectionBinding injectedType in injectedTypes)
             {
                 if(injectedType == null)
                     continue;
 
-                this.TryToInjectObject(injectedType);
+                this.TryToInjectObject(injectedType.Value);
             }
         }
         
@@ -62,9 +62,9 @@ namespace MVC.Runtime.Contexts
 
             injectedTypes = injectedTypes.Concat(injectedCrossContextTypes).ToList();
             
-            foreach (object injectedType in injectedTypes)
+            foreach (InjectionBinding injectedType in injectedTypes)
             {
-                var type = injectedType.GetType();
+                var type = injectedType.Value.GetType();
                 var postConstructMethods =
                     type.GetMethods(BindingFlags.Instance | BindingFlags.NonPublic | BindingFlags.Public)
                         .Where(methodInfo => methodInfo.GetCustomAttributes(typeof(PostConstructAttribute), true).Length != 0)
@@ -72,7 +72,7 @@ namespace MVC.Runtime.Contexts
 
                 foreach (var postConstructMethod in postConstructMethods)
                 {
-                    postConstructMethod.Invoke(injectedType, null);
+                    postConstructMethod.Invoke(injectedType.Value, null);
                 }
             }
         }

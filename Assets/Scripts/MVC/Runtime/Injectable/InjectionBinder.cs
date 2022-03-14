@@ -1,12 +1,14 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using MVC.Runtime.Attributes;
 using MVC.Runtime.Bind.Bindings.Pool;
 using MVC.Runtime.Root;
 using UnityEngine;
 
 namespace MVC.Runtime.Injectable
 {
+    [HideFromModelViewer]
     public class InjectionBinder
     {
         protected Dictionary<Type, List<InjectionBinding>> _container;
@@ -192,13 +194,13 @@ namespace MVC.Runtime.Injectable
 
         #endregion
 
-        internal List<object> GetInjectedInstances()
+        public List<InjectionBinding> GetInjectedInstances()
         {
             return _container.Values
                 .ToList()
                 .SelectMany(list => list)
                 .ToList()
-                .Select(x => x.Value)
+                .Select(x => x)
                 .ToList();
         }
 
@@ -207,7 +209,7 @@ namespace MVC.Runtime.Injectable
             var injectionBinding = _container[key].FirstOrDefault(x => x.Name == name);
             return injectionBinding;
         }
-        
+
         protected bool HasInstanceExist<TBindingType>(string name = "")
         {
             var bindingType = typeof(TBindingType);

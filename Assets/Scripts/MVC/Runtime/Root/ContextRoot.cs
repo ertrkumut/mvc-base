@@ -1,16 +1,25 @@
 ﻿using MVC.Runtime.Contexts;
 using UnityEngine;
-using UnityEngine.SceneManagement;
 
 namespace MVC.Runtime.Root
 {
-    public class ContextRoot<TContextType> : MonoBehaviour, IContextRoot
+    public class ContextRoot<TContextType> : RootBase, IContextRoot
         where TContextType : IContext, new()
     {
         public int initializeOrder;
         protected RootsManager _rootsManager;
-        
-        protected TContextType _context;
+
+        protected TContextType _context
+        {
+            get
+            {
+                return (TContextType) Context;
+            }
+            set
+            {
+                Context = value;
+            }
+        }
 
         #region UnityMethods
 

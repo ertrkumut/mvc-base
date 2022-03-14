@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using MVC.Runtime.Attributes;
 using MVC.Runtime.Bind.Binders;
 using MVC.Runtime.Bind.Bindings.Mediator;
 using MVC.Runtime.Injectable.Components;
@@ -11,6 +12,7 @@ using UnityEngine;
 
 namespace MVC.Runtime.Injectable.Binders
 {
+    [HideFromModelViewer]
     public class MediatorBinder : Binder<MediatorBinding>
     {
         private Dictionary<IView, InjectedMediatorData> _injectedMediators;

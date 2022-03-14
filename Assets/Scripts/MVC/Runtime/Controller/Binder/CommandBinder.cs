@@ -1,12 +1,14 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using MVC.Runtime.Attributes;
 using MVC.Runtime.Bind.Binders;
 using MVC.Runtime.Contexts;
 using MVC.Runtime.Signals;
 
 namespace MVC.Runtime.Controller.Binder
 {
+    [HideFromModelViewer]
     public class CommandBinder : Binder<CommandBinding>
     {
         private Dictionary<Type, List<ICommandBody>> _commandPool;
