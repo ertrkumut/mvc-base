@@ -75,7 +75,7 @@ namespace MVC.Runtime.Controller.Binder
         
         private void ReturnSequenceToPool(CommandSequencer commandSequencer)
         {
-            commandSequencer.SequenceFinished = null;
+            commandSequencer.Dispose();
             
             _activeSequenceList.Remove(commandSequencer);
             _sequencePool.Add(commandSequencer);

@@ -30,12 +30,6 @@ namespace MVC.Runtime.Controller
             _commands = commandBinding.GetBindedCommands();
         }
 
-        public void Clear()
-        {
-            _sequenceId = default;
-            _commands = default;
-        }
-        
         public void RunCommands()
         {
             ExecuteCommand();
@@ -98,6 +92,14 @@ namespace MVC.Runtime.Controller
         private Type GetCurrentCommandType()
         {
             return _commands[_sequenceId];
+        }
+
+        public void Dispose()
+        {
+            SequenceFinished = null;
+            _commands = null;
+            _commandParamters = null;
+            _sequenceId = default;
         }
     }
 }
