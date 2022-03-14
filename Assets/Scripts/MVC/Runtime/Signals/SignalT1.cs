@@ -2,15 +2,8 @@
 
 namespace MVC.Runtime.Signals
 {
-    public class Signal<T1> : ISignal<T1>
+    public class Signal<T1> : SignalBody, ISignal<T1>
     {
-        private Action<ISignalBody, object[]> _internalCallback;
-        Action<ISignalBody, object[]> ISignalBody.InternalCallback
-        {
-            get => _internalCallback;
-            set => _internalCallback = value;
-        }
-        
         private event Action<T1> callback; 
         
         public void AddListener(Action<T1> listener)
