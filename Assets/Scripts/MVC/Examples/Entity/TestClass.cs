@@ -2,6 +2,6 @@
 {
     public class TestClass
     {
-        
+        public string test = "Hello World";
     }
 }

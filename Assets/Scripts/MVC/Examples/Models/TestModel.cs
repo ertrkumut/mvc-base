@@ -6,7 +6,7 @@ namespace MVC.Examples.Models
 {
     public class TestModel : ITestModel
     {
-        [Inject] private TestClass _testClass;
+        [Inject] public TestClass _testClass;
         
         [PostConstruct]
         private void PostConstruct()

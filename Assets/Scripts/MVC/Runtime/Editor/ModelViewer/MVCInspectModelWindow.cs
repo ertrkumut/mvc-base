@@ -53,7 +53,7 @@ namespace MVC.Base.Packages.Editor.ModelViewer
         private void DisplayObjectFields(object rootObject)
         {
             var rootType = rootObject.GetType();
-            var fieldInfoList = rootType.GetFields(BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic);
+            var fieldInfoList = rootType.GetFields(BindingFlags.Instance | BindingFlags.Public);
 
             foreach (var fieldInfo in fieldInfoList)
             {
@@ -68,11 +68,16 @@ namespace MVC.Base.Packages.Editor.ModelViewer
         private void DisplayFieldInfoGUI(FieldInfo fieldInfo, object rootObject)
         {
             var fieldType = fieldInfo.FieldType;
-
-            if (!fieldType.IsSubclassOf(typeof(Object)) && fieldType.IsClass)
+            
+            if (fieldType.IsClass && !IsPropertyTypeExist(fieldType) && !fieldType.IsSubclassOf(typeof(Object)))
             {
+                EditorGUILayout.BeginVertical("box");
+                
                 EditorGUILayout.LabelField(fieldInfo.Name);
-                DisplayObjectFields(rootObject);
+                var fieldValue = fieldInfo.GetValue(rootObject);
+                DisplayObjectFields(fieldValue);
+                
+                EditorGUILayout.EndVertical();
                 return;
             }
             
@@ -102,6 +107,11 @@ namespace MVC.Base.Packages.Editor.ModelViewer
             return propertyDrawer;
         }
 
+        public bool IsPropertyTypeExist(Type type)
+        {
+            return _propertyDrawerTypesDict.ContainsKey(type);
+        }
+        
         private void OnDestroy()
         {
             _propertyDrawerTypesDict = new Dictionary<Type, Type>();

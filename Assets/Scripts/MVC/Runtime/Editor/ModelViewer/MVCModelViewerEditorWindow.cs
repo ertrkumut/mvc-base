@@ -94,7 +94,7 @@ namespace MVC.Base.Packages.Editor.ModelViewer
 
         private void DrawInjectedObject(InjectionBinding injectedObject)
         {
-            var hideAttribute = injectedObject.GetType().GetCustomAttributes(typeof(HideFromModelViewerAttribute), true).Length != 0;
+            var hideAttribute = injectedObject.Value.GetType().GetCustomAttributes(typeof(HideFromModelViewerAttribute), true).Length != 0;
             if(hideAttribute)
                 return;
 
@@ -102,7 +102,8 @@ namespace MVC.Base.Packages.Editor.ModelViewer
             
             if (GUILayout.Button(injectedObject.Value.GetType().Name + injectionName))
             {
-                
+                var window = CreateWindow<MVCInspectModelWindow>();
+                window.Initialize(injectedObject.Value, _inspectedRoot.Context);
             }
         }
     }
