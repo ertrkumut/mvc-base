@@ -1,6 +1,6 @@
 ﻿using System.Reflection;
 
-namespace MVC.Base.Packages.Editor.ModelViewer.PropertyDrawer
+namespace MVC.Runtime.Editor.ModelViewer.PropertyDrawer
 {
     public class MVCPropertyDrawer<TPropertyType> : MVCPropertyDrawerBase
     {

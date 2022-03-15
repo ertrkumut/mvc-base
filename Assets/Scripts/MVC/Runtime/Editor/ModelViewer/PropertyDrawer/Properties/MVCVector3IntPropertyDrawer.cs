@@ -2,7 +2,7 @@
 using UnityEditor;
 using UnityEngine;
 
-namespace MVC.Base.Packages.Editor.ModelViewer.PropertyDrawer.Properties
+namespace MVC.Runtime.Editor.ModelViewer.PropertyDrawer.Properties
 {
     public class MVCVector3IntPropertyDrawer : MVCPropertyDrawer<Vector3Int>
     {

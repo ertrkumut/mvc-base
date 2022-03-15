@@ -3,7 +3,7 @@ using System.Reflection;
 using UnityEditor;
 using UnityEngine;
 
-namespace MVC.Base.Packages.Editor.ModelViewer.PropertyDrawer.Properties
+namespace MVC.Runtime.Editor.ModelViewer.PropertyDrawer.Properties
 {
     public class MVCFloatPropertyDrawer : MVCPropertyDrawer<float>
     {

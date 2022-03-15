@@ -4,7 +4,7 @@ using MVC.Runtime.Root;
 using UnityEditor;
 using UnityEngine;
 
-namespace MVC.Base.Packages.Editor.ModelViewer
+namespace MVC.Runtime.Editor.ModelViewer
 {
     internal class MVCModelViewerEditorWindow : EditorWindow
     {

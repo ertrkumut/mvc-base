@@ -2,12 +2,12 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
-using MVC.Base.Packages.Editor.ModelViewer.PropertyDrawer;
 using MVC.Runtime.Attributes;
+using MVC.Runtime.Editor.ModelViewer.PropertyDrawer;
 using UnityEditor;
 using Object = UnityEngine.Object;
 
-namespace MVC.Base.Packages.Editor.ModelViewer
+namespace MVC.Runtime.Editor.ModelViewer
 {
     public class MVCInspectModelWindow : EditorWindow
     {

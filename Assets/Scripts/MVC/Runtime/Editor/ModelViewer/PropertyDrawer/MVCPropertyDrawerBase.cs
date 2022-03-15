@@ -3,7 +3,7 @@ using System.Reflection;
 using MVC.Runtime.Attributes;
 using UnityEngine;
 
-namespace MVC.Base.Packages.Editor.ModelViewer.PropertyDrawer
+namespace MVC.Runtime.Editor.ModelViewer.PropertyDrawer
 {
     public class MVCPropertyDrawerBase
     {
