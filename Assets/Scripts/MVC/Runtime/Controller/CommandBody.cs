@@ -5,7 +5,7 @@ namespace MVC.Runtime.Controller
 {
     public class CommandBody : ICommandBody
     {
-        [Inject] protected CommandBinder CommandBinder { get; set; }
+        [Inject] protected ICommandBinder CommandBinder { get; set; }
         
         public bool Retain { get; set; }
 

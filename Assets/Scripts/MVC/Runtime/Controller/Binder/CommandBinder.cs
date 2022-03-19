@@ -9,7 +9,7 @@ using MVC.Runtime.Signals;
 namespace MVC.Runtime.Controller.Binder
 {
     [HideFromModelViewer]
-    public class CommandBinder : Binder<CommandBinding>
+    public class CommandBinder : Binder<CommandBinding>, ICommandBinder
     {
         private Dictionary<Type, List<ICommandBody>> _commandPool;
         private List<CommandSequencer> _sequencePool;

@@ -13,7 +13,7 @@ namespace MVC.Runtime.Contexts
         MediatorBinder MediatorBinder { get; set; }
         InjectionBinder InjectionBinder { get; set; }
         CrossContextInjectionBinder CrossContextInjectionBinder { get; set; }
-        CommandBinder CommandBinder { get; set; }
+        ICommandBinder CommandBinder { get; set; }
         void Initialize(GameObject contextGameObject, int initializeOrder, CrossContextInjectionBinder crossContextInjectionBinder);
         void Start();
 
