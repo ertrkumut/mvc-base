@@ -1,6 +1,8 @@
 ﻿using MVC.Examples.Entity;
+using MVC.Examples.Functions;
 using MVC.Examples.Models;
 using MVC.Examples.Signals;
+using MVC.Runtime.Function.Provider;
 using MVC.Runtime.Injectable.Attributes;
 using MVC.Runtime.ViewMediators.Mediator;
 using UnityEngine;
@@ -16,6 +18,7 @@ namespace MVC.Examples.Views.Player
         [Inject] private ITestModel _testModel;
 
         [Inject] private GameSignals _gameSignals { get; set; }
+        [Inject] private IFunctionProvider _functionProvider;
         
         public override void OnRegister()
         {
@@ -34,7 +37,14 @@ namespace MVC.Examples.Views.Player
 
         private void SpaceKeyClickedListener()
         {
-            _gameSignals.IntTestSignal.Dispatch(20);
+            // _gameSignals.IntTestSignal.Dispatch(20);
+            
+            // _functionProvider.Execute<TestFunction>()
+            //     .SetVoid();
+
+            var result = _functionProvider.Execute<MathFunction>()
+                .AddParams(15, 25)
+                .SetReturn<float>();
         }
     }
 

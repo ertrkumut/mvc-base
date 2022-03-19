@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using MVC.Runtime.Attributes;
+using UnityEngine;
 
 namespace MVC.Runtime.Function.Provider
 {
@@ -35,12 +36,6 @@ namespace MVC.Runtime.Function.Provider
             var functionDataContainer = GetFunctionDataContainer();
             functionDataContainer.SetFunctionType(functionType);
 
-            functionDataContainer.OnFunctionExecuted += () =>
-            {
-                functionDataContainer.Dispose();
-                _functionDataContainerPool.Add(functionDataContainer);
-            };
-            
             return functionDataContainer;
         }
 
@@ -49,6 +44,10 @@ namespace MVC.Runtime.Function.Provider
             var function = GetFunction(functionDataContainer);
             var executeMethodInfo = functionDataContainer.FunctionType.GetMethod("Execute");
             executeMethodInfo.Invoke(function, functionDataContainer.ExecuteParameters);
+
+            ReturnFunctionToPool(function);
+            functionDataContainer.Dispose();
+            _functionDataContainerPool.Add(functionDataContainer);
         }
 
         internal TReturnType ExecuteFunction<TReturnType>(FunctionDataContainer functionDataContainer)
@@ -56,9 +55,23 @@ namespace MVC.Runtime.Function.Provider
             var function = GetFunction(functionDataContainer);
             var executeMethodInfo = functionDataContainer.FunctionType.GetMethod("Execute");
             var result = executeMethodInfo.Invoke(function, functionDataContainer.ExecuteParameters);
+            
+            functionDataContainer.Dispose();
+            _functionDataContainerPool.Add(functionDataContainer);
+            ReturnFunctionToPool(function);
             return (TReturnType) result;
         }
 
+        private void ReturnFunctionToPool(IFunctionBody functionBody)
+        {
+            var functionType = functionBody.GetType();
+            if(!_functionPool.ContainsKey(functionType))
+                _functionPool.Add(functionType, new List<IFunctionBody>());
+            
+            functionBody.Dispose();
+            _functionPool[functionType].Add(functionBody);
+        }
+        
         private IFunctionBody GetFunction(FunctionDataContainer functionDataContainer)
         {
             var functionType = functionDataContainer.FunctionType;
@@ -76,6 +89,7 @@ namespace MVC.Runtime.Function.Provider
                 return function;
             }
 
+            Debug.LogWarning("Function Created! " + functionType.Name);
             function = (IFunctionBody) Activator.CreateInstance(functionType);
             
             return function;
