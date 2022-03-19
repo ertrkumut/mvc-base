@@ -1,10 +1,11 @@
 ﻿using MVC.Runtime.Function;
+using MVC.Runtime.Function.ReturnableFunctions;
 using MVC.Runtime.Function.VoidFunctions;
 using UnityEngine;
 
 namespace MVC.Examples.Functions
 {
-    public class TestFunction : VoidFunction
+    public class TestFunction : FunctionVoid
     {
         public override void Execute()
         {
@@ -12,7 +13,7 @@ namespace MVC.Examples.Functions
         }
     }
     
-    public class MathFunction : ReturnableFunction<float, int, int>
+    public class MathFunction : FunctionReturn<float, int, int>
     {
         public override float Execute(int param1, int param2)
         {

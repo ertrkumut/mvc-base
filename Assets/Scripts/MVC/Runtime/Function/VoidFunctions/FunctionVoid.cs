@@ -1,11 +1,11 @@
 ﻿namespace MVC.Runtime.Function.VoidFunctions
 {
-    public abstract class VoidFunction : FunctionBody, IVoidFunction
+    public abstract class FunctionVoid : FunctionBody, IFunctionVoid
     {
         public abstract void Execute();
     }
 
-    public interface IVoidFunction
+    public interface IFunctionVoid
     {
         void Execute();
     }
