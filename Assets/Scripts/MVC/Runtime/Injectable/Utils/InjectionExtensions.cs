@@ -4,6 +4,7 @@ using System.Linq;
 using System.Reflection;
 using MVC.Runtime.Contexts;
 using MVC.Runtime.Controller;
+using MVC.Runtime.Function;
 using MVC.Runtime.Injectable.Attributes;
 using MVC.Runtime.ViewMediators.Mediator;
 using MVC.Runtime.ViewMediators.View;
@@ -79,6 +80,15 @@ namespace MVC.Runtime.Injectable.Utils
 
         #endregion
 
+        #region InjectFunctions
+
+        internal static void TryToInjectFunction(this IContext context, IFunctionBody functionBody)
+        {
+            context.TryToInjectObject(functionBody);
+        }
+
+        #endregion
+        
         #region InjectCommands
 
         internal static void InjectCommand(this IContext context, ICommandBody command, params object[] signalParams)
@@ -121,12 +131,6 @@ namespace MVC.Runtime.Injectable.Utils
         
         #endregion
 
-        #region InjectFunctions
-
-        
-
-        #endregion
-        
         #region GetInjectable Fields-Properties
 
         private static List<FieldInfo> GetInjectableFieldInfoList<TAttribute>(object instance)

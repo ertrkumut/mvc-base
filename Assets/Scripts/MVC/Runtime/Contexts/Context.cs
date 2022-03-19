@@ -80,14 +80,14 @@ namespace MVC.Runtime.Contexts
 
         protected virtual void CoreBindings()
         {
-            CommandBinder = new CommandBinder(this);
             InjectionBinder = new InjectionBinder();
             MediatorBinder = InjectionBinder.Bind<MediatorBinder>();
             
             CrossContextInjectionBinder.BindInstance(CrossContextInjectionBinder);
-            CrossContextInjectionBinder.BindInstance(CommandBinder, GetType().Name);
-            
-            InjectionBinder.BindInstance(CommandBinder);
+
+            CommandBinder = InjectionBinder.Bind<ICommandBinder, CommandBinder>();
+            ((CommandBinder) CommandBinder).Context = this;
+
             var functionProvider = (FunctionProvider) InjectionBinder.Bind<IFunctionProvider, FunctionProvider>();
             functionProvider.Context = this;
         }

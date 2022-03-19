@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using MVC.Runtime.Attributes;
 using MVC.Runtime.Contexts;
+using MVC.Runtime.Injectable.Utils;
 using UnityEngine;
 
 namespace MVC.Runtime.Function.Provider
@@ -46,6 +47,8 @@ namespace MVC.Runtime.Function.Provider
         {
             var function = GetFunction(functionDataContainer);
             var executeMethodInfo = functionDataContainer.FunctionType.GetMethod("Execute");
+            
+            Context.TryToInjectFunction(function);
             executeMethodInfo.Invoke(function, functionDataContainer.ExecuteParameters);
 
             ReturnFunctionToPool(function);
@@ -57,6 +60,8 @@ namespace MVC.Runtime.Function.Provider
         {
             var function = GetFunction(functionDataContainer);
             var executeMethodInfo = functionDataContainer.FunctionType.GetMethod("Execute");
+            
+            Context.TryToInjectFunction(function);
             var result = executeMethodInfo.Invoke(function, functionDataContainer.ExecuteParameters);
             
             functionDataContainer.Dispose();

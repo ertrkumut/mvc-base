@@ -15,11 +15,10 @@ namespace MVC.Runtime.Controller.Binder
         private List<CommandSequencer> _sequencePool;
         private List<CommandSequencer> _activeSequenceList;
 
-        protected IContext _context;
+        internal IContext Context;
         
-        public CommandBinder(IContext context)
+        public CommandBinder()
         {
-            _context = context;
             _commandPool = new Dictionary<Type, List<ICommandBody>>();
             
             _sequencePool = new List<CommandSequencer>();
@@ -32,7 +31,7 @@ namespace MVC.Runtime.Controller.Binder
             key.InternalCallback = null;
             key.InternalCallback += SignalDispatcher;
             var binding = base.Bind(key);
-            binding.SetContext(_context);
+            binding.SetContext(Context);
             return binding;
         }
 
