@@ -26,9 +26,9 @@ namespace MVC.Examples.Controller
         
         public override void Execute()
         {
-            RetainCommand();
+            Retain();
             Debug.Log("Command 2 " + _intParam);
-            ReleaseCommand("Hello World", 15.0f);
+            Release("Hello World", 15.0f);
         }
     }
 

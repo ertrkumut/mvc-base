@@ -2,13 +2,11 @@
 {
     public interface ICommandBody
     {
-        bool Retain { get; set; }
+        bool IsRetain { get; set; }
 
-        int SequenceId { get; set; }
-
-        void RetainCommand();
-        void ReleaseCommand(params object[] sequenceData);
-        void FailCommand();
+        void Retain();
+        void Release(params object[] sequenceData);
+        void Stop();
 
         void Clean();
     }

@@ -1,5 +1,6 @@
 ﻿using MVC.Runtime.Controller.Binder;
 using MVC.Runtime.Injectable.Attributes;
+using UnityEngine;
 
 namespace MVC.Runtime.Controller
 {
@@ -7,28 +8,31 @@ namespace MVC.Runtime.Controller
     {
         [Inject] protected ICommandBinder CommandBinder { get; set; }
         
-        public bool Retain { get; set; }
+        public bool IsRetain { get; set; }
 
-        public int SequenceId { get; set; }
-        
-        public virtual void RetainCommand()
+        public virtual void Retain()
         {
-            Retain = true;
+            IsRetain = true;
         }
 
-        public virtual void ReleaseCommand(params object[] sequenceData)
+        public virtual void Release(params object[] sequenceData)
         {
+            if (!IsRetain)
+            {
+                Debug.LogError("Command must be retain, if you want to call manual RELEASE!");
+                return;
+            }
             CommandBinder.ReleaseCommand(this, sequenceData);
         }
 
-        public virtual void FailCommand()
+        public virtual void Stop()
         {
             CommandBinder.StopCommand(this);
         }
 
         public virtual void Clean()
         {
-            Retain = false;
+            IsRetain = false;
         }
     }
 }

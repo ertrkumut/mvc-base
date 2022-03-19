@@ -57,7 +57,7 @@ namespace MVC.Runtime.Controller
         
         private void AutoReleaseCommand(ICommandBody command)
         {
-            if(command.Retain)
+            if(command.IsRetain)
                 return;
             
             _commandBinder.ReturnCommandToPool(command);
