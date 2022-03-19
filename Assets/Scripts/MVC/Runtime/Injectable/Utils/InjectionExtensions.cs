@@ -13,7 +13,7 @@ namespace MVC.Runtime.Injectable.Utils
 {
     public static class InjectionExtensions
     {
-        public static bool TryToInjectObject(this IContext context, object injectedObject)
+        internal static bool TryToInjectObject(this IContext context, object injectedObject)
         {
             var injectableFields = GetInjectableFieldInfoList<InjectAttribute>(injectedObject);
             var injectableProperties = GetInjectablePropertyInfoList<InjectAttribute>(injectedObject);
@@ -24,9 +24,9 @@ namespace MVC.Runtime.Injectable.Utils
             return true;
         }
 
-        #region InjectMediator
+        #region InjectMediators
 
-        public static bool TryToInjectMediator(this IContext context, IMediator mediator, IView view)
+        internal static bool TryToInjectMediator(this IContext context, IMediator mediator, IView view)
         {
             InjectMediatorFields(mediator, view, context);
             InjectMediatorProperties(mediator, view, context);
@@ -81,7 +81,7 @@ namespace MVC.Runtime.Injectable.Utils
 
         #region InjectCommands
 
-        public static void InjectCommand(this IContext context, ICommandBody command, params object[] signalParams)
+        internal static void InjectCommand(this IContext context, ICommandBody command, params object[] signalParams)
         {
             var injectableFields = GetInjectableFieldInfoList<InjectAttribute>(command);
             var injectableProperties = GetInjectablePropertyInfoList<InjectAttribute>(command);
@@ -119,6 +119,12 @@ namespace MVC.Runtime.Injectable.Utils
             }
         }
         
+        #endregion
+
+        #region InjectFunctions
+
+        
+
         #endregion
         
         #region GetInjectable Fields-Properties

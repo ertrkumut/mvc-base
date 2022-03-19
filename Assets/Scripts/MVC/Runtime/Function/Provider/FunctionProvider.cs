@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using MVC.Runtime.Attributes;
+using MVC.Runtime.Contexts;
 using UnityEngine;
 
 namespace MVC.Runtime.Function.Provider
@@ -11,6 +12,8 @@ namespace MVC.Runtime.Function.Provider
         private List<FunctionDataContainer> _functionDataContainerPool;
         private Dictionary<Type, List<IFunctionBody>> _functionPool;
 
+        internal IContext Context;
+        
         public FunctionProvider()
         {
             _functionDataContainerPool = new List<FunctionDataContainer>();

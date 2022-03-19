@@ -88,7 +88,8 @@ namespace MVC.Runtime.Contexts
             CrossContextInjectionBinder.BindInstance(CommandBinder, GetType().Name);
             
             InjectionBinder.BindInstance(CommandBinder);
-            InjectionBinder.Bind<IFunctionProvider, FunctionProvider>();
+            var functionProvider = (FunctionProvider) InjectionBinder.Bind<IFunctionProvider, FunctionProvider>();
+            functionProvider.Context = this;
         }
 
         public virtual void MapBindings()

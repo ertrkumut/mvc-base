@@ -80,7 +80,7 @@ namespace MVC.Runtime.ViewMediators.Utils
                 mediatorBinder.SendMediatorToPool(mediator);
         }
         
-        public static IContext FindViewContext(this IView view)
+        internal static IContext FindViewContext(this IView view)
         {
             var parent = view.transform.parent;
             if (parent == null)
