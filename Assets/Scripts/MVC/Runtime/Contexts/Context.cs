@@ -1,6 +1,7 @@
 ﻿using System.Linq;
 using System.Reflection;
 using MVC.Runtime.Controller.Binder;
+using MVC.Runtime.Function.Provider;
 using MVC.Runtime.Injectable;
 using MVC.Runtime.Injectable.Attributes;
 using MVC.Runtime.Injectable.Binders;
@@ -87,6 +88,7 @@ namespace MVC.Runtime.Contexts
             CrossContextInjectionBinder.BindInstance(CommandBinder, GetType().Name);
             
             InjectionBinder.BindInstance(CommandBinder);
+            InjectionBinder.Bind<IFunctionProvider, FunctionProvider>();
         }
 
         public virtual void MapBindings()
