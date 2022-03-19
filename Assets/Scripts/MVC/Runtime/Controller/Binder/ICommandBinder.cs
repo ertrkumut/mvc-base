@@ -8,5 +8,6 @@ namespace MVC.Runtime.Controller.Binder
             where TSignal : ISignalBody;
 
         void ReleaseCommand(ICommandBody commandBody, params object[] commandParameters);
+        void StopCommand(ICommandBody commandBody);
     }
 }

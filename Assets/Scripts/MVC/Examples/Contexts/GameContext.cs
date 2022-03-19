@@ -53,8 +53,8 @@ namespace MVC.Examples.Contexts
             base.Launch();
             
             // _gameSignals.Start.Dispatch();
-            // _gameSignals.IntTestSignal.Dispatch(10);
-            _gameSignals.IntTest2Signal.Dispatch(25);
+            _gameSignals.IntTestSignal.Dispatch(10);
+            // _gameSignals.IntTest2Signal.Dispatch(25);
         }
     }
 }

@@ -10,6 +10,7 @@ namespace MVC.Runtime.Controller
     {
         public Action<CommandSequencer> SequenceFinished;
 
+        private bool _sequenceCompleted;
         public ICommandBody currentCommand;
         private ICommandBinding _commandBinding;
 
@@ -22,6 +23,8 @@ namespace MVC.Runtime.Controller
 
         public void Initialize(ICommandBinding commandBinding, CommandBinder commandBinder, params object[] signalParameters)
         {
+            _sequenceCompleted = false;
+            
             _commandBinder = commandBinder;
             _commandBinding = commandBinding;
 
@@ -38,6 +41,9 @@ namespace MVC.Runtime.Controller
 
         private void ExecuteCommand(params object[] commandParameters)
         {
+            if(_sequenceCompleted)
+                return;
+            
             var commandType = GetCurrentCommandType();
             var command = _commandBinder.GetCommand(commandType);
             currentCommand = command;
@@ -45,11 +51,8 @@ namespace MVC.Runtime.Controller
             var context = _commandBinding.Context;
             context.InjectCommand(command, _signalParameters);
 
-            var isItLastCommand = _commands.Last() == commandType;
-            
             ExecuteCommand(command, commandParameters);
-            if(!isItLastCommand)
-                AutoReleaseCommand(command);
+            AutoReleaseCommand(command);
         }
         
         private void AutoReleaseCommand(ICommandBody command)
@@ -58,7 +61,10 @@ namespace MVC.Runtime.Controller
                 return;
             
             _commandBinder.ReturnCommandToPool(command);
-            NextCommand();
+            
+            var next = !(_sequenceCompleted || _commands.Last() == command.GetType());
+            if(next)
+                NextCommand();
         }
 
         public void ReleaseCommand(ICommandBody command, params object[] commandParameters)
@@ -85,6 +91,7 @@ namespace MVC.Runtime.Controller
         
         private void SequenceCompleted()
         {
+            _sequenceCompleted = true;
             SequenceFinished?.Invoke(this);
         }
 
@@ -98,6 +105,11 @@ namespace MVC.Runtime.Controller
             return _commands[_sequenceId];
         }
 
+        public void Stop()
+        {
+            SequenceCompleted();
+        }
+        
         public void Dispose()
         {
             SequenceFinished = null;

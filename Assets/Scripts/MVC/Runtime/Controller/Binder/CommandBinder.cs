@@ -59,6 +59,15 @@ namespace MVC.Runtime.Controller.Binder
             
             sequence.ReleaseCommand(commandBody, commandParameters);
         }
+
+        public void StopCommand(ICommandBody commandBody)
+        {
+            var sequence = GetActiveSequence(commandBody);
+            if (sequence == null)
+                return;
+
+            sequence.Stop();
+        }
         
         #region SequencePool
 

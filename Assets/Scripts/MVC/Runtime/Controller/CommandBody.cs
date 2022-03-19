@@ -23,6 +23,7 @@ namespace MVC.Runtime.Controller
 
         public virtual void FailCommand()
         {
+            CommandBinder.StopCommand(this);
         }
 
         public virtual void Clean()
