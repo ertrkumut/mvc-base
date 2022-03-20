@@ -8,7 +8,7 @@ namespace MVC.Runtime.CodeGenerator.Editor
         [MenuItem("Tools/MVC/Create View")]
         private static void CreateView()
         {
-            EditorWindow.GetWindow<CreateViewMenu>();
+            EditorWindow.GetWindow<CreateViewMenu>("Create View");
         }
     }
 }
