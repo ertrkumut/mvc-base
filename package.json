@@ -1,0 +1,22 @@
+{
+  "name": "unity-mvc",
+  "version": "1.0.0",
+  "displayName": "Unity MVC",
+  "description": "MVC Base library.",
+  "unity": "2019.1",
+  "unityRelease": "0b5",
+  "keywords": [],
+  "author": {
+    "name": "MVC",
+    "email": "unity@example.com",
+    "url": "https://www.unity3d.com"
+  },
+"samples": [
+    {
+      "displayName": "MVC Base Sample",
+      "description": "Useful MVC samples and tests",
+      "path": "Samples~/mvc-base-samples"
+    }
+],
+  "hideInEditor": false
+}
