@@ -7,9 +7,9 @@ using UnityEngine;
 
 namespace MVC.Runtime.CodeGenerator.Editor.Menus
 {
-    public class CreateViewMenu : EditorWindow
+    internal class CreateViewMenu : EditorWindow
     {
-        private string _viewName = "*Name*";
+        private string _viewPath = "*Name*";
 
         private List<string> _actionNames;
 
@@ -27,14 +27,14 @@ namespace MVC.Runtime.CodeGenerator.Editor.Menus
             EditorGUILayout.BeginHorizontal();
 
             EditorGUILayout.LabelField("View Name: ", GUILayout.Width(75));
-            _viewName = EditorGUILayout.TextField(_viewName);
+            _viewPath = EditorGUILayout.TextField(_viewPath);
             
             EditorGUILayout.EndHorizontal();
             
             EditorGUILayout.BeginHorizontal();
             
             GUILayout.Space(80);
-            EditorGUILayout.LabelField(_viewName + "View", EditorStyles.boldLabel);
+            EditorGUILayout.LabelField(_viewPath + "View", EditorStyles.boldLabel);
             EditorGUILayout.EndHorizontal();
             EditorGUILayout.EndVertical();
 
@@ -90,11 +90,11 @@ namespace MVC.Runtime.CodeGenerator.Editor.Menus
 
         private void CreateViewMediator()
         {
-            var path = Application.dataPath + CodeGeneratorStrings.ViewPath + _viewName;
-            var viewName = _viewName.Split('/')[_viewName.Split('/').Length - 1] + "View";
-            var mediatorName = _viewName.Split('/')[_viewName.Split('/').Length - 1] + "Mediator";
+            var path = Application.dataPath + CodeGeneratorStrings.ViewPath + _viewPath;
+            var viewName = _viewPath.Split('/')[_viewPath.Split('/').Length - 1] + "View";
+            var mediatorName = _viewPath.Split('/')[_viewPath.Split('/').Length - 1] + "Mediator";
             
-            var namespaceText = "Views." + _viewName.Replace("/",".");
+            var namespaceText = "Runtime.Views." + _viewPath.Replace("/",".");
             
             CreateView(path, viewName, namespaceText);
             CreateMediator(path, mediatorName, viewName, namespaceText);
@@ -103,8 +103,7 @@ namespace MVC.Runtime.CodeGenerator.Editor.Menus
         private void CreateView(string path, string fileName, string namespaceText)
         {
             var newViewPath = path + "/" + fileName + ".cs";
-            var tempViewClassPath =
-                Application.dataPath.Replace("Assets", "") + "Packages/unity-mvc/Runtime/CodeGenerator/Editor/TempViews/TempView.cs";
+            var tempViewClassPath = CodeGeneratorStrings.TempViewPath;
 
             var tempViewContent = File.ReadAllLines(tempViewClassPath);
             var newViewContent = new List<string>();
@@ -141,9 +140,8 @@ namespace MVC.Runtime.CodeGenerator.Editor.Menus
         private void CreateMediator(string path, string fileName, string viewName, string namespaceText)
         {
             var newMediatorPath = path + "/" + fileName + ".cs";
-            var tempMediatorClassPath =
-                Application.dataPath.Replace("Assets", "") + "Packages/unity-mvc/Runtime/CodeGenerator/Editor/TempViews/TempMediator.cs";
-            
+            var tempMediatorClassPath = CodeGeneratorStrings.TempMediatorPath;
+
             var tempMediatorContent = File.ReadAllLines(tempMediatorClassPath);
             var newMediatorContent = new List<string>();
             
