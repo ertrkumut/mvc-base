@@ -1,4 +1,5 @@
-﻿using MVC.Runtime.CodeGenerator.Editor.Menus;
+﻿using System;
+using MVC.Runtime.CodeGenerator.Editor.Menus;
 using UnityEditor;
 
 namespace MVC.Runtime.CodeGenerator.Editor
