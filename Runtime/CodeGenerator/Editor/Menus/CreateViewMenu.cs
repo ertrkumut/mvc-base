@@ -135,6 +135,7 @@ namespace MVC.Runtime.CodeGenerator.Editor.Menus
                 Directory.CreateDirectory(path);
             
             File.WriteAllLines(newViewPath, newViewContent.ToArray());
+            AssetDatabase.Refresh();
         }
 
         private void CreateMediator(string path, string fileName, string viewName, string namespaceText)
@@ -199,7 +200,6 @@ namespace MVC.Runtime.CodeGenerator.Editor.Menus
                 Directory.CreateDirectory(path);
             
             File.WriteAllLines(newMediatorPath, newMediatorContent.ToArray());
-            
             AssetDatabase.Refresh();
         }
     }

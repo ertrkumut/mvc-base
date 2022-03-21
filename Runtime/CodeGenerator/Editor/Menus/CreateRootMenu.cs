@@ -95,6 +95,7 @@ namespace MVC.Runtime.CodeGenerator.Editor.Menus
                 Directory.CreateDirectory(directoryPath);
             
             File.WriteAllLines(path, newContextContent.ToArray());
+            AssetDatabase.Refresh();
         }
 
         private void CreateRoot()
@@ -126,6 +127,7 @@ namespace MVC.Runtime.CodeGenerator.Editor.Menus
                 Directory.CreateDirectory(directoryPath);
             
             File.WriteAllLines(path, newRootContent.ToArray());
+            AssetDatabase.Refresh();
         }
     }
 }
