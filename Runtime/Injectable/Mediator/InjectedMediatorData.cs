@@ -8,6 +8,6 @@ namespace MVC.Runtime.Injectable.Mediator
     {
         public IView view;
         public IMediator mediator;
-        public ViewInjectorComponent viewInjectorComponent;
+        public ViewInjector viewInjector;
     }
 }

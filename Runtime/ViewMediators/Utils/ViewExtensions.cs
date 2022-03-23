@@ -42,7 +42,7 @@ namespace MVC.Runtime.ViewMediators.Utils
             if (injectionResult)
             {
                 var injectedMediatorData = mediatorBinder.GetOrCreateInjectedMediatorData(view);
-                injectedMediatorData.viewInjectorComponent.ViewInjectionCompleted(view);
+                injectedMediatorData.viewInjector.ViewInjectionCompleted(view);
                 injectedMediatorData.mediator = mediator;
             }
             return injectionResult;
@@ -62,7 +62,7 @@ namespace MVC.Runtime.ViewMediators.Utils
             if (injectedMediatorData.mediator == null)
                 return;
             
-            var viewInjectorComponent = injectedMediatorData.viewInjectorComponent;
+            var viewInjectorComponent = injectedMediatorData.viewInjector;
 
             var viewInjectorData = viewInjectorComponent.GetViewInjectorData(view);
             if (!viewInjectorData.isInjected)

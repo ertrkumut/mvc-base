@@ -62,7 +62,7 @@ namespace MVC.Runtime.Injectable.Binders
                 mediatorData = new InjectedMediatorData
                 {
                     view = view,
-                    viewInjectorComponent = view.transform.GetComponent<ViewInjectorComponent>()
+                    viewInjector = view.transform.GetComponent<ViewInjector>()
                 };
                 _injectedMediators.Add(view, mediatorData);
             }

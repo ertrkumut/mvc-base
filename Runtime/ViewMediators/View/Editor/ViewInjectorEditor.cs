@@ -11,18 +11,18 @@ using Object = UnityEngine.Object;
 
 namespace MVC.Runtime.ViewMediators.View.Editor
 {
-    [CustomEditor(typeof(ViewInjectorComponent))]
+    [CustomEditor(typeof(ViewInjector))]
     [CanEditMultipleObjects]
     public class ViewInjectorEditor : UnityEditor.Editor
     {
         private Vector2 _guiScrollValue;
         
         private List<IView> _viewList;
-        private ViewInjectorComponent _target;
+        private ViewInjector _target;
         
         private void OnEnable()
         {
-            _target = target as ViewInjectorComponent;
+            _target = target as ViewInjector;
             if (_target.viewDataList == null)
                 _target.viewDataList = new List<ViewInjectorData>();
         }
