@@ -81,7 +81,7 @@ namespace MVC.Editor.ModelViewer
             EditorGUILayout.BeginVertical("box");
             EditorGUILayout.LabelField("Cross Context Injected Objects", EditorStyles.boldLabel);
             
-            var crossContextInjectionBinder = _inspectedRoot.Context.CrossContextInjectionBinder;
+            var crossContextInjectionBinder = _inspectedRoot.Context.InjectionBinderCrossContext;
             var crossContextInjectedObjects = crossContextInjectionBinder.GetInjectedInstances();
 
             foreach (InjectionBinding injectedObject in crossContextInjectedObjects)

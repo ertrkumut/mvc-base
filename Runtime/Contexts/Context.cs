@@ -19,16 +19,16 @@ namespace MVC.Runtime.Contexts
         
         public MediatorBinder MediatorBinder { get; set; }
         public InjectionBinder InjectionBinder { get; set; }
-        public CrossContextInjectionBinder CrossContextInjectionBinder { get; set; }
+        public InjectionBinderCrossContext InjectionBinderCrossContext { get; set; }
         public ICommandBinder CommandBinder { get; set; }
 
         public int InitializeOrder { get; set; }
 
-        public void Initialize(GameObject contextGameObject, int initializeOrder, CrossContextInjectionBinder crossContextInjectionBinder)
+        public void Initialize(GameObject contextGameObject, int initializeOrder, InjectionBinderCrossContext injectionBinderCrossContext)
         {
             _gameObject = contextGameObject;
             InitializeOrder = initializeOrder;
-            CrossContextInjectionBinder = crossContextInjectionBinder;
+            InjectionBinderCrossContext = injectionBinderCrossContext;
         }
 
         public void Start()
@@ -43,7 +43,7 @@ namespace MVC.Runtime.Contexts
         void IContext.InjectAllInstances()
         {
             var injectedTypes = InjectionBinder.GetInjectedInstances();
-            var injectedCrossContextTypes = CrossContextInjectionBinder.GetInjectedInstances();
+            var injectedCrossContextTypes = InjectionBinderCrossContext.GetInjectedInstances();
 
             injectedTypes = injectedTypes.Concat(injectedCrossContextTypes).ToList();
 
@@ -59,7 +59,7 @@ namespace MVC.Runtime.Contexts
         void IContext.ExecutePostConstructMethods()
         {
             var injectedTypes = InjectionBinder.GetInjectedInstances();
-            var injectedCrossContextTypes = CrossContextInjectionBinder.GetInjectedInstances();
+            var injectedCrossContextTypes = InjectionBinderCrossContext.GetInjectedInstances();
 
             injectedTypes = injectedTypes.Concat(injectedCrossContextTypes).ToList();
             
@@ -83,7 +83,7 @@ namespace MVC.Runtime.Contexts
             InjectionBinder = new InjectionBinder();
             MediatorBinder = InjectionBinder.Bind<MediatorBinder>();
             
-            CrossContextInjectionBinder.BindInstance(CrossContextInjectionBinder);
+            InjectionBinderCrossContext.BindInstance(InjectionBinderCrossContext);
 
             CommandBinder = InjectionBinder.Bind<ICommandBinder, CommandBinder>();
             ((CommandBinder) CommandBinder).Context = this;

@@ -3,7 +3,7 @@
 namespace MVC.Runtime.Injectable.CrossContext
 {
     [HideFromModelViewer]
-    public class CrossContextInjectionBinder : InjectionBinder
+    public class InjectionBinderCrossContext : InjectionBinder
     {
     }
 }

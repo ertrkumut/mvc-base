@@ -207,7 +207,7 @@ namespace MVC.Runtime.Injectable.Utils
             var injectAttribute = memberInfo.GetCustomAttributes(typeof(InjectAttribute)).ToList()[0] as InjectAttribute;
             
             var injectionBinder = context.InjectionBinder;
-            var crossContextInjectionBinder = context.CrossContextInjectionBinder;
+            var crossContextInjectionBinder = context.InjectionBinderCrossContext;
             
             var injectionValue = injectionBinder.GetInstance(injectionType, injectAttribute.Name);
             if (injectionValue == null)

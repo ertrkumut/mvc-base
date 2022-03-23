@@ -25,7 +25,7 @@ namespace MVC.Runtime.Root
             }
         }
 
-        public CrossContextInjectionBinder crossContextInjectionBinder;
+        public InjectionBinderCrossContext injectionBinderCrossContext;
         public MediatorCreatorController mediatorCreatorController;
         public BindingPoolController bindingPoolController;
 
@@ -40,7 +40,7 @@ namespace MVC.Runtime.Root
             _contextRootList = new List<IContextRoot>();
             
             bindingPoolController = new BindingPoolController();
-            crossContextInjectionBinder = new CrossContextInjectionBinder();
+            injectionBinderCrossContext = new InjectionBinderCrossContext();
             mediatorCreatorController = new MediatorCreatorController();
         }
 
