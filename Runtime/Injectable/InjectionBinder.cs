@@ -29,10 +29,10 @@ namespace MVC.Runtime.Injectable
             return GetOrCreateInstance<TBindingType>(name);
         }
 
-        public TAbstract Bind<TAbstract, TConcrete>()
+        public TAbstract Bind<TAbstract, TConcrete>(string name = "")
             where TConcrete : TAbstract, new()
         {
-            return GetOrCreateInstance<TAbstract, TConcrete>();
+            return GetOrCreateInstance<TAbstract, TConcrete>(name);
         }
 
         public void BindInstance(object instance, string name = "")
@@ -135,18 +135,18 @@ namespace MVC.Runtime.Injectable
             return instance;
         }
 
-        protected TAbstract GetOrCreateInstance<TAbstract, TConcrete>()
+        protected TAbstract GetOrCreateInstance<TAbstract, TConcrete>(string name = "")
             where TConcrete : TAbstract, new()
         {
             var bindingType = typeof(TAbstract);
-            var hasInstanceExist = HasInstanceExist<TAbstract>();
+            var hasInstanceExist = HasInstanceExist<TAbstract>(name);
 
             TAbstract instance;
 
             if (!hasInstanceExist)
-                instance = CreateInstance<TAbstract, TConcrete>();
+                instance = CreateInstance<TAbstract, TConcrete>(name);
             else
-                instance = (TAbstract) GetInstance(bindingType);
+                instance = (TAbstract) GetInstance(bindingType, name);
             
             return instance;
         }
