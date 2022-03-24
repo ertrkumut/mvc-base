@@ -94,7 +94,7 @@ namespace MVC.Editor.ModelViewer
 
         private void DrawInjectedObject(InjectionBinding injectedObject)
         {
-            var hideAttribute = injectedObject.Value.GetType().GetCustomAttributes(typeof(HideFromModelViewerAttribute), true).Length != 0;
+            var hideAttribute = injectedObject.Value.GetType().GetCustomAttributes(typeof(HideInModelViewerAttribute), true).Length != 0;
             if(hideAttribute)
                 return;
 

@@ -8,7 +8,7 @@ using UnityEngine;
 
 namespace MVC.Runtime.Injectable
 {
-    [HideFromModelViewer]
+    [HideInModelViewer]
     public class InjectionBinder
     {
         protected Dictionary<Type, List<InjectionBinding>> _container;

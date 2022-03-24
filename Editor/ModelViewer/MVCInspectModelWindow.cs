@@ -57,7 +57,7 @@ namespace MVC.Editor.ModelViewer
 
             foreach (var fieldInfo in fieldInfoList)
             {
-                var fieldAttributes = fieldInfo.GetCustomAttributes(typeof(HideFromModelViewerAttribute)).ToList();
+                var fieldAttributes = fieldInfo.GetCustomAttributes(typeof(HideInModelViewerAttribute)).ToList();
                 if(fieldAttributes.Count != 0)
                     continue;
                 

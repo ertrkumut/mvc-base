@@ -12,7 +12,7 @@ using UnityEngine;
 
 namespace MVC.Runtime.Injectable.Binders
 {
-    [HideFromModelViewer]
+    [HideInModelViewer]
     public class MediatorBinder : Binder<MediatorBinding>
     {
         private Dictionary<IView, InjectedMediatorData> _injectedMediators;

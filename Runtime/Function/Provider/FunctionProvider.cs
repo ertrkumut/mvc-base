@@ -7,7 +7,7 @@ using UnityEngine;
 
 namespace MVC.Runtime.Function.Provider
 {
-    [HideFromModelViewer]
+    [HideInModelViewer]
     public class FunctionProvider : IFunctionProvider
     {
         private List<FunctionDataContainer> _functionDataContainerPool;

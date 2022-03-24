@@ -8,7 +8,7 @@ using MVC.Runtime.Signals;
 
 namespace MVC.Runtime.Controller.Binder
 {
-    [HideFromModelViewer]
+    [HideInModelViewer]
     public class CommandBinder : Binder<CommandBinding>, ICommandBinder
     {
         private Dictionary<Type, List<ICommandBody>> _commandPool;
