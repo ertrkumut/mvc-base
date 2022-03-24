@@ -5,7 +5,7 @@ using UnityEngine;
 
 namespace MVC.Editor.ModelViewer.PropertyDrawer
 {
-    internal class MVCPropertyDrawerBase
+    internal class PropertyDrawerBase
     {
         protected FieldInfo _fieldInfo;
         protected object _targetObject;
@@ -14,7 +14,7 @@ namespace MVC.Editor.ModelViewer.PropertyDrawer
 
         private bool _hasPropertyReadOnly;
         
-        public MVCPropertyDrawerBase(FieldInfo fieldInfo, object targetObject)
+        public PropertyDrawerBase(FieldInfo fieldInfo, object targetObject)
         {
             _fieldInfo = fieldInfo;
             _targetObject = targetObject;
@@ -31,7 +31,7 @@ namespace MVC.Editor.ModelViewer.PropertyDrawer
             OnDrawCompletedGUI();
         }
 
-        protected void OnBeforeDrawGUI()
+        protected virtual void OnBeforeDrawGUI()
         {
             GUI.enabled = !_hasPropertyReadOnly;
         }
@@ -40,6 +40,6 @@ namespace MVC.Editor.ModelViewer.PropertyDrawer
         {
         }
         
-        protected void OnDrawCompletedGUI(){}
+        protected virtual void OnDrawCompletedGUI(){}
     }
 }

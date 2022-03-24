@@ -4,9 +4,9 @@ using UnityEngine;
 
 namespace MVC.Editor.ModelViewer.PropertyDrawer.Properties
 {
-    internal class MVCObjectPropertyDrawer : MVCPropertyDrawer<Object>
+    internal class Vector2PropertyDrawer : PropertyDrawer<Vector2>
     {
-        public MVCObjectPropertyDrawer(FieldInfo fieldInfo, object targetObject) : base(fieldInfo, targetObject)
+        public Vector2PropertyDrawer(FieldInfo fieldInfo, object targetObject) : base(fieldInfo, targetObject)
         {
         }
         
@@ -15,7 +15,7 @@ namespace MVC.Editor.ModelViewer.PropertyDrawer.Properties
             base.OnDrawGUI();
 
             var propertyValue = GetPropertyValue();
-            var newValue = EditorGUILayout.ObjectField(new GUIContent(_fieldName), propertyValue, _fieldInfo.FieldType, true);
+            var newValue = EditorGUILayout.Vector2Field(new GUIContent(_fieldName), propertyValue);
             if(newValue != propertyValue)
                 SetValue(newValue);
         }

@@ -102,7 +102,7 @@ namespace MVC.Editor.ModelViewer
             
             if (GUILayout.Button(injectedObject.Value.GetType().Name + injectionName))
             {
-                var window = CreateWindow<MVCInspectModelWindow>();
+                var window = CreateWindow<InspectWindow>();
                 window.Initialize(injectedObject.Value, _inspectedRoot.Context);
             }
         }

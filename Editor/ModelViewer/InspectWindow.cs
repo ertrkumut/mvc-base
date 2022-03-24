@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
@@ -9,14 +10,12 @@ using Object = UnityEngine.Object;
 
 namespace MVC.Editor.ModelViewer
 {
-    internal class MVCInspectModelWindow : EditorWindow
+    internal class InspectWindow : EditorWindow
     {
         private object _inspectedObject;
         private object _inspectedObjectContext;
-
-        // Property Type -- PropertyDrawer Type
-        private Dictionary<Type, Type> _propertyDrawerTypesDict;
-        private Dictionary<FieldInfo, MVCPropertyDrawerBase> _activePropertyDrawersDict;
+        
+        private Dictionary<MemberInfo, PropertyDrawerBase> _activePropertyDrawersDict;
         
         public void Initialize(object inspectedObject, object inspectedObjectContext)
         {
@@ -28,18 +27,7 @@ namespace MVC.Editor.ModelViewer
 
         private void InitializePropertyDrawerTypes()
         {
-            _activePropertyDrawersDict = new Dictionary<FieldInfo, MVCPropertyDrawerBase>();
-            _propertyDrawerTypesDict = new Dictionary<Type, Type>();
-            
-            var propertyDrawerTypes = GetType().Assembly.GetTypes()
-                .Where(x => x.IsSubclassOf(typeof(MVCPropertyDrawerBase)))
-                .ToList();
-
-            foreach (var propertyDrawerType in propertyDrawerTypes)
-            {
-                var drawerType = propertyDrawerType.GetProperty("PropertyType").PropertyType;
-                _propertyDrawerTypesDict.Add(drawerType, propertyDrawerType);
-            }
+            _activePropertyDrawersDict = new Dictionary<MemberInfo, PropertyDrawerBase>();
         }
 
         private void OnGUI()
@@ -69,7 +57,7 @@ namespace MVC.Editor.ModelViewer
         {
             var fieldType = fieldInfo.FieldType;
             
-            if (fieldType.IsClass && !IsPropertyTypeExist(fieldType) && !fieldType.IsSubclassOf(typeof(Object)))
+            if (fieldType.IsClass && !ModelViewerUtils.IsPropertyDrawerTypeExist(fieldType) && !fieldType.IsSubclassOf(typeof(Object)))
             {
                 EditorGUILayout.BeginVertical("box");
                 
@@ -85,20 +73,14 @@ namespace MVC.Editor.ModelViewer
             propertyDrawer?.OnGUI();
         }
 
-        private MVCPropertyDrawerBase GetPropertyDrawer(FieldInfo fieldInfo, object rootObject)
+        private PropertyDrawerBase GetPropertyDrawer(FieldInfo fieldInfo, object rootObject)
         {
-            MVCPropertyDrawerBase propertyDrawer = null;
+            PropertyDrawerBase propertyDrawer = null;
             if (!_activePropertyDrawersDict.ContainsKey(fieldInfo))
             {
-                var targetPropertyType = fieldInfo.FieldType;
-                if (targetPropertyType.IsSubclassOf(typeof(Object)))
-                    targetPropertyType = typeof(Object);
+                Type propertyDrawerType = ModelViewerUtils.GetPropertyDrawer(fieldInfo, rootObject);
 
-                if (!_propertyDrawerTypesDict.ContainsKey(targetPropertyType))
-                    return null;
-                
-                var propertyDrawerType = _propertyDrawerTypesDict[targetPropertyType];
-                propertyDrawer = (MVCPropertyDrawerBase) Activator.CreateInstance(propertyDrawerType, fieldInfo, rootObject);
+                propertyDrawer = (PropertyDrawerBase) Activator.CreateInstance(propertyDrawerType, fieldInfo, rootObject);
                 _activePropertyDrawersDict.Add(fieldInfo, propertyDrawer);
             }
             else
@@ -107,15 +89,9 @@ namespace MVC.Editor.ModelViewer
             return propertyDrawer;
         }
 
-        public bool IsPropertyTypeExist(Type type)
-        {
-            return _propertyDrawerTypesDict.ContainsKey(type);
-        }
-        
         private void OnDestroy()
         {
-            _propertyDrawerTypesDict = new Dictionary<Type, Type>();
-            _activePropertyDrawersDict = new Dictionary<FieldInfo, MVCPropertyDrawerBase>();
+            _activePropertyDrawersDict = new Dictionary<MemberInfo, PropertyDrawerBase>();
         }
     }
 }

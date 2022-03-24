@@ -4,18 +4,18 @@ using UnityEngine;
 
 namespace MVC.Editor.ModelViewer.PropertyDrawer.Properties
 {
-    internal class MVCStringPropertyDrawer : MVCPropertyDrawer<string>
+    internal class Vector2IntPropertyDrawer : PropertyDrawer<Vector2Int>
     {
-        public MVCStringPropertyDrawer(FieldInfo fieldInfo, object targetObject) : base(fieldInfo, targetObject)
+        public Vector2IntPropertyDrawer(FieldInfo fieldInfo, object targetObject) : base(fieldInfo, targetObject)
         {
         }
-
+        
         public override void OnDrawGUI()
         {
             base.OnDrawGUI();
 
             var propertyValue = GetPropertyValue();
-            var newValue = EditorGUILayout.TextField(new GUIContent(_fieldName), propertyValue);
+            var newValue = EditorGUILayout.Vector2IntField(new GUIContent(_fieldName), propertyValue);
             if(newValue != propertyValue)
                 SetValue(newValue);
         }

@@ -5,9 +5,9 @@ using UnityEngine;
 
 namespace MVC.Editor.ModelViewer.PropertyDrawer.Properties
 {
-    internal class MVCFloatPropertyDrawer : MVCPropertyDrawer<float>
+    internal class FloatPropertyDrawer : PropertyDrawer<float>
     {
-        public MVCFloatPropertyDrawer(FieldInfo fieldInfo, object targetObject) : base(fieldInfo, targetObject)
+        public FloatPropertyDrawer(FieldInfo fieldInfo, object targetObject) : base(fieldInfo, targetObject)
         {
         }
         
