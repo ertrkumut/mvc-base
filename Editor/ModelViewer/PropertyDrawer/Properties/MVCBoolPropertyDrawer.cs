@@ -4,7 +4,7 @@ using UnityEngine;
 
 namespace MVC.Editor.ModelViewer.PropertyDrawer.Properties
 {
-    public class MVCBoolPropertyDrawer : MVCPropertyDrawer<bool>
+    internal class MVCBoolPropertyDrawer : MVCPropertyDrawer<bool>
     {
         public MVCBoolPropertyDrawer(FieldInfo fieldInfo, object targetObject) : base(fieldInfo, targetObject)
         {

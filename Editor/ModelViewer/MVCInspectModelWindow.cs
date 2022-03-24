@@ -9,7 +9,7 @@ using Object = UnityEngine.Object;
 
 namespace MVC.Editor.ModelViewer
 {
-    public class MVCInspectModelWindow : EditorWindow
+    internal class MVCInspectModelWindow : EditorWindow
     {
         private object _inspectedObject;
         private object _inspectedObjectContext;

@@ -2,7 +2,7 @@
 
 namespace MVC.Editor.ModelViewer.PropertyDrawer
 {
-    public class MVCPropertyDrawer<TPropertyType> : MVCPropertyDrawerBase
+    internal class MVCPropertyDrawer<TPropertyType> : MVCPropertyDrawerBase
     {
         public TPropertyType PropertyType { get; set; }
         

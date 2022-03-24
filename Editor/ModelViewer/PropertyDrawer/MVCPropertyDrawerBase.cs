@@ -5,7 +5,7 @@ using UnityEngine;
 
 namespace MVC.Editor.ModelViewer.PropertyDrawer
 {
-    public class MVCPropertyDrawerBase
+    internal class MVCPropertyDrawerBase
     {
         protected FieldInfo _fieldInfo;
         protected object _targetObject;

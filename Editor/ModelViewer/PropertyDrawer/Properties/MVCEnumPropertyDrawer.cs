@@ -5,7 +5,7 @@ using UnityEngine;
 
 namespace MVC.Editor.ModelViewer.PropertyDrawer.Properties
 {
-    public class MVCEnumPropertyDrawer : MVCPropertyDrawer<Enum>
+    internal class MVCEnumPropertyDrawer : MVCPropertyDrawer<Enum>
     {
         public MVCEnumPropertyDrawer(FieldInfo fieldInfo, object targetObject) : base(fieldInfo, targetObject)
         {

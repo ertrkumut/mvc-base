@@ -4,7 +4,7 @@ using UnityEngine;
 
 namespace MVC.Editor.ModelViewer.PropertyDrawer.Properties
 {
-    public class MVCStringPropertyDrawer : MVCPropertyDrawer<string>
+    internal class MVCStringPropertyDrawer : MVCPropertyDrawer<string>
     {
         public MVCStringPropertyDrawer(FieldInfo fieldInfo, object targetObject) : base(fieldInfo, targetObject)
         {
