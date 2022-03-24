@@ -13,12 +13,12 @@ using UnityEngine;
 namespace MVC.Runtime.Injectable.Binders
 {
     [HideInModelViewer]
-    public class MediatorBinder : Binder<MediatorBinding>
+    public class MediationBinder : Binder<MediatorBinding>
     {
         private Dictionary<IView, InjectedMediatorData> _injectedMediators;
         private MediatorCreatorController _mediatorCreatorController;
 
-        public MediatorBinder()
+        public MediationBinder()
         {
             _injectedMediators = new Dictionary<IView, InjectedMediatorData>();
             _mediatorCreatorController = RootsManager.Instance.mediatorCreatorController;

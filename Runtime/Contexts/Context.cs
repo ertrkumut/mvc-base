@@ -17,7 +17,7 @@ namespace MVC.Runtime.Contexts
 
         public bool ContextStarted { get; set; }
         
-        public MediatorBinder MediatorBinder { get; set; }
+        public MediationBinder MediationBinder { get; set; }
         public InjectionBinder InjectionBinder { get; set; }
         public InjectionBinderCrossContext InjectionBinderCrossContext { get; set; }
         public ICommandBinder CommandBinder { get; set; }
@@ -81,7 +81,7 @@ namespace MVC.Runtime.Contexts
         protected virtual void CoreBindings()
         {
             InjectionBinder = new InjectionBinder();
-            MediatorBinder = InjectionBinder.Bind<MediatorBinder>();
+            MediationBinder = InjectionBinder.Bind<MediationBinder>();
             
             InjectionBinderCrossContext.BindInstance(InjectionBinderCrossContext);
 
@@ -109,7 +109,7 @@ namespace MVC.Runtime.Contexts
         public virtual void DestroyContext()
         {
             ContextStarted = false;
-            MediatorBinder.UnBindAll();
+            MediationBinder.UnBindAll();
             InjectionBinder.UnBindAll();
         }
     }

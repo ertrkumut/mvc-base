@@ -20,8 +20,8 @@ namespace MVC.Runtime.ViewMediators.Utils
                 return false;
             }
 
-            var mediatorBinder = viewContext.MediatorBinder;
-            var binding = mediatorBinder.GetBinding(view.GetType());
+            var mediationBinder = viewContext.MediationBinder;
+            var binding = mediationBinder.GetBinding(view.GetType());
             if (binding == null)
             {
                 Debug.LogError("There is no view binding! " + view.GetType());
@@ -36,12 +36,12 @@ namespace MVC.Runtime.ViewMediators.Utils
             if(mediatorIsMono)
                 mediator = view.gameObject.AddComponent(mediatorType) as IMediator;
             else
-                mediator = mediatorBinder.GetMediatorFromPool(mediatorType);
+                mediator = mediationBinder.GetMediatorFromPool(mediatorType);
 
             var injectionResult = viewContext.TryToInjectMediator(mediator, view);
             if (injectionResult)
             {
-                var injectedMediatorData = mediatorBinder.GetOrCreateInjectedMediatorData(view);
+                var injectedMediatorData = mediationBinder.GetOrCreateInjectedMediatorData(view);
                 injectedMediatorData.viewInjector.ViewInjectionCompleted(view);
                 injectedMediatorData.mediator = mediator;
             }
@@ -57,8 +57,8 @@ namespace MVC.Runtime.ViewMediators.Utils
                 return;
             }
             
-            var mediatorBinder = viewContext.MediatorBinder;
-            var injectedMediatorData = mediatorBinder.GetOrCreateInjectedMediatorData(view);
+            var mediationBinder = viewContext.MediationBinder;
+            var injectedMediatorData = mediationBinder.GetOrCreateInjectedMediatorData(view);
             if (injectedMediatorData.mediator == null)
                 return;
             
@@ -77,7 +77,7 @@ namespace MVC.Runtime.ViewMediators.Utils
             if (mediator is Object mediatorObject)
                 Object.Destroy(mediatorObject as Component);
             else
-                mediatorBinder.SendMediatorToPool(mediator);
+                mediationBinder.SendMediatorToPool(mediator);
         }
         
         internal static IContext FindViewContext(this IView view)
