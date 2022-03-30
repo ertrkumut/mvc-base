@@ -6,18 +6,18 @@ namespace MVC.Editor.ModelViewer.PropertyDrawer
     {
         public TPropertyType PropertyType { get; set; }
         
-        public PropertyDrawer(FieldInfo fieldInfo, object targetObject) : base(fieldInfo, targetObject)
+        public PropertyDrawer(MemberInfo memberInfo, object targetObject) : base(memberInfo, targetObject)
         {
         }
 
         public TPropertyType GetPropertyValue()
         {
-            return (TPropertyType) _fieldInfo.GetValue(_targetObject);
+            return (TPropertyType) _memberInfo.GetValue(_targetObject);
         }
 
         public void SetValue(TPropertyType newValue)
         {
-            _fieldInfo.SetValue(_targetObject, newValue);
+            _memberInfo.SetValue(_targetObject, newValue);
         }
     }
 }

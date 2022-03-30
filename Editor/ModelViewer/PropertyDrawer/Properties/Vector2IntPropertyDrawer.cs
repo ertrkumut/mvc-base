@@ -6,7 +6,7 @@ namespace MVC.Editor.ModelViewer.PropertyDrawer.Properties
 {
     internal class Vector2IntPropertyDrawer : PropertyDrawer<Vector2Int>
     {
-        public Vector2IntPropertyDrawer(FieldInfo fieldInfo, object targetObject) : base(fieldInfo, targetObject)
+        public Vector2IntPropertyDrawer(FieldInfo memberInfo, object targetObject) : base(memberInfo, targetObject)
         {
         }
         

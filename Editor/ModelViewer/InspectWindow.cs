@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
@@ -22,11 +21,6 @@ namespace MVC.Editor.ModelViewer
             _inspectedObject = inspectedObject;
             _inspectedObjectContext = inspectedObjectContext;
             
-            InitializePropertyDrawerTypes();
-        }
-
-        private void InitializePropertyDrawerTypes()
-        {
             _activePropertyDrawersDict = new Dictionary<MemberInfo, PropertyDrawerBase>();
         }
 
@@ -40,51 +34,46 @@ namespace MVC.Editor.ModelViewer
 
         private void DisplayObjectFields(object rootObject)
         {
-            var rootType = rootObject.GetType();
-            var fieldInfoList = rootType.GetFields(BindingFlags.Instance | BindingFlags.Public);
+            var memberInfoList = ModelViewerUtils.GetTypeMembersList(rootObject);
 
-            foreach (var fieldInfo in fieldInfoList)
+            foreach (var memberInfo in memberInfoList)
             {
-                var fieldAttributes = fieldInfo.GetCustomAttributes(typeof(HideInModelViewerAttribute)).ToList();
-                if(fieldAttributes.Count != 0)
-                    continue;
-                
-                DisplayFieldInfoGUI(fieldInfo, rootObject);
+                DisplayFieldInfoGUI(memberInfo, rootObject);
             }
         }
 
-        private void DisplayFieldInfoGUI(FieldInfo fieldInfo, object rootObject)
+        private void DisplayFieldInfoGUI(MemberInfo memberInfo, object rootObject)
         {
-            var fieldType = fieldInfo.FieldType;
+            var memberType = memberInfo.GetMemberType();
             
-            if (fieldType.IsClass && !ModelViewerUtils.IsPropertyDrawerTypeExist(fieldType) && !fieldType.IsSubclassOf(typeof(Object)))
+            if (memberType.IsClass && !ModelViewerUtils.IsPropertyDrawerTypeExist(memberType) && !memberType.IsSubclassOf(typeof(Object)))
             {
                 EditorGUILayout.BeginVertical("box");
                 
-                EditorGUILayout.LabelField(fieldInfo.Name);
-                var fieldValue = fieldInfo.GetValue(rootObject);
+                EditorGUILayout.LabelField(memberInfo.Name);
+                var fieldValue = memberInfo.GetValue(rootObject);
                 DisplayObjectFields(fieldValue);
                 
                 EditorGUILayout.EndVertical();
                 return;
             }
             
-            var propertyDrawer = GetPropertyDrawer(fieldInfo, rootObject);
+            var propertyDrawer = GetPropertyDrawer(memberInfo, rootObject);
             propertyDrawer?.OnGUI();
         }
 
-        private PropertyDrawerBase GetPropertyDrawer(FieldInfo fieldInfo, object rootObject)
+        private PropertyDrawerBase GetPropertyDrawer(MemberInfo memberInfo, object rootObject)
         {
             PropertyDrawerBase propertyDrawer = null;
-            if (!_activePropertyDrawersDict.ContainsKey(fieldInfo))
+            if (!_activePropertyDrawersDict.ContainsKey(memberInfo))
             {
-                Type propertyDrawerType = ModelViewerUtils.GetPropertyDrawer(fieldInfo, rootObject);
+                Type propertyDrawerType = ModelViewerUtils.GetPropertyDrawerType(memberInfo.GetMemberType());
 
-                propertyDrawer = (PropertyDrawerBase) Activator.CreateInstance(propertyDrawerType, fieldInfo, rootObject);
-                _activePropertyDrawersDict.Add(fieldInfo, propertyDrawer);
+                propertyDrawer = (PropertyDrawerBase) Activator.CreateInstance(propertyDrawerType, memberInfo, rootObject);
+                _activePropertyDrawersDict.Add(memberInfo, propertyDrawer);
             }
             else
-                propertyDrawer = _activePropertyDrawersDict[fieldInfo];
+                propertyDrawer = _activePropertyDrawersDict[memberInfo];
             
             return propertyDrawer;
         }

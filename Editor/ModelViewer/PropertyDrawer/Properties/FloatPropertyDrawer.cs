@@ -7,7 +7,7 @@ namespace MVC.Editor.ModelViewer.PropertyDrawer.Properties
 {
     internal class FloatPropertyDrawer : PropertyDrawer<float>
     {
-        public FloatPropertyDrawer(FieldInfo fieldInfo, object targetObject) : base(fieldInfo, targetObject)
+        public FloatPropertyDrawer(FieldInfo memberInfo, object targetObject) : base(memberInfo, targetObject)
         {
         }
         

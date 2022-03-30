@@ -7,7 +7,7 @@ namespace MVC.Editor.ModelViewer.PropertyDrawer.Properties
 {
     internal class EnumPropertyDrawer : PropertyDrawer<Enum>
     {
-        public EnumPropertyDrawer(FieldInfo fieldInfo, object targetObject) : base(fieldInfo, targetObject)
+        public EnumPropertyDrawer(FieldInfo memberInfo, object targetObject) : base(memberInfo, targetObject)
         {
         }
         

@@ -6,7 +6,7 @@ namespace MVC.Editor.ModelViewer.PropertyDrawer.Properties
 {
     internal class BoolPropertyDrawer : PropertyDrawer<bool>
     {
-        public BoolPropertyDrawer(FieldInfo fieldInfo, object targetObject) : base(fieldInfo, targetObject)
+        public BoolPropertyDrawer(FieldInfo memberInfo, object targetObject) : base(memberInfo, targetObject)
         {
         }
         

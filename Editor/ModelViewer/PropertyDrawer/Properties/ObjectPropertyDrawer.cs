@@ -1,12 +1,14 @@
-﻿using System.Reflection;
+﻿using System;
+using System.Reflection;
 using UnityEditor;
 using UnityEngine;
+using Object = UnityEngine.Object;
 
 namespace MVC.Editor.ModelViewer.PropertyDrawer.Properties
 {
     internal class ObjectPropertyDrawer : PropertyDrawer<Object>
     {
-        public ObjectPropertyDrawer(FieldInfo fieldInfo, object targetObject) : base(fieldInfo, targetObject)
+        public ObjectPropertyDrawer(FieldInfo memberInfo, object targetObject) : base(memberInfo, targetObject)
         {
         }
         
@@ -14,8 +16,15 @@ namespace MVC.Editor.ModelViewer.PropertyDrawer.Properties
         {
             base.OnDrawGUI();
 
+            Type propertyType = null;
+
+            if (_memberInfo.MemberType == MemberTypes.Field)
+                propertyType = (_memberInfo as FieldInfo).FieldType;
+            else if(_memberInfo.MemberType == MemberTypes.Property)
+                propertyType = (_memberInfo as PropertyInfo).PropertyType;
+            
             var propertyValue = GetPropertyValue();
-            var newValue = EditorGUILayout.ObjectField(new GUIContent(_fieldName), propertyValue, _fieldInfo.FieldType, true);
+            var newValue = EditorGUILayout.ObjectField(new GUIContent(_fieldName), propertyValue, propertyType, true);
             if(newValue != propertyValue)
                 SetValue(newValue);
         }

@@ -7,21 +7,24 @@ namespace MVC.Editor.ModelViewer.PropertyDrawer
 {
     internal class PropertyDrawerBase
     {
-        protected FieldInfo _fieldInfo;
+        protected MemberInfo _memberInfo;
         protected object _targetObject;
 
         protected string _fieldName;
 
         private bool _hasPropertyReadOnly;
         
-        public PropertyDrawerBase(FieldInfo fieldInfo, object targetObject)
+        public PropertyDrawerBase(MemberInfo memberInfo, object targetObject)
         {
-            _fieldInfo = fieldInfo;
+            _memberInfo = memberInfo;
             _targetObject = targetObject;
 
-            _fieldName = fieldInfo.Name.Replace("<", "").Replace(">k__backingField", "");
+            if(_memberInfo == null)
+                return;
+            
+            _fieldName = memberInfo.Name.Replace("<", "").Replace(">k__backingField", "");
 
-            _hasPropertyReadOnly = fieldInfo.GetCustomAttributes(typeof(ReadOnlyAttribute)).ToList().Count != 0;
+            _hasPropertyReadOnly = memberInfo.GetCustomAttributes(typeof(ReadOnlyAttribute)).ToList().Count != 0;
         }
         
         public void OnGUI()
