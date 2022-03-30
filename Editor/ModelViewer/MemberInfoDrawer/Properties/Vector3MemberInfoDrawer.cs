@@ -2,11 +2,11 @@
 using UnityEditor;
 using UnityEngine;
 
-namespace MVC.Editor.ModelViewer.PropertyDrawer.Properties
+namespace MVC.Editor.ModelViewer.MemberInfoDrawer.Properties
 {
-    internal class Vector3MemoryInfoDrawer : MemoryInfoDrawer<Vector3>
+    internal class Vector3MemberInfoDrawer : MemberInfoDrawer<Vector3>
     {
-        public Vector3MemoryInfoDrawer(FieldInfo memberInfo, object targetObject) : base(memberInfo, targetObject)
+        public Vector3MemberInfoDrawer(FieldInfo memberInfo, object targetObject) : base(memberInfo, targetObject)
         {
         }
         

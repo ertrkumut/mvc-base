@@ -2,11 +2,11 @@
 using UnityEditor;
 using UnityEngine;
 
-namespace MVC.Editor.ModelViewer.PropertyDrawer.Properties
+namespace MVC.Editor.ModelViewer.MemberInfoDrawer.Properties
 {
-    internal class StringMemoryInfoDrawer : MemoryInfoDrawer<string>
+    internal class StringMemberInfoDrawer : MemberInfoDrawer<string>
     {
-        public StringMemoryInfoDrawer(FieldInfo memberInfo, object targetObject) : base(memberInfo, targetObject)
+        public StringMemberInfoDrawer(FieldInfo memberInfo, object targetObject) : base(memberInfo, targetObject)
         {
         }
 

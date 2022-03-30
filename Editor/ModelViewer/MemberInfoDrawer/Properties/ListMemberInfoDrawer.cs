@@ -4,18 +4,18 @@ using System.Reflection;
 using UnityEditor;
 using UnityEngine;
 
-namespace MVC.Editor.ModelViewer.PropertyDrawer.Properties
+namespace MVC.Editor.ModelViewer.MemberInfoDrawer.Properties
 {
-    internal class ListMemoryInfoDrawer<T> : MemoryInfoDrawer<List<T>>
+    internal class ListMemberInfoDrawer<T> : MemberInfoDrawer<List<T>>
     {
-        private List<MemoryInfoDrawerBase> _drawersList;
+        private List<MemberInfoDrawerBase> _drawersList;
         private Type _propertyDrawerType;
         
         private bool _foldOut;
         
-        public ListMemoryInfoDrawer(MemberInfo memberInfo, object targetObject) : base(memberInfo, targetObject)
+        public ListMemberInfoDrawer(MemberInfo memberInfo, object targetObject) : base(memberInfo, targetObject)
         {
-            _drawersList = new List<MemoryInfoDrawerBase>();
+            _drawersList = new List<MemberInfoDrawerBase>();
         }
 
         public override void OnDrawGUI()

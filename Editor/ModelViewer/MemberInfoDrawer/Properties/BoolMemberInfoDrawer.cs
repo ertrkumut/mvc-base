@@ -2,11 +2,11 @@
 using UnityEditor;
 using UnityEngine;
 
-namespace MVC.Editor.ModelViewer.PropertyDrawer.Properties
+namespace MVC.Editor.ModelViewer.MemberInfoDrawer.Properties
 {
-    internal class BoolMemoryInfoDrawer : MemoryInfoDrawer<bool>
+    internal class BoolMemberInfoDrawer : MemberInfoDrawer<bool>
     {
-        public BoolMemoryInfoDrawer(FieldInfo memberInfo, object targetObject) : base(memberInfo, targetObject)
+        public BoolMemberInfoDrawer(FieldInfo memberInfo, object targetObject) : base(memberInfo, targetObject)
         {
         }
         

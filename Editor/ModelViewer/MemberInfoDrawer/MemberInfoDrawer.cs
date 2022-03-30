@@ -1,12 +1,12 @@
 ﻿using System.Reflection;
 
-namespace MVC.Editor.ModelViewer.PropertyDrawer
+namespace MVC.Editor.ModelViewer.MemberInfoDrawer
 {
-    internal class MemoryInfoDrawer<TPropertyType> : MemoryInfoDrawerBase
+    internal class MemberInfoDrawer<TPropertyType> : MemberInfoDrawerBase
     {
         public TPropertyType PropertyType { get; set; }
         
-        public MemoryInfoDrawer(MemberInfo memberInfo, object targetObject) : base(memberInfo, targetObject)
+        public MemberInfoDrawer(MemberInfo memberInfo, object targetObject) : base(memberInfo, targetObject)
         {
         }
 

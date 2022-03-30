@@ -3,7 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
-using MVC.Editor.ModelViewer.PropertyDrawer;
+using MVC.Editor.ModelViewer.MemberInfoDrawer;
 using MVC.Runtime.Attributes;
 using Object = UnityEngine.Object;
 
@@ -61,7 +61,7 @@ namespace MVC.Editor.ModelViewer
             {
                 if (typeof(IList).IsAssignableFrom(propertyType))
                 {
-                    var listPropertyDrawer = typeof(MemoryInfoDrawerBase)
+                    var listPropertyDrawer = typeof(MemberInfoDrawerBase)
                         .Assembly
                         .GetTypes()
                         .FirstOrDefault(x => x.Name.Contains("ListPropertyDrawer"))
@@ -82,8 +82,8 @@ namespace MVC.Editor.ModelViewer
         {
             _propertyDrawerTypesDict = new Dictionary<Type, Type>();
             
-            var propertyDrawerTypes = typeof(MemoryInfoDrawerBase).Assembly.GetTypes()
-                .Where(x => x.IsSubclassOf(typeof(MemoryInfoDrawerBase)))
+            var propertyDrawerTypes = typeof(MemberInfoDrawerBase).Assembly.GetTypes()
+                .Where(x => x.IsSubclassOf(typeof(MemberInfoDrawerBase)))
                 .ToList();
 
             foreach (var propertyDrawerType in propertyDrawerTypes)

@@ -3,11 +3,11 @@ using System.Reflection;
 using UnityEditor;
 using UnityEngine;
 
-namespace MVC.Editor.ModelViewer.PropertyDrawer.Properties
+namespace MVC.Editor.ModelViewer.MemberInfoDrawer.Properties
 {
-    internal class EnumMemoryInfoDrawer : MemoryInfoDrawer<Enum>
+    internal class EnumMemberInfoDrawer : MemberInfoDrawer<Enum>
     {
-        public EnumMemoryInfoDrawer(FieldInfo memberInfo, object targetObject) : base(memberInfo, targetObject)
+        public EnumMemberInfoDrawer(FieldInfo memberInfo, object targetObject) : base(memberInfo, targetObject)
         {
         }
         

@@ -3,11 +3,11 @@ using System.Reflection;
 using UnityEditor;
 using UnityEngine;
 
-namespace MVC.Editor.ModelViewer.PropertyDrawer.Properties
+namespace MVC.Editor.ModelViewer.MemberInfoDrawer.Properties
 {
-    internal class FloatMemoryInfoDrawer : MemoryInfoDrawer<float>
+    internal class FloatMemberInfoDrawer : MemberInfoDrawer<float>
     {
-        public FloatMemoryInfoDrawer(FieldInfo memberInfo, object targetObject) : base(memberInfo, targetObject)
+        public FloatMemberInfoDrawer(FieldInfo memberInfo, object targetObject) : base(memberInfo, targetObject)
         {
         }
         
