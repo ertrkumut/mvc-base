@@ -1,9 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Reflection;
 using MVC.Editor.ModelViewer.PropertyDrawer;
-using MVC.Runtime.Attributes;
 using UnityEditor;
 using Object = UnityEngine.Object;
 
@@ -14,14 +12,14 @@ namespace MVC.Editor.ModelViewer
         private object _inspectedObject;
         private object _inspectedObjectContext;
         
-        private Dictionary<MemberInfo, PropertyDrawerBase> _activePropertyDrawersDict;
+        private Dictionary<MemberInfo, MemoryInfoDrawerBase> _activePropertyDrawersDict;
         
         public void Initialize(object inspectedObject, object inspectedObjectContext)
         {
             _inspectedObject = inspectedObject;
             _inspectedObjectContext = inspectedObjectContext;
             
-            _activePropertyDrawersDict = new Dictionary<MemberInfo, PropertyDrawerBase>();
+            _activePropertyDrawersDict = new Dictionary<MemberInfo, MemoryInfoDrawerBase>();
         }
 
         private void OnGUI()
@@ -62,25 +60,25 @@ namespace MVC.Editor.ModelViewer
             propertyDrawer?.OnGUI();
         }
 
-        private PropertyDrawerBase GetPropertyDrawer(MemberInfo memberInfo, object rootObject)
+        private MemoryInfoDrawerBase GetPropertyDrawer(MemberInfo memberInfo, object rootObject)
         {
-            PropertyDrawerBase propertyDrawer = null;
+            MemoryInfoDrawerBase memoryInfoDrawer = null;
             if (!_activePropertyDrawersDict.ContainsKey(memberInfo))
             {
                 Type propertyDrawerType = ModelViewerUtils.GetPropertyDrawerType(memberInfo.GetMemberType());
 
-                propertyDrawer = (PropertyDrawerBase) Activator.CreateInstance(propertyDrawerType, memberInfo, rootObject);
-                _activePropertyDrawersDict.Add(memberInfo, propertyDrawer);
+                memoryInfoDrawer = (MemoryInfoDrawerBase) Activator.CreateInstance(propertyDrawerType, memberInfo, rootObject);
+                _activePropertyDrawersDict.Add(memberInfo, memoryInfoDrawer);
             }
             else
-                propertyDrawer = _activePropertyDrawersDict[memberInfo];
+                memoryInfoDrawer = _activePropertyDrawersDict[memberInfo];
             
-            return propertyDrawer;
+            return memoryInfoDrawer;
         }
 
         private void OnDestroy()
         {
-            _activePropertyDrawersDict = new Dictionary<MemberInfo, PropertyDrawerBase>();
+            _activePropertyDrawersDict = new Dictionary<MemberInfo, MemoryInfoDrawerBase>();
         }
     }
 }

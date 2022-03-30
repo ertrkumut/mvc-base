@@ -61,7 +61,7 @@ namespace MVC.Editor.ModelViewer
             {
                 if (typeof(IList).IsAssignableFrom(propertyType))
                 {
-                    var listPropertyDrawer = typeof(PropertyDrawerBase)
+                    var listPropertyDrawer = typeof(MemoryInfoDrawerBase)
                         .Assembly
                         .GetTypes()
                         .FirstOrDefault(x => x.Name.Contains("ListPropertyDrawer"))
@@ -82,8 +82,8 @@ namespace MVC.Editor.ModelViewer
         {
             _propertyDrawerTypesDict = new Dictionary<Type, Type>();
             
-            var propertyDrawerTypes = typeof(PropertyDrawerBase).Assembly.GetTypes()
-                .Where(x => x.IsSubclassOf(typeof(PropertyDrawerBase)))
+            var propertyDrawerTypes = typeof(MemoryInfoDrawerBase).Assembly.GetTypes()
+                .Where(x => x.IsSubclassOf(typeof(MemoryInfoDrawerBase)))
                 .ToList();
 
             foreach (var propertyDrawerType in propertyDrawerTypes)

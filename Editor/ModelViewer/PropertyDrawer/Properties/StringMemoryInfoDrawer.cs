@@ -4,18 +4,18 @@ using UnityEngine;
 
 namespace MVC.Editor.ModelViewer.PropertyDrawer.Properties
 {
-    internal class BoolPropertyDrawer : PropertyDrawer<bool>
+    internal class StringMemoryInfoDrawer : MemoryInfoDrawer<string>
     {
-        public BoolPropertyDrawer(FieldInfo memberInfo, object targetObject) : base(memberInfo, targetObject)
+        public StringMemoryInfoDrawer(FieldInfo memberInfo, object targetObject) : base(memberInfo, targetObject)
         {
         }
-        
+
         public override void OnDrawGUI()
         {
             base.OnDrawGUI();
 
             var propertyValue = GetPropertyValue();
-            var newValue = EditorGUILayout.Toggle(new GUIContent(_fieldName), propertyValue);
+            var newValue = EditorGUILayout.TextField(new GUIContent(_fieldName), propertyValue);
             if(newValue != propertyValue)
                 SetValue(newValue);
         }

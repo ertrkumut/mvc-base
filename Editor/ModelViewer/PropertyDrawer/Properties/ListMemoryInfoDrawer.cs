@@ -6,16 +6,16 @@ using UnityEngine;
 
 namespace MVC.Editor.ModelViewer.PropertyDrawer.Properties
 {
-    internal class ListPropertyDrawer<T> : PropertyDrawer<List<T>>
+    internal class ListMemoryInfoDrawer<T> : MemoryInfoDrawer<List<T>>
     {
-        private List<PropertyDrawerBase> _drawersList;
+        private List<MemoryInfoDrawerBase> _drawersList;
         private Type _propertyDrawerType;
         
         private bool _foldOut;
         
-        public ListPropertyDrawer(MemberInfo memberInfo, object targetObject) : base(memberInfo, targetObject)
+        public ListMemoryInfoDrawer(MemberInfo memberInfo, object targetObject) : base(memberInfo, targetObject)
         {
-            _drawersList = new List<PropertyDrawerBase>();
+            _drawersList = new List<MemoryInfoDrawerBase>();
         }
 
         public override void OnDrawGUI()

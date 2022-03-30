@@ -5,9 +5,9 @@ using UnityEngine;
 
 namespace MVC.Editor.ModelViewer.PropertyDrawer.Properties
 {
-    internal class FloatPropertyDrawer : PropertyDrawer<float>
+    internal class EnumMemoryInfoDrawer : MemoryInfoDrawer<Enum>
     {
-        public FloatPropertyDrawer(FieldInfo memberInfo, object targetObject) : base(memberInfo, targetObject)
+        public EnumMemoryInfoDrawer(FieldInfo memberInfo, object targetObject) : base(memberInfo, targetObject)
         {
         }
         
@@ -16,8 +16,8 @@ namespace MVC.Editor.ModelViewer.PropertyDrawer.Properties
             base.OnDrawGUI();
 
             var propertyValue = GetPropertyValue();
-            var newValue = EditorGUILayout.FloatField(new GUIContent(_fieldName), propertyValue);
-            if(Math.Abs(newValue - propertyValue) > 0.0001f)
+            var newValue = EditorGUILayout.EnumPopup(new GUIContent(_fieldName), propertyValue);
+            if(!Equals(newValue, propertyValue))
                 SetValue(newValue);
         }
     }

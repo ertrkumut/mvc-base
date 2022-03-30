@@ -5,7 +5,7 @@ using UnityEngine;
 
 namespace MVC.Editor.ModelViewer.PropertyDrawer
 {
-    internal class PropertyDrawerBase
+    internal class MemoryInfoDrawerBase
     {
         protected MemberInfo _memberInfo;
         protected object _targetObject;
@@ -14,7 +14,7 @@ namespace MVC.Editor.ModelViewer.PropertyDrawer
 
         private bool _hasPropertyReadOnly;
         
-        public PropertyDrawerBase(MemberInfo memberInfo, object targetObject)
+        public MemoryInfoDrawerBase(MemberInfo memberInfo, object targetObject)
         {
             _memberInfo = memberInfo;
             _targetObject = targetObject;

@@ -4,9 +4,9 @@ using UnityEngine;
 
 namespace MVC.Editor.ModelViewer.PropertyDrawer.Properties
 {
-    internal class Vector3PropertyDrawer : PropertyDrawer<Vector3>
+    internal class Vector3MemoryInfoDrawer : MemoryInfoDrawer<Vector3>
     {
-        public Vector3PropertyDrawer(FieldInfo memberInfo, object targetObject) : base(memberInfo, targetObject)
+        public Vector3MemoryInfoDrawer(FieldInfo memberInfo, object targetObject) : base(memberInfo, targetObject)
         {
         }
         

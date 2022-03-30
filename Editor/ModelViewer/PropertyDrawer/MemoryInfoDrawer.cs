@@ -2,11 +2,11 @@
 
 namespace MVC.Editor.ModelViewer.PropertyDrawer
 {
-    internal class PropertyDrawer<TPropertyType> : PropertyDrawerBase
+    internal class MemoryInfoDrawer<TPropertyType> : MemoryInfoDrawerBase
     {
         public TPropertyType PropertyType { get; set; }
         
-        public PropertyDrawer(MemberInfo memberInfo, object targetObject) : base(memberInfo, targetObject)
+        public MemoryInfoDrawer(MemberInfo memberInfo, object targetObject) : base(memberInfo, targetObject)
         {
         }
 

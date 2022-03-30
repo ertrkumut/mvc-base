@@ -6,9 +6,9 @@ using Object = UnityEngine.Object;
 
 namespace MVC.Editor.ModelViewer.PropertyDrawer.Properties
 {
-    internal class ObjectPropertyDrawer : PropertyDrawer<Object>
+    internal class ObjectMemoryInfoDrawer : MemoryInfoDrawer<Object>
     {
-        public ObjectPropertyDrawer(FieldInfo memberInfo, object targetObject) : base(memberInfo, targetObject)
+        public ObjectMemoryInfoDrawer(FieldInfo memberInfo, object targetObject) : base(memberInfo, targetObject)
         {
         }
         
