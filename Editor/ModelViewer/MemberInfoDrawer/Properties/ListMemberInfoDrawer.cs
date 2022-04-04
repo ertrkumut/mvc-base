@@ -9,8 +9,7 @@ namespace MVC.Editor.ModelViewer.MemberInfoDrawer.Properties
     internal class ListMemberInfoDrawer<T> : MemberInfoDrawer<List<T>>
     {
         private List<MemberInfoDrawerBase> _drawersList;
-        private Type _propertyDrawerType;
-        
+
         private bool _foldOut;
         
         public ListMemberInfoDrawer(MemberInfo memberInfo, object targetObject) : base(memberInfo, targetObject)
