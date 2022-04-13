@@ -46,7 +46,7 @@ namespace MVC.Runtime.ViewMediators.View.Editor
 
             foreach (var mvcView in _viewList)
             {
-                var injectorData = _target.viewDataList.FirstOrDefault(x => x.view == mvcView);
+                var injectorData = _target.viewDataList.FirstOrDefault(x => x.view == (Object) mvcView);
                 if(injectorData == null)
                 {
                     injectorData = new ViewInjectorData
@@ -112,7 +112,7 @@ namespace MVC.Runtime.ViewMediators.View.Editor
             EditorGUILayout.BeginHorizontal();
             EditorGUILayout.LabelField(viewInjectorData.view.GetType().Name, EditorStyles.boldLabel);
             EditorGUILayout.Space(3);
-            EditorGUILayout.ObjectField(viewInjectorData.view, typeof(Object));
+            EditorGUILayout.ObjectField(viewInjectorData.view, typeof(Object), false);
 
             EditorGUILayout.EndHorizontal();
             EditorGUILayout.Space(5);
