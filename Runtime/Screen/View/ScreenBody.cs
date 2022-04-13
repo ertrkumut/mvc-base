@@ -1,3 +1,4 @@
+using MVC.Screen.Enum;
 using UnityEngine;
 
 namespace MVC.Screen.View
@@ -8,7 +9,8 @@ namespace MVC.Screen.View
         [SerializeField] private bool _customClosingAnimation;
 
         public ScreenState ScreenState { get; set; }
-        
+        public System.Enum ScreenType { get; set; }
+
         public bool CustomOpeningAnimation => _customOpeningAnimation;
         public bool CustomClosingAnimation => _customClosingAnimation;
 

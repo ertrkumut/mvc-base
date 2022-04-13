@@ -1,5 +1,6 @@
 using MVC.Pool;
 using MVC.Runtime.ViewMediators.View;
+using MVC.Screen.Enum;
 
 namespace MVC.Screen.View
 {
@@ -10,6 +11,8 @@ namespace MVC.Screen.View
         /// </summary>
         ScreenState ScreenState { get; set; }
 
+        System.Enum ScreenType { get; set; }
+        
         /// <summary>
         /// It must be true, if there is custom opening animation like Timeline.
         /// If it's true, you need to manual Invoke ScreenOpened method

@@ -1,4 +1,4 @@
-namespace MVC.Screen
+namespace MVC.Screen.Enum
 {
     public enum ScreenState
     {
