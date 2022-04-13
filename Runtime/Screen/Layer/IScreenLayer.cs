@@ -8,12 +8,13 @@ namespace MVC.Screen.Layer
     {
         ScreenLayerIndex LayerIndex { get; }
         
-        void AddScreen(ScreenBody screenBody);
-        void RemoveScreen(ScreenBody screenBody);
+        bool AddScreen(IScreenBody screenBody);
+        bool RemoveScreen(IScreenBody screenBody);
         
-        List<ScreenBody> GetScreens(System.Enum screenType);
+        List<IScreenBody> GetScreens(System.Enum screenType);
+        List<IScreenBody> GetScreens();
         
         bool IsScreenContains(System.Enum screenType);
-        bool IsScreenContains(ScreenBody screenBody);
+        bool IsScreenContains(IScreenBody screenBody);
     }
 }

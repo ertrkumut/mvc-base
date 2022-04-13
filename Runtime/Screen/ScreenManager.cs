@@ -1,4 +1,8 @@
+using System.Collections.Generic;
+using System.Linq;
+using MVC.Screen.Enum;
 using MVC.Screen.Layer;
+using MVC.Screen.View;
 using UnityEngine;
 
 namespace MVC.Screen
@@ -11,16 +15,62 @@ namespace MVC.Screen
         [SerializeField] private ScreenLayer[] _screenLayerList;
         public ScreenLayer[] ScreenLayerList => _screenLayerList;
 
-        public void ShowScreen()
+        public bool ShowScreen(IScreenBody screenBody)
         {
-            
-        }
-    }
+            var layerIndex = screenBody.LayerIndex;
+            var layer = GetLayer(layerIndex);
 
-    public interface IScreenManager
-    {
-        int ManagerIndex { get; }
+            if (layer == null)
+            {
+                Debug.LogError("Screen can not open, cause there is no layer! ScreenType: " + screenBody.ScreenType);
+                return false;
+            }
+
+            return layer.AddScreen(screenBody);
+        }
+
+        public bool HideScreen(IScreenBody screenBody)
+        {
+            var layerIndex = screenBody.LayerIndex;
+            var layer = GetLayer(layerIndex);
+            
+            if (layer == null)
+            {
+                Debug.LogError("Screen can not hide, cause there is no layer! ScreenType: " + screenBody.ScreenType);
+                return false;
+            }
+            
+            return layer.RemoveScreen(screenBody);
+        }
+
+        public List<IScreenBody> GetScreens(System.Enum screenType)
+        {
+            var result = new List<IScreenBody>();
+            
+            for (var ii = 0; ii < _screenLayerList.Length; ii++)
+            {
+                var layer = _screenLayerList[ii];
+                var screens = layer.GetScreens(screenType);
+                result = result.Concat(screens).ToList();
+            }
+
+            return result;
+        }
+
+        public bool IsScreenContains(System.Enum screenType, ScreenLayerIndex layerIndex)
+        {
+            var layer = GetLayer(layerIndex);
+            
+            return layer != null && layer.IsScreenContains(screenType);
+        }
         
-        ScreenLayer[] ScreenLayerList { get; }
+        protected ScreenLayer GetLayer(ScreenLayerIndex layerIndex)
+        {
+            var layer = _screenLayerList.FirstOrDefault(x => x.LayerIndex == layerIndex);
+            if(layer == null)
+                Debug.LogError("Layer not found! ManagerIndex: " + _managerIndex + " LayerIndex: " + layerIndex);
+            
+            return layer;
+        }
     }
 }

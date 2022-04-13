@@ -10,6 +10,7 @@ namespace MVC.Screen.View
 
         public ScreenState ScreenState { get; set; }
         public System.Enum ScreenType { get; set; }
+        public ScreenLayerIndex LayerIndex { get; set; }
 
         public bool CustomOpeningAnimation => _customOpeningAnimation;
         public bool CustomClosingAnimation => _customClosingAnimation;
