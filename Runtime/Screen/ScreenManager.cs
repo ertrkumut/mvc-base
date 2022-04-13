@@ -1,5 +1,6 @@
 using System.Collections.Generic;
 using System.Linq;
+using MVC.Runtime.Injectable.Components;
 using MVC.Screen.Enum;
 using MVC.Screen.Layer;
 using MVC.Screen.View;
@@ -7,6 +8,7 @@ using UnityEngine;
 
 namespace MVC.Screen
 {
+    [RequireComponent(typeof(ViewInjector))]
     public class ScreenManager : MonoBehaviour, IScreenManager
     {
         [SerializeField] private int _managerIndex;
