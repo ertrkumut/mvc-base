@@ -1,7 +1,7 @@
 using MVC.Runtime.Root;
-using MVC.Screen.Context;
+using MVC.Runtime.Screen.Context;
 
-namespace MVC.Screen.Root
+namespace MVC.Runtime.Screen.Root
 {
     public class BaseUIRoot : ContextRoot<BaseUIContext>
     {

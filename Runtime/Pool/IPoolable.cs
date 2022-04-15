@@ -1,4 +1,4 @@
-namespace MVC.Pool
+namespace MVC.Runtime.Pool
 {
     public interface IPoolable
     {

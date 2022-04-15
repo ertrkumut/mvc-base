@@ -1,8 +1,8 @@
 using System.Collections.Generic;
-using MVC.Screen.Enum;
-using MVC.Screen.View;
+using MVC.Runtime.Screen.Enum;
+using MVC.Runtime.Screen.View;
 
-namespace MVC.Screen.Layer
+namespace MVC.Runtime.Screen.Layer
 {
     public interface IScreenLayer
     {

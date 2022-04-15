@@ -1,4 +1,4 @@
-namespace MVC.Screen.View
+namespace MVC.Runtime.Screen.View
 {
     public class ScreenView<TParam1> : ScreenBody, IScreenView<TParam1>
     {

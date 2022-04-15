@@ -1,6 +1,6 @@
-using MVC.Screen.Enum;
+using MVC.Runtime.Screen.Enum;
 
-namespace MVC.Screen
+namespace MVC.Runtime.Screen
 {
     public class ScreenDataContainer : IScreenDataContainer
     {

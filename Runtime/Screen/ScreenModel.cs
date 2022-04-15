@@ -1,7 +1,7 @@
 using System.Collections.Generic;
 using MVC.Runtime.Injectable.Attributes;
 
-namespace MVC.Screen
+namespace MVC.Runtime.Screen
 {
     public class ScreenModel : IScreenModel
     {

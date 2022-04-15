@@ -1,7 +1,7 @@
 using System.Linq;
 using UnityEditor;
 
-namespace MVC.Screen.Editor
+namespace MVC.Runtime.Screen.Editor
 {
     [CustomEditor(typeof(ScreenManager), true)]
     [CanEditMultipleObjects]

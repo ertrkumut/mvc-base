@@ -1,7 +1,7 @@
-using MVC.Screen.Enum;
+using MVC.Runtime.Screen.Enum;
 using UnityEngine;
 
-namespace MVC.Screen.View
+namespace MVC.Runtime.Screen.View
 {
     public class ScreenBody : MonoBehaviour, IScreenBody
     {

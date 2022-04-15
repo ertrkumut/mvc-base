@@ -1,4 +1,4 @@
-namespace MVC.Screen.Context
+namespace MVC.Runtime.Screen.Context
 {
     public class BaseUIContext : Runtime.Contexts.Context
     {

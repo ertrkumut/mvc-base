@@ -1,7 +1,7 @@
 using MVC.Runtime.Injectable.Attributes;
 using MVC.Runtime.ViewMediators.Mediator;
 
-namespace MVC.Screen
+namespace MVC.Runtime.Screen
 {
     public class ScreenManagerMediator : IMediator
     {

@@ -1,8 +1,8 @@
-using MVC.Pool;
+using MVC.Runtime.Pool;
+using MVC.Runtime.Screen.Enum;
 using MVC.Runtime.ViewMediators.View;
-using MVC.Screen.Enum;
 
-namespace MVC.Screen.View
+namespace MVC.Runtime.Screen.View
 {
     public interface IScreenBody : IView, IPoolable
     {

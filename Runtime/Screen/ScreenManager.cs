@@ -1,12 +1,12 @@
 using System.Collections.Generic;
 using System.Linq;
 using MVC.Runtime.Injectable.Components;
-using MVC.Screen.Enum;
-using MVC.Screen.Layer;
-using MVC.Screen.View;
+using MVC.Runtime.Screen.Enum;
+using MVC.Runtime.Screen.Layer;
+using MVC.Runtime.Screen.View;
 using UnityEngine;
 
-namespace MVC.Screen
+namespace MVC.Runtime.Screen
 {
     [RequireComponent(typeof(ViewInjector))]
     public class ScreenManager : MonoBehaviour, IScreenManager

@@ -1,4 +1,4 @@
-namespace MVC.Screen.Enum
+namespace MVC.Runtime.Screen.Enum
 {
     public enum ScreenLayerIndex
     {

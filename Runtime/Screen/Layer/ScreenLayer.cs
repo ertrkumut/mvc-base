@@ -1,9 +1,9 @@
 using System.Collections.Generic;
-using MVC.Screen.Enum;
-using MVC.Screen.View;
+using MVC.Runtime.Screen.Enum;
+using MVC.Runtime.Screen.View;
 using UnityEngine;
 
-namespace MVC.Screen.Layer
+namespace MVC.Runtime.Screen.Layer
 {
     public class ScreenLayer : MonoBehaviour, IScreenLayer
     {
