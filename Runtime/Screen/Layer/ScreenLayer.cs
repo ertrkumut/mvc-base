@@ -7,7 +7,7 @@ namespace MVC.Screen.Layer
 {
     public class ScreenLayer : MonoBehaviour, IScreenLayer
     {
-        private ScreenLayerIndex _layerIndex;
+        [SerializeField] private ScreenLayerIndex _layerIndex;
         public ScreenLayerIndex LayerIndex => _layerIndex;
         
         public Dictionary<System.Enum, List<IScreenBody>> ScreensDict;
