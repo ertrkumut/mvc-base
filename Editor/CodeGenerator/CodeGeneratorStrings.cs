@@ -15,6 +15,7 @@ namespace MVC.Editor.CodeGenerator
         internal static readonly string TempRootPath = Application.dataPath.Replace("Assets", "") + "Packages/unity-mvc/Editor/CodeGenerator/TempRoots/TempRoot.cs";
         internal static readonly string RootScenePath = Application.dataPath + "/Scenes/";
 
+        internal static readonly string ScreenManagerPrefabPath = "Packages/unity-mvc/Assets/Resources/Screen/ScreenManager.prefab";
         internal static readonly string ScreenPrefabPath = Application.dataPath + "/Resources/Screens/";
         internal static readonly string ScreenTestScenePath = Application.dataPath + "/Test/Screens/";
         internal static readonly string TempScreenViewPath = Application.dataPath.Replace("Assets", "") + "Packages/unity-mvc/Editor/CodeGenerator/TempScreens/TempScreenView.cs";

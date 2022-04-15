@@ -30,5 +30,7 @@ namespace MVC.Editor.CodeGenerator.TempScreens
         {
             
         }
+        
+        //@Methods
     }
 }
