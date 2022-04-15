@@ -30,8 +30,8 @@ namespace MVC.Editor.CodeGenerator.Menus
             base.CreateViewMediator();
 
             var namespaceText = _testContextNamespace + _viewPath.Replace("/", ".");
-            var contextName = _fileName + "TestContext";
-            var rootName = _fileName + "TestRoot";
+            var contextName = (_fileName + "TestContext").Replace("View", "");
+            var rootName = (_fileName + "TestRoot").Replace("View", "");
 
             PlayerPrefs.SetString("create-screen-menu-clicked", _fileName);
             PlayerPrefs.SetString("create-screen-root-name", rootName);
@@ -54,6 +54,7 @@ namespace MVC.Editor.CodeGenerator.Menus
             if (!Directory.Exists(scenePath)) Directory.CreateDirectory(scenePath);
 
             var sceneName = PlayerPrefs.GetString("create-screen-menu-clicked") + "TestScene";
+            sceneName = sceneName.Replace("View", "");
             var scene = EditorSceneManager.NewScene(NewSceneSetup.DefaultGameObjects, NewSceneMode.Single);
             scene.name = sceneName;
 
@@ -69,6 +70,8 @@ namespace MVC.Editor.CodeGenerator.Menus
                     return;
 
                 var screenName = PlayerPrefs.GetString("create-screen-menu-clicked");
+                var rootName = PlayerPrefs.GetString("create-screen-root-name");
+                
                 var path = PlayerPrefs.GetString("create-screen-scene-path") + screenName + ".unity";
 
                 PlayerPrefs.DeleteKey("create-screen-menu-clicked");
@@ -78,8 +81,13 @@ namespace MVC.Editor.CodeGenerator.Menus
                 var assemblyList = AppDomain.CurrentDomain.GetAssemblies();
                 var currentAssembly = assemblyList.FirstOrDefault(x => x.FullName.StartsWith("Assembly-CSharp"));
                 var screenType = currentAssembly.GetTypes().FirstOrDefault(x => x.Name == screenName);
+                var rootType = currentAssembly.GetTypes().FirstOrDefault(x => x.Name == rootName);
 
+                var rootGameObject = new GameObject(rootName).AddComponent(rootType);
+                
                 var canvasGameObject = new GameObject("Canvas", typeof(Canvas));
+                canvasGameObject.transform.SetParent(rootGameObject.transform);
+                
                 var canvasScaler = canvasGameObject.AddComponent<CanvasScaler>();
                 canvasScaler.referenceResolution = new Vector2(1080, 1920);
                 canvasScaler.uiScaleMode = CanvasScaler.ScaleMode.ScaleWithScreenSize;
