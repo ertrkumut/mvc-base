@@ -7,6 +7,7 @@ using MVC.Runtime.Injectable.Attributes;
 using MVC.Runtime.Injectable.Binders;
 using MVC.Runtime.Injectable.CrossContext;
 using MVC.Runtime.Injectable.Utils;
+using MVC.Runtime.Provider.Coroutine;
 using MVC.Runtime.Provider.Update;
 using UnityEngine;
 
@@ -93,6 +94,7 @@ namespace MVC.Runtime.Contexts
             functionProvider.Context = this;
             
             InjectionBinderCrossContext.BindMonoBehaviorInstance<IUpdateProvider, UpdateProvider>();
+            InjectionBinderCrossContext.BindMonoBehaviorInstance<ICoroutineProvider, CoroutineProvider>();
         }
 
         public virtual void MapBindings()
