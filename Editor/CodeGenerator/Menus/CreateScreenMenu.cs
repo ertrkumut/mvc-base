@@ -26,9 +26,12 @@ namespace MVC.Editor.CodeGenerator.Menus
 
         protected override void CreateViewMediator()
         {
+            CreateScene();
+            
             base.CreateViewMediator();
 
-            CreateScene();
+            var contextName = _fileName + "TestContext";
+            var rootName = _fileName + "TestRoot";
         }
 
         private void CreateScene()
