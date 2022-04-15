@@ -20,6 +20,8 @@ namespace MVC.Editor.CodeGenerator
         internal static readonly string ScreenTestScenePath = Application.dataPath + "/Test/Screens/";
         internal static readonly string TempScreenViewPath = Application.dataPath.Replace("Assets", "") + "Packages/unity-mvc/Editor/CodeGenerator/TempScreens/TempScreenView.cs";
         internal static readonly string TempScreenMediatorPath = Application.dataPath.Replace("Assets", "") + "Packages/unity-mvc/Editor/CodeGenerator/TempScreens/TempScreenMediator.cs";
+        internal static readonly string TempScreenContextPath = Application.dataPath.Replace("Assets", "") + "Packages/unity-mvc/Editor/CodeGenerator/TempScreens/TempScreenContext.cs";
+        internal static readonly string TempScreenRootPath = Application.dataPath.Replace("Assets", "") + "Packages/unity-mvc/Editor/CodeGenerator/TempScreens/TempScreenRoot.cs";
         
         internal static readonly string TestScreenRootPath = "/Scripts/Runtime/Test/Roots/Screens/";
     }

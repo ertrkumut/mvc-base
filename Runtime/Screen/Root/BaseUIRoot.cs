@@ -3,7 +3,8 @@ using MVC.Runtime.Screen.Context;
 
 namespace MVC.Runtime.Screen.Root
 {
-    public class BaseUIRoot : ContextRoot<BaseUIContext>
+    public class BaseUIRoot<TContext> : ContextRoot<TContext>
+        where TContext : BaseUIContext, new()
     {
     }
 }

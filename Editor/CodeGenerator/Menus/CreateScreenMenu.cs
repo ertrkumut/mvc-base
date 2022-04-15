@@ -38,11 +38,11 @@ namespace MVC.Editor.CodeGenerator.Menus
 
             var rootPath = Application.dataPath + CodeGeneratorStrings.TestScreenRootPath + _viewPath;
 
-            CodeGeneratorUtils.CreateContext(contextName, "TempContext", rootPath, CodeGeneratorStrings.TempContextPath,
+            CodeGeneratorUtils.CreateContext(contextName, "TempScreenContext", rootPath, CodeGeneratorStrings.TempScreenContextPath,
                 namespaceText);
 
-            CodeGeneratorUtils.CreateRoot(rootName, contextName, "TempContext", "TempRoot", rootPath,
-                CodeGeneratorStrings.TempRootPath, namespaceText);
+            CodeGeneratorUtils.CreateRoot(rootName, contextName, "TempScreenContext", "TempScreenRoot", rootPath,
+                CodeGeneratorStrings.TempScreenRootPath, namespaceText);
             
             CreateScene();
         }
