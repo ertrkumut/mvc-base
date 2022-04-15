@@ -10,7 +10,7 @@ namespace MVC.Editor.CodeGenerator.Menus
         protected virtual string _classLabelName => "View Name: ";
         protected virtual string _classViewName => "View";
         protected virtual string _classMediatorName => "Mediator";
-        protected virtual string _namespace => "Runtime.Views.";
+        protected virtual string _screenNamespace => "Runtime.Views.";
 
         protected virtual string _tempViewName => "TempView";
         protected virtual string _tempMediatorName => "TempMediator";
@@ -105,7 +105,7 @@ namespace MVC.Editor.CodeGenerator.Menus
             var viewName = _viewPath.Split('/')[_viewPath.Split('/').Length - 1] + _classViewName;
             var mediatorName = _viewPath.Split('/')[_viewPath.Split('/').Length - 1] + _classMediatorName;
             
-            var namespaceText = _namespace + _viewPath.Replace("/",".");
+            var namespaceText = _screenNamespace + _viewPath.Replace("/",".");
             
             CodeGeneratorUtils.CreateView(viewName, _tempViewName, path, _tempViewPath, namespaceText, _actionNames);
             CodeGeneratorUtils.CreateMediator(mediatorName, viewName, _tempMediatorName, path, _tempMediatorPath, namespaceText, _actionNames);
