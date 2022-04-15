@@ -5,6 +5,7 @@ using MVC.Runtime.Attributes;
 using MVC.Runtime.Bind.Bindings.Pool;
 using MVC.Runtime.Root;
 using UnityEngine;
+using Object = UnityEngine.Object;
 
 namespace MVC.Runtime.Injectable
 {
@@ -52,6 +53,43 @@ namespace MVC.Runtime.Injectable
             injectionBinding.SetKey(injectionType);
             
             _container[injectionType].Add(injectionBinding);    
+        }
+
+        public void BindInstance<TAbstract>(object instance, string name = "")
+        {
+            var injectionType = typeof(TAbstract);
+            var hasInstanceExist = GetInstance(injectionType, name);
+            if (hasInstanceExist != null)
+                return;
+
+            if(!_container.ContainsKey(injectionType))
+                _container.Add(injectionType, new List<InjectionBinding>());
+
+            var injectionBinding = _bindingPoolController.GetAvailableBinding<InjectionBinding>();
+            injectionBinding.Name = name;
+            injectionBinding.SetValue(instance);
+            injectionBinding.SetKey(injectionType);
+            
+            _container[injectionType].Add(injectionBinding);    
+        }
+        
+        public TAbstract BindMonoBehaviorInstance<TAbstract, TConcrete>(string name = "")
+            where TConcrete : MonoBehaviour, TAbstract
+        {
+            var hasInstanceExist = HasInstanceExist<TAbstract>(name);
+            TAbstract instance;
+            if(hasInstanceExist)
+            {
+                instance = GetInstance<TAbstract>(name);
+                return instance;
+            }
+
+            var instanceGameObject = new GameObject(typeof(TConcrete).Name);
+            instance = instanceGameObject.AddComponent<TConcrete>();
+            
+            BindInstance<TAbstract>(instance, name);
+            
+            return instance;
         }
 
         #endregion
