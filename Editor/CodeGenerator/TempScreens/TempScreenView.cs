@@ -1,9 +1,12 @@
+using System;
 using MVC.Runtime.Screen.View;
 
 namespace MVC.Editor.CodeGenerator.TempScreens
 {
-    public class TempScreenView : ScreenView
+    internal class TempScreenView : ScreenView
     {
+        //@Actions
+        
         protected override void ScreenOpened()
         {
             base.ScreenOpened();

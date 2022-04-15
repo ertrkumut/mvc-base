@@ -11,12 +11,14 @@ namespace MVC.Editor.CodeGenerator.TempScreens
         {
             _view.OnScreenOpened += ScreenOpenedListener;
             _view.OnScreenClosed += ScreenClosedListener;
+            //@Register
         }
 
         public virtual void OnRemove()
         {
             _view.OnScreenOpened -= ScreenOpenedListener;
             _view.OnScreenClosed -= ScreenClosedListener;
+            //@Remove
         }
 
         protected virtual void ScreenOpenedListener()
