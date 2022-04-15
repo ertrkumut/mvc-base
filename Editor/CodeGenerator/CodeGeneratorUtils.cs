@@ -108,5 +108,69 @@ namespace MVC.Editor.CodeGenerator
             File.WriteAllLines(newMediatorPath, newMediatorContent.ToArray());
             AssetDatabase.Refresh();
         }
+
+        public static void CreateContext(string contextName, string tempClassName, string contextPath, string tempClassPath, string namespaceName)
+        {
+            var directoryPath = contextPath;
+            var path = directoryPath + "/" + contextName + ".cs";
+
+            var tempContextContent = File.ReadAllLines(tempClassPath);
+            var newContextContent = new List<string>();
+
+            for (var ii = 0; ii < tempContextContent.Length; ii++)
+            {
+                var content = tempContextContent[ii];
+                if (content.Contains("namespace "))
+                {
+                    content = "namespace " + namespaceName;
+                }
+                else if (content.Contains("internal class "))
+                {
+                    content = content.Replace("internal class", "public class");
+                    content = content.Replace(tempClassName, contextName);
+                }
+
+                newContextContent.Add(content);
+            }
+            
+            if (!Directory.Exists(directoryPath))
+                Directory.CreateDirectory(directoryPath);
+            
+            File.WriteAllLines(path, newContextContent.ToArray());
+            AssetDatabase.Refresh();
+        }
+
+        public static void CreateRoot(string rootName, string contextName, string tempContextName, string tempRootName, string rootPath,
+            string tempClassPath, string namespaceName)
+        {
+            var directoryPath = rootPath;
+            var path = directoryPath + "/" + rootName + ".cs";
+            
+            var tempRootContent = File.ReadAllLines(tempClassPath);
+            var newRootContent = new List<string>();
+            
+            for (var ii = 0; ii < tempRootContent.Length; ii++)
+            {
+                var content = tempRootContent[ii];
+                if (content.Contains("namespace "))
+                {
+                    content = "namespace " + namespaceName;
+                }
+                else if (content.Contains("internal class "))
+                {
+                    content = content.Replace("internal class", "public class");
+                    content = content.Replace(tempRootName, rootName);
+                    content = content.Replace(tempContextName, contextName);
+                }
+            
+                newRootContent.Add(content);
+            }
+            
+            if (!Directory.Exists(directoryPath))
+                Directory.CreateDirectory(directoryPath);
+            
+            File.WriteAllLines(path, newRootContent.ToArray());
+            AssetDatabase.Refresh();
+        }
     }
 }

@@ -24,19 +24,11 @@ namespace MVC.Editor.CodeGenerator.Menus
         protected override string _tempViewPath => CodeGeneratorStrings.TempScreenViewPath;
         protected override string _tempMediatorPath => CodeGeneratorStrings.TempScreenMediatorPath;
 
-        private string _fileName;
-        
         protected override void CreateViewMediator()
         {
             base.CreateViewMediator();
 
             CreateScene();
-        }
-
-        protected override void CreateView(string path, string fileName, string namespaceText)
-        {
-            _fileName = fileName;
-            base.CreateView(path, fileName, namespaceText);
         }
 
         private void CreateScene()
