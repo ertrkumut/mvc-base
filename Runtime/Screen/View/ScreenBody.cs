@@ -1,3 +1,4 @@
+using System;
 using MVC.Runtime.Screen.Enum;
 using UnityEngine;
 
@@ -5,6 +6,9 @@ namespace MVC.Runtime.Screen.View
 {
     public class ScreenBody : MonoBehaviour, IScreenBody
     {
+        public Action OnScreenOpened;
+        public Action OnScreenClosed;
+        
         [SerializeField] private bool _customOpeningAnimation;
         [SerializeField] private bool _customClosingAnimation;
 
@@ -18,11 +22,13 @@ namespace MVC.Runtime.Screen.View
         protected virtual void ScreenOpened()
         {
             ScreenState = ScreenState.InUse;
+            OnScreenOpened?.Invoke();
         }
         
         protected virtual void ScreenClosed()
         {
             ScreenState = ScreenState.InPool;
+            OnScreenClosed?.Invoke();
             OnReturnToPool();
         }
 
