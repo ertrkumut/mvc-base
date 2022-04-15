@@ -84,6 +84,15 @@ namespace MVC.Editor.CodeGenerator.Menus
             screenGameObject.transform.SetParent(screenManager.ScreenLayerList[0].transform);
                 
             screenGameObject.AddComponent(screenType);
+            var rectTransform = screenGameObject.transform as RectTransform;
+            rectTransform.localScale = Vector3.one;
+            rectTransform.anchorMax = Vector2.one;
+            rectTransform.anchorMin = Vector2.zero;
+            rectTransform.offsetMin = Vector2.zero;
+            rectTransform.offsetMax = Vector2.zero;
+
+            PrefabUtility.SaveAsPrefabAssetAndConnect(screenGameObject, CodeGeneratorStrings.ScreenPrefabPath, InteractionMode.UserAction);
+            
             EditorSceneManager.SaveScene(EditorSceneManager.GetActiveScene(), path);
             AssetDatabase.Refresh();
         }

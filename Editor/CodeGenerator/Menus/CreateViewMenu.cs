@@ -107,8 +107,11 @@ namespace MVC.Editor.CodeGenerator.Menus
             
             var namespaceText = _namespace + _viewPath.Replace("/",".");
             
-            CreateView(path, viewName, namespaceText);
-            CreateMediator(path, mediatorName, viewName, namespaceText);
+            CodeGeneratorUtils.CreateView(viewName, _tempViewName, path, _tempViewPath, namespaceText, _actionNames);
+            CodeGeneratorUtils.CreateMediator(mediatorName, viewName, _tempMediatorName, path, _tempMediatorPath, namespaceText, _actionNames);
+            
+            // CreateView(path, viewName, namespaceText);
+            // CreateMediator(path, mediatorName, viewName, namespaceText);
         }
 
         protected virtual void CreateView(string path, string fileName, string namespaceText)
