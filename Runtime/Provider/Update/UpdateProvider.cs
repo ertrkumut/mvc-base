@@ -1,3 +1,4 @@
+using System;
 using MVC.Runtime.Attributes;
 using UnityEngine;
 using UnityEngine.Events;
@@ -11,6 +12,8 @@ namespace MVC.Runtime.Provider.Update
         private event UnityAction OnLateUpdate;
         private event UnityAction OnFixedUpdate;
 
+        #region Update
+
         public void AddUpdate(UnityAction callback)
         {
             OnUpdate += callback;
@@ -20,7 +23,11 @@ namespace MVC.Runtime.Provider.Update
         {
             OnUpdate -= callback;
         }
-        
+
+        #endregion
+
+        #region LateUpdate
+
         public void AddLateUpdate(UnityAction callback)
         {
             OnLateUpdate += callback;
@@ -30,7 +37,11 @@ namespace MVC.Runtime.Provider.Update
         {
             OnLateUpdate -= callback;
         }
-        
+
+        #endregion
+
+        #region FixedUpdate
+
         public void AddFixedUpdate(UnityAction callback)
         {
             OnFixedUpdate += callback;
@@ -40,5 +51,26 @@ namespace MVC.Runtime.Provider.Update
         {
             OnFixedUpdate -= callback;
         }
+
+        #endregion
+
+        #region UnityCallback
+
+        private void Update()
+        {
+            OnUpdate?.Invoke();
+        }
+
+        private void LateUpdate()
+        {
+            OnLateUpdate?.Invoke();
+        }
+
+        private void FixedUpdate()
+        {
+            OnFixedUpdate?.Invoke();
+        }
+
+        #endregion
     }
 }
