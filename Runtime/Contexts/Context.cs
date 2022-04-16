@@ -112,8 +112,8 @@ namespace MVC.Runtime.Contexts
         public virtual void DestroyContext()
         {
             ContextStarted = false;
-            MediationBinder.UnBindAll();
-            InjectionBinder.UnBindAll();
+            MediationBinder?.UnBindAll();
+            InjectionBinder?.UnBindAll();
         }
     }
 }

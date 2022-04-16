@@ -4,7 +4,7 @@ namespace MVC.Runtime.Root
 {
     public interface IContextRoot
     {
-        void StartContext();
+        void StartContext(bool forceToStart = false);
         IContext GetContext();
 
         void Launch(bool forceToLaunch = false);

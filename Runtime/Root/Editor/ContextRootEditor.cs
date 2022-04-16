@@ -20,7 +20,10 @@ namespace MVC.Runtime.Root.Editor
         {
             GUI_InitializeOrder();
             GUI_BindingOptions();
+            GUI_InitializeOptions();
             GUI_LaunchOptions();
+
+            GUI_RootStatus();
         }
 
         private void GUI_InitializeOrder()
@@ -31,11 +34,12 @@ namespace MVC.Runtime.Root.Editor
             
             var initializeOrder = EditorGUILayout.IntField("Initialize Order: ", _root.initializeOrder);
 
-            if (EditorGUI.EndChangeCheck() && !Application.isPlaying)
+            if (EditorGUI.EndChangeCheck())
             {
                 Undo.RecordObject(_root, "initialize-order");
                 _root.initializeOrder = initializeOrder;
-                EditorSceneManager.MarkSceneDirty(SceneManager.GetActiveScene());
+                if(!Application.isPlaying)
+                    EditorSceneManager.MarkSceneDirty(SceneManager.GetActiveScene());
             }
             
             EditorGUILayout.EndVertical();
@@ -139,7 +143,7 @@ namespace MVC.Runtime.Root.Editor
 
             #endregion
 
-            if (EditorGUI.EndChangeCheck() && !Application.isPlaying)
+            if (EditorGUI.EndChangeCheck())
             {
                 Undo.RecordObject(_root, "binding-flags");
                 _root.autoBindSignals = signalBinding;
@@ -147,8 +151,46 @@ namespace MVC.Runtime.Root.Editor
                 _root.autoBindMediations = mediationBinding;
                 _root.autoBindCommands = commandBinding;
                 
-                EditorSceneManager.MarkSceneDirty(SceneManager.GetActiveScene());
+                if(!Application.isPlaying)
+                    EditorSceneManager.MarkSceneDirty(SceneManager.GetActiveScene());
             }            
+            EditorGUILayout.EndVertical();
+        }
+
+        private void GUI_InitializeOptions()
+        {
+            EditorGUILayout.BeginVertical("box");
+            
+            EditorGUILayout.BeginHorizontal();
+
+            EditorGUI.BeginChangeCheck();
+
+            var autoInitialize = EditorGUILayout.ToggleLeft("Auto Initialize", _root.autoInitialize, GUILayout.Width(125));
+            GUI.enabled = (Application.isPlaying && !_root.hasInitialized);
+
+            if (GUI.enabled && !_root.hasInitialized)
+                GUI.backgroundColor = Color.green;
+            else
+                GUI.backgroundColor = Color.red;
+
+            var launchButton = GUILayout.Button("Initialize");
+            if(launchButton)
+                _root.StartContext(true);
+            
+            GUI.backgroundColor = Color.white;
+            
+            if (EditorGUI.EndChangeCheck())
+            {
+                Undo.RecordObject(_root, "auto-initialize");
+                _root.autoInitialize = autoInitialize;
+                
+                if(!Application.isPlaying)
+                    EditorSceneManager.MarkSceneDirty(SceneManager.GetActiveScene());
+            }
+            
+            GUI.enabled = true;
+            EditorGUILayout.EndHorizontal();
+            
             EditorGUILayout.EndVertical();
         }
         
@@ -161,7 +203,7 @@ namespace MVC.Runtime.Root.Editor
             EditorGUI.BeginChangeCheck();
 
             var autoLaunch = EditorGUILayout.ToggleLeft("Auto Launch", _root.autoLaunch, GUILayout.Width(125));
-            GUI.enabled = (Application.isPlaying && !_root.hasLaunched);
+            GUI.enabled = (Application.isPlaying && !_root.hasLaunched && _root.hasInitialized);
 
             if (GUI.enabled && !_root.hasLaunched)
                 GUI.backgroundColor = Color.green;
@@ -174,16 +216,48 @@ namespace MVC.Runtime.Root.Editor
             
             GUI.backgroundColor = Color.white;
             
-            if (EditorGUI.EndChangeCheck() && !Application.isPlaying)
+            if (EditorGUI.EndChangeCheck())
             {
                 Undo.RecordObject(_root, "auto-launch");
                 _root.autoLaunch = autoLaunch;
                 
-                EditorSceneManager.MarkSceneDirty(SceneManager.GetActiveScene());
+                if(!Application.isPlaying)
+                    EditorSceneManager.MarkSceneDirty(SceneManager.GetActiveScene());
             }
             
             GUI.enabled = true;
             EditorGUILayout.EndHorizontal();
+            
+            EditorGUILayout.EndVertical();
+        }
+
+        private void GUI_RootStatus()
+        {
+            var guiStyle = new GUIStyle(EditorStyles.textField);
+            
+            EditorGUILayout.BeginVertical("box");
+            
+            EditorGUILayout.LabelField("Context Status:");
+            
+            guiStyle.normal.textColor = _root.signalsBound ? Color.green : Color.red;            
+            EditorGUILayout.LabelField("Signals Bound: " + _root.signalsBound, guiStyle);
+
+            guiStyle.normal.textColor = _root.injectionsBound ? Color.green : Color.red;            
+            EditorGUILayout.LabelField("Injections Bound: " + _root.injectionsBound, guiStyle);
+
+            guiStyle.normal.textColor = _root.mediationsBound ? Color.green : Color.red;            
+            EditorGUILayout.LabelField("Mediations Bound: " + _root.mediationsBound, guiStyle);
+            
+            guiStyle.normal.textColor = _root.commandsBound ? Color.green : Color.red;            
+            EditorGUILayout.LabelField("Commands Bound: " + _root.commandsBound, guiStyle);
+
+            EditorGUILayout.Separator();
+            
+            guiStyle.normal.textColor = _root.hasInitialized ? Color.green : Color.red;            
+            EditorGUILayout.LabelField("Has Initialized: " + _root.hasInitialized, guiStyle);
+            
+            guiStyle.normal.textColor = _root.hasLaunched ? Color.green : Color.red;            
+            EditorGUILayout.LabelField("Has Launched: " + _root.hasLaunched, guiStyle);
             
             EditorGUILayout.EndVertical();
         }

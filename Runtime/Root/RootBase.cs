@@ -11,6 +11,7 @@ namespace MVC.Runtime.Root
         internal bool injectionsBound;
         internal bool mediationsBound;
         internal bool commandsBound;
+        internal bool hasInitialized;
         internal bool hasLaunched;
         
         public bool autoBindSignals = true;
@@ -18,16 +19,20 @@ namespace MVC.Runtime.Root
         public bool autoBindMediations = true;
         public bool autoBindCommands = true;
 
+        public bool autoInitialize = true;
         public bool autoLaunch = true;
         
         public IContext Context { get; set; }
         
         protected RootsManager _rootsManager;
         
-        public virtual void StartContext() {}
+        public virtual void StartContext(bool forceToStart = false) {}
 
         public void BindSignals(bool forceToBind = false)
         {
+            if(!hasInitialized)
+                return;
+            
             if(!autoBindSignals && !forceToBind)
                 return;
             
@@ -40,6 +45,9 @@ namespace MVC.Runtime.Root
 
         public void BindInjections(bool forceToBind = false)
         {
+            if(!hasInitialized)
+                return;
+            
             if(!autoBindInjections && !forceToBind)
                 return;
             
@@ -52,6 +60,9 @@ namespace MVC.Runtime.Root
 
         public void BindMediations(bool forceToBind = false)
         {
+            if(!hasInitialized)
+                return;
+            
             if (!autoBindMediations && !forceToBind)
                 return;
             
@@ -64,6 +75,9 @@ namespace MVC.Runtime.Root
 
         public void BindCommands(bool forceToBind = false)
         {
+            if(!hasInitialized)
+                return;
+            
             if (!autoBindCommands && !forceToBind)
                 return;
 
@@ -81,6 +95,9 @@ namespace MVC.Runtime.Root
         
         public virtual void Launch(bool forceToLaunch = false)
         {
+            if(!hasInitialized)
+                return;
+            
             if(!autoLaunch && !forceToLaunch)
                 return;
             

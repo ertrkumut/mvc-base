@@ -50,8 +50,12 @@ namespace MVC.Runtime.Root
             _context.Initialize(gameObject, initializeOrder, _rootsManager.injectionBinderCrossContext);
         }
         
-        public override void StartContext()
+        public override void StartContext(bool forceToStart = false)
         {
+            if(!autoInitialize && !forceToStart)
+                return;
+
+            hasInitialized = true;
             AfterCreateBeforeStartContext();
 
             _context.Start();
@@ -65,6 +69,8 @@ namespace MVC.Runtime.Root
             _context.ExecutePostConstructMethods();
                 
             AfterStarBeforeLaunchContext();
+            
+            _rootsManager.OnContextReady?.Invoke(Context);
         }
         
         public virtual void DestroyContext()

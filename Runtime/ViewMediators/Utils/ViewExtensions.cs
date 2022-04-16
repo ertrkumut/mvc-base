@@ -58,6 +58,9 @@ namespace MVC.Runtime.ViewMediators.Utils
             }
             
             var mediationBinder = viewContext.MediationBinder;
+            if(mediationBinder == null)
+                return;
+            
             var injectedMediatorData = mediationBinder.GetOrCreateInjectedMediatorData(view);
             if (injectedMediatorData.mediator == null)
                 return;
