@@ -38,8 +38,6 @@ namespace MVC.Runtime.Contexts
             ContextStarted = true;
             
             CoreBindings();
-            MapBindings();
-            PostBindings();
         }
 
         void IContext.InjectAllInstances()
@@ -97,11 +95,11 @@ namespace MVC.Runtime.Contexts
             InjectionBinderCrossContext.BindMonoBehaviorInstance<ICoroutineProvider, CoroutineProvider>();
         }
 
-        public virtual void MapBindings()
-        {
-            
-        }
-
+        public virtual void SignalBindings(){}
+        public virtual void InjectionBindings(){}
+        public virtual void MediationBindings(){}
+        public virtual void CommandBindings(){}
+        
         public virtual void PostBindings()
         {
             

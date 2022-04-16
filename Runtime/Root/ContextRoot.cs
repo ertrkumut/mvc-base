@@ -1,14 +1,10 @@
 ﻿using MVC.Runtime.Contexts;
-using UnityEngine;
 
 namespace MVC.Runtime.Root
 {
     public class ContextRoot<TContextType> : RootBase, IContextRoot
         where TContextType : IContext, new()
     {
-        public int initializeOrder;
-        protected RootsManager _rootsManager;
-
         protected TContextType _context
         {
             get
@@ -58,6 +54,12 @@ namespace MVC.Runtime.Root
             AfterCreateBeforeStartContext();
 
             _context.Start();
+            
+            BindSignals();
+            BindInjections();
+            BindMediations();
+            BindCommands();
+            
             _context.InjectAllInstances();
             _context.ExecutePostConstructMethods();
                 
@@ -68,6 +70,11 @@ namespace MVC.Runtime.Root
         {
             _rootsManager.UnRegisterContext(this);
             _context.DestroyContext();
+
+            signalsBound = false;
+            injectionsBound = false;
+            mediationsBound = false;
+            commandsBound = false;
         } 
             
         public IContext GetContext()

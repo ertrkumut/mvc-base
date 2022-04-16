@@ -19,8 +19,11 @@ namespace MVC.Runtime.Contexts
 
         internal void InjectAllInstances();
         internal void ExecutePostConstructMethods();
-
-        void MapBindings();
+        
+        void SignalBindings();
+        void InjectionBindings();
+        void MediationBindings();
+        void CommandBindings();
         void PostBindings();
         
         void Launch();

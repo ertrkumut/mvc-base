@@ -4,9 +4,24 @@ namespace MVC.Editor.CodeGenerator.TempScreens
 {
     internal class TempScreenContext : BaseUIContext
     {
-        public override void MapBindings()
+        public override void SignalBindings()
         {
-            base.MapBindings();
+            base.SignalBindings();
+        }
+
+        public override void InjectionBindings()
+        {
+            base.InjectionBindings();
+        }
+
+        public override void MediationBindings()
+        {
+            base.MediationBindings();
+        }
+
+        public override void CommandBindings()
+        {
+            base.CommandBindings();
         }
 
         public override void Launch()
