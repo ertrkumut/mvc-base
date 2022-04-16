@@ -75,7 +75,7 @@ namespace MVC.Runtime.Root
 
             foreach (var contextRoot in _contextRootList)
             {
-                contextRoot.GetContext().Launch();
+                contextRoot.Launch();
             }
         }
 

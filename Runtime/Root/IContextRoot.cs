@@ -6,5 +6,7 @@ namespace MVC.Runtime.Root
     {
         void StartContext();
         IContext GetContext();
+
+        void Launch(bool forceToLaunch = false);
     }
 }

@@ -1,5 +1,6 @@
 using System.Linq;
 using UnityEditor;
+using UnityEngine;
 
 namespace MVC.Runtime.Screen.Editor
 {
@@ -9,18 +10,22 @@ namespace MVC.Runtime.Screen.Editor
     {
         public override void OnInspectorGUI()
         {
-            var allScreenManagers = FindObjectsOfType<ScreenManager>().ToList();
-            foreach (var screenManager in allScreenManagers)
+            if(!Application.isPlaying)
             {
-                var managerIndex = screenManager.ManagerIndex;
-                var sameIndexManagers = allScreenManagers
-                    .Where(x => x.ManagerIndex == managerIndex)
-                    .ToList();
-
-                if (sameIndexManagers.Count != 1)
+                var allScreenManagers = FindObjectsOfType<ScreenManager>().ToList();
+                foreach (var screenManager in allScreenManagers)
                 {
-                    EditorGUILayout.HelpBox("There is too many ScreenManagers with same Index!!", MessageType.Error);
-                    break;
+                    var managerIndex = screenManager.ManagerIndex;
+                    var sameIndexManagers = allScreenManagers
+                        .Where(x => x.ManagerIndex == managerIndex)
+                        .ToList();
+
+                    if (sameIndexManagers.Count != 1)
+                    {
+                        EditorGUILayout.HelpBox("There is too many ScreenManagers with same Index!!",
+                            MessageType.Error);
+                        break;
+                    }
                 }
             }
             

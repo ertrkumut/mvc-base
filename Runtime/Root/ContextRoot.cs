@@ -2,7 +2,7 @@
 
 namespace MVC.Runtime.Root
 {
-    public class ContextRoot<TContextType> : RootBase, IContextRoot
+    public class ContextRoot<TContextType> : RootBase
         where TContextType : IContext, new()
     {
         protected TContextType _context
@@ -46,10 +46,11 @@ namespace MVC.Runtime.Root
             BeforeCreateContext();
             
             _context = new TContextType();
+            Context = _context;
             _context.Initialize(gameObject, initializeOrder, _rootsManager.injectionBinderCrossContext);
         }
         
-        public virtual void StartContext()
+        public override void StartContext()
         {
             AfterCreateBeforeStartContext();
 
@@ -75,13 +76,8 @@ namespace MVC.Runtime.Root
             injectionsBound = false;
             mediationsBound = false;
             commandsBound = false;
-        } 
-            
-        public IContext GetContext()
-        {
-            return _context;
         }
-        
+
         private void BeforeCreateContext(){}
 
         private void AfterCreateBeforeStartContext(){}

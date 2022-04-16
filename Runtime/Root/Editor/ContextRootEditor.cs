@@ -20,6 +20,7 @@ namespace MVC.Runtime.Root.Editor
         {
             GUI_InitializeOrder();
             GUI_BindingOptions();
+            GUI_LaunchOptions();
         }
 
         private void GUI_InitializeOrder()
@@ -50,7 +51,7 @@ namespace MVC.Runtime.Root.Editor
             
             EditorGUILayout.BeginHorizontal();
             
-            var signalBinding = EditorGUILayout.ToggleLeft("Bind Signals", _root.bindSignals, GUILayout.Width(125));
+            var signalBinding = EditorGUILayout.ToggleLeft("Bind Signals", _root.autoBindSignals, GUILayout.Width(125));
             GUI.enabled = (Application.isPlaying && !_root.signalsBound);
 
             if (GUI.enabled && !_root.signalsBound)
@@ -73,7 +74,7 @@ namespace MVC.Runtime.Root.Editor
 
             EditorGUILayout.BeginHorizontal();
             
-            var injectionBinding = EditorGUILayout.ToggleLeft("Bind Injections", _root.bindInjections, GUILayout.Width(125));
+            var injectionBinding = EditorGUILayout.ToggleLeft("Bind Injections", _root.autoBindInjections, GUILayout.Width(125));
             GUI.enabled = (Application.isPlaying && !_root.injectionsBound);
 
             if (GUI.enabled && !_root.injectionsBound)
@@ -96,7 +97,7 @@ namespace MVC.Runtime.Root.Editor
 
             EditorGUILayout.BeginHorizontal();
             
-            var mediationBinding = EditorGUILayout.ToggleLeft("Bind Mediations", _root.bindMediations, GUILayout.Width(125));
+            var mediationBinding = EditorGUILayout.ToggleLeft("Bind Mediations", _root.autoBindMediations, GUILayout.Width(125));
             GUI.enabled = (Application.isPlaying && !_root.mediationsBound);
 
             if (GUI.enabled && !_root.mediationsBound)
@@ -119,7 +120,7 @@ namespace MVC.Runtime.Root.Editor
 
             EditorGUILayout.BeginHorizontal();
             
-            var commandBinding = EditorGUILayout.ToggleLeft("Bind Commands", _root.bindCommands, GUILayout.Width(125));
+            var commandBinding = EditorGUILayout.ToggleLeft("Bind Commands", _root.autoBindCommands, GUILayout.Width(125));
             GUI.enabled = (Application.isPlaying && !_root.commandsBound);
 
             if (GUI.enabled && !_root.commandsBound)
@@ -141,13 +142,49 @@ namespace MVC.Runtime.Root.Editor
             if (EditorGUI.EndChangeCheck() && !Application.isPlaying)
             {
                 Undo.RecordObject(_root, "binding-flags");
-                _root.bindSignals = signalBinding;
-                _root.bindInjections = injectionBinding;
-                _root.bindMediations = mediationBinding;
-                _root.bindCommands = commandBinding;
+                _root.autoBindSignals = signalBinding;
+                _root.autoBindInjections = injectionBinding;
+                _root.autoBindMediations = mediationBinding;
+                _root.autoBindCommands = commandBinding;
                 
                 EditorSceneManager.MarkSceneDirty(SceneManager.GetActiveScene());
             }            
+            EditorGUILayout.EndVertical();
+        }
+        
+        private void GUI_LaunchOptions()
+        {
+            EditorGUILayout.BeginVertical("box");
+
+            EditorGUILayout.BeginHorizontal();
+
+            EditorGUI.BeginChangeCheck();
+
+            var autoLaunch = EditorGUILayout.ToggleLeft("Auto Launch", _root.autoLaunch, GUILayout.Width(125));
+            GUI.enabled = (Application.isPlaying && !_root.hasLaunched);
+
+            if (GUI.enabled && !_root.hasLaunched)
+                GUI.backgroundColor = Color.green;
+            else
+                GUI.backgroundColor = Color.red;
+
+            var launchButton = GUILayout.Button("Launch");
+            if(launchButton)
+                _root.Launch(true);
+            
+            GUI.backgroundColor = Color.white;
+            
+            if (EditorGUI.EndChangeCheck() && !Application.isPlaying)
+            {
+                Undo.RecordObject(_root, "auto-launch");
+                _root.autoLaunch = autoLaunch;
+                
+                EditorSceneManager.MarkSceneDirty(SceneManager.GetActiveScene());
+            }
+            
+            GUI.enabled = true;
+            EditorGUILayout.EndHorizontal();
+            
             EditorGUILayout.EndVertical();
         }
     }

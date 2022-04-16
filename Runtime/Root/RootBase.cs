@@ -3,7 +3,7 @@ using UnityEngine;
 
 namespace MVC.Runtime.Root
 {
-    public class RootBase : MonoBehaviour
+    public class RootBase : MonoBehaviour, IContextRoot
     {
         public int initializeOrder;
         
@@ -11,19 +11,24 @@ namespace MVC.Runtime.Root
         internal bool injectionsBound;
         internal bool mediationsBound;
         internal bool commandsBound;
+        internal bool hasLaunched;
         
-        public bool bindSignals = true;
-        public bool bindInjections = true;
-        public bool bindMediations = true;
-        public bool bindCommands = true;
+        public bool autoBindSignals = true;
+        public bool autoBindInjections = true;
+        public bool autoBindMediations = true;
+        public bool autoBindCommands = true;
+
+        public bool autoLaunch = true;
         
         public IContext Context { get; set; }
         
         protected RootsManager _rootsManager;
         
+        public virtual void StartContext() {}
+
         public void BindSignals(bool forceToBind = false)
         {
-            if(!bindSignals && !forceToBind)
+            if(!autoBindSignals && !forceToBind)
                 return;
             
             if(signalsBound)
@@ -35,7 +40,7 @@ namespace MVC.Runtime.Root
 
         public void BindInjections(bool forceToBind = false)
         {
-            if(!bindInjections && !forceToBind)
+            if(!autoBindInjections && !forceToBind)
                 return;
             
             if(injectionsBound)
@@ -47,7 +52,7 @@ namespace MVC.Runtime.Root
 
         public void BindMediations(bool forceToBind = false)
         {
-            if (!bindMediations && !forceToBind)
+            if (!autoBindMediations && !forceToBind)
                 return;
             
             if(mediationsBound)
@@ -59,7 +64,7 @@ namespace MVC.Runtime.Root
 
         public void BindCommands(bool forceToBind = false)
         {
-            if (!bindCommands && !forceToBind)
+            if (!autoBindCommands && !forceToBind)
                 return;
 
             if (commandsBound)
@@ -67,6 +72,23 @@ namespace MVC.Runtime.Root
             
             Context.CommandBindings();
             commandsBound = true;
+        }
+        
+        public IContext GetContext()
+        {
+            return Context;
+        }
+        
+        public virtual void Launch(bool forceToLaunch = false)
+        {
+            if(!autoLaunch && !forceToLaunch)
+                return;
+            
+            if(hasLaunched)
+                return;
+            
+            Context.Launch();
+            hasLaunched = true;
         }
     }
 }
