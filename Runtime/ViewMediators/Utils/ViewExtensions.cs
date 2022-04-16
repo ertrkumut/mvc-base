@@ -91,6 +91,7 @@ namespace MVC.Runtime.ViewMediators.Utils
             while (contextRoot == null)
             {
                 contextRoot = parent.GetComponent<IContextRoot>();
+                parent = parent.parent;
             }
             
             return contextRoot == null ? null : contextRoot.GetContext();
