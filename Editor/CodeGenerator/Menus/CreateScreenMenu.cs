@@ -29,7 +29,7 @@ namespace MVC.Editor.CodeGenerator.Menus
         {
             base.CreateViewMediator();
 
-            var namespaceText = _testContextNamespace + _viewPath.Replace("/", ".");
+            var rootNamespace = _testContextNamespace + _viewPath.Replace("/", ".");
             var contextName = (_fileName + "TestContext").Replace("View", "");
             var rootName = (_fileName + "TestRoot").Replace("View", "");
 
@@ -39,10 +39,12 @@ namespace MVC.Editor.CodeGenerator.Menus
             var rootPath = Application.dataPath + CodeGeneratorStrings.TestScreenRootPath + _viewPath;
 
             CodeGeneratorUtils.CreateContext(contextName, "TempScreenContext", rootPath, CodeGeneratorStrings.TempScreenContextPath,
-                namespaceText);
+                rootNamespace);
 
             CodeGeneratorUtils.CreateRoot(rootName, contextName, "TempScreenContext", "TempScreenRoot", rootPath,
-                CodeGeneratorStrings.TempScreenRootPath, namespaceText);
+                CodeGeneratorStrings.TempScreenRootPath, rootNamespace);
+            
+            CodeGeneratorUtils.BindMediationInContext(rootPath + "/" + contextName + ".cs", _viewName, _mediatorName, "TempScreenView", "TempScreenMediator", _viewNamespace);
             
             CreateScene();
         }

@@ -172,5 +172,27 @@ namespace MVC.Editor.CodeGenerator
             File.WriteAllLines(path, newRootContent.ToArray());
             AssetDatabase.Refresh();
         }
+
+        public static void BindMediationInContext(string contextPath, string viewName, string mediationName, string tempViewName, string tempMediationName, string viewNamespace)
+        {
+            var contextLines = File.ReadAllLines(contextPath);
+            var newRootContent = new List<string>();
+            
+            newRootContent.Add("using " + viewNamespace + ";");
+            for (var ii = 0; ii < contextLines.Length; ii++)
+            {
+                var content = contextLines[ii];
+                if (content.Contains("MediationBinder.Bind<"))
+                {
+                    content = content.Replace(tempViewName, viewName);
+                    content = content.Replace(tempMediationName, mediationName);
+                }
+                
+                newRootContent.Add(content);
+            }
+            
+            File.WriteAllLines(contextPath, newRootContent.ToArray());
+            AssetDatabase.Refresh();
+        }
     }
 }

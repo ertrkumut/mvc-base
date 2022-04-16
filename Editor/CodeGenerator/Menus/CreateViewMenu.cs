@@ -24,6 +24,10 @@ namespace MVC.Editor.CodeGenerator.Menus
 
         protected List<string> _actionNames;
 
+        protected string _viewNamespace;
+        protected string _viewName;
+        protected string _mediatorName;
+        
         protected virtual void OnEnable()
         {
             _actionNames = new List<string>();
@@ -102,15 +106,15 @@ namespace MVC.Editor.CodeGenerator.Menus
         protected virtual void CreateViewMediator()
         {
             var path = Application.dataPath + _targetViewPath + _viewPath;
-            var viewName = _viewPath.Split('/')[_viewPath.Split('/').Length - 1] + _classViewName;
-            var mediatorName = _viewPath.Split('/')[_viewPath.Split('/').Length - 1] + _classMediatorName;
+            _viewName = _viewPath.Split('/')[_viewPath.Split('/').Length - 1] + _classViewName;
+            _mediatorName = _viewPath.Split('/')[_viewPath.Split('/').Length - 1] + _classMediatorName;
             
-            var namespaceText = _screenNamespace + _viewPath.Replace("/",".");
+            _viewNamespace = _screenNamespace + _viewPath.Replace("/",".");
             
-            CodeGeneratorUtils.CreateView(viewName, _tempViewName, path, _tempViewPath, namespaceText, _actionNames);
-            CodeGeneratorUtils.CreateMediator(mediatorName, viewName, _tempMediatorName, path, _tempMediatorPath, namespaceText, _actionNames);
+            CodeGeneratorUtils.CreateView(_viewName, _tempViewName, path, _tempViewPath, _viewNamespace, _actionNames);
+            CodeGeneratorUtils.CreateMediator(_mediatorName, _viewName, _tempMediatorName, path, _tempMediatorPath, _viewNamespace, _actionNames);
 
-            _fileName = viewName;
+            _fileName = _viewName;
         }
     }
 }

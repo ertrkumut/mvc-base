@@ -17,6 +17,8 @@ namespace MVC.Editor.CodeGenerator.TempScreens
         public override void MediationBindings()
         {
             base.MediationBindings();
+            
+            MediationBinder.Bind<TempScreenView>().To<TempScreenMediator>();
         }
 
         public override void CommandBindings()
