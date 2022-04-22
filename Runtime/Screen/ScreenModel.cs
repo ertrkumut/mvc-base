@@ -47,6 +47,9 @@ namespace MVC.Runtime.Screen
             var screenManager = GetScreenManager(screenDataContainer.ManagerIndex);
 
             var availableScreen = _screenPoolController.GetScreenFromPool(screenDataContainer.ScreenType);
+            screenManager.ShowScreen(availableScreen);
+                
+            ((ScreenBody) availableScreen).Open();
             
             _screenDataContainerPool.Add(screenDataContainer);
             screenDataContainer.Dispose();

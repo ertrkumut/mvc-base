@@ -21,6 +21,15 @@ namespace MVC.Runtime.Screen.Layer
             if(!screens.Contains(screenBody))
             {
                 ScreensDict[screenType].Add(screenBody);
+                
+                var rectTransform = screenBody.transform as RectTransform;
+                rectTransform.SetParent(transform);
+                rectTransform.localScale = Vector3.one;
+                rectTransform.anchorMax = Vector2.one;
+                rectTransform.anchorMin = Vector2.zero;
+                rectTransform.offsetMin = Vector2.zero;
+                rectTransform.offsetMax = Vector2.zero;
+                
                 return true;
             }
             
