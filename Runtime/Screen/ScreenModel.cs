@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using MVC.Runtime.Injectable.Attributes;
 using MVC.Runtime.Screen.Pool;
 using MVC.Runtime.Screen.View;
+using MVC.Runtime.ViewMediators.Utils;
 using UnityEngine;
 
 namespace MVC.Runtime.Screen
@@ -41,6 +42,11 @@ namespace MVC.Runtime.Screen
             return dataContainer;
         }
 
+        public void HideScreen(IScreenBody screenBody)
+        {
+            
+        }
+        
         internal TScreenType CreateOrGetScreen<TScreenType>(ScreenDataContainer screenDataContainer)
             where TScreenType : MonoBehaviour, IScreenBody
         {
@@ -48,13 +54,14 @@ namespace MVC.Runtime.Screen
 
             var availableScreen = _screenPoolController.GetScreenFromPool(screenDataContainer.ScreenType);
             screenManager.ShowScreen(availableScreen);
-                
+
+            availableScreen.InjectView();
             ((ScreenBody) availableScreen).Open();
             
             _screenDataContainerPool.Add(screenDataContainer);
             screenDataContainer.Dispose();
             
-            return default;
+            return (TScreenType) availableScreen;
         }
 
         public IScreenManager GetScreenManager(int managerId)
