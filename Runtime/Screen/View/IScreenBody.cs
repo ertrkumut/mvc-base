@@ -1,11 +1,15 @@
 using MVC.Runtime.Pool;
 using MVC.Runtime.Screen.Enum;
 using MVC.Runtime.ViewMediators.View;
+using UnityEngine;
 
 namespace MVC.Runtime.Screen.View
 {
     public interface IScreenBody : IView, IPoolable
     {
+        Transform transform { get; }
+        GameObject gameObject { get; }
+        
         /// <summary>
         /// It shows the state of the screen. None, InPool, InUse, InOpeningAnimation, InClosingAnimation
         /// </summary>
