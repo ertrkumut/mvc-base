@@ -1,3 +1,5 @@
+using MVC.Runtime.Screen.Pool;
+
 namespace MVC.Runtime.Screen.Context
 {
     public class BaseUIContext : Runtime.Contexts.Context
@@ -6,7 +8,9 @@ namespace MVC.Runtime.Screen.Context
         {
             base.CoreBindings();
 
+            InjectionBinderCrossContext.Bind<IScreenPoolController, ScreenPoolController>();
             InjectionBinderCrossContext.Bind<IScreenModel, ScreenModel>();
+            
             MediationBinder.Bind<ScreenManager>().To<ScreenManagerMediator>();
         }
     }
