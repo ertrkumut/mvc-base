@@ -1,18 +1,20 @@
 using System.Collections.Generic;
 using System.IO;
 using UnityEditor;
+using UnityEngine;
 
 namespace MVC.Editor.CodeGenerator
 {
     internal static class CodeGeneratorUtils
     {
-        public static void CreateView(string viewName, string tempClassName, string viewPath, string tempClassPath, string namespaceName, List<string> actionsList)
+        public static void CreateView(string viewName, string tempClassName, string viewPath, string tempClassPath,
+            string namespaceName, List<string> actionsList)
         {
             var newViewPath = viewPath + "/" + viewName + ".cs";
 
             var tempViewContent = File.ReadAllLines(tempClassPath);
             var newViewContent = new List<string>();
-            
+
             for (var ii = 0; ii < tempViewContent.Length; ii++)
             {
                 var content = tempViewContent[ii];
@@ -31,26 +33,27 @@ namespace MVC.Editor.CodeGenerator
                     {
                         newViewContent.Add("\t\tpublic Action " + actionName + ";");
                     }
+
                     continue;
                 }
-                
+
                 newViewContent.Add(content);
             }
 
-            if (!Directory.Exists(viewPath))
-                Directory.CreateDirectory(viewPath);
-            
+            if (!Directory.Exists(viewPath)) Directory.CreateDirectory(viewPath);
+
             File.WriteAllLines(newViewPath, newViewContent.ToArray());
             AssetDatabase.Refresh();
         }
 
-        public static void CreateMediator(string mediatorName, string viewName, string tempClassName, string mediatorPath, string tempClassPath, string namespaceName, List<string> actionsList)
+        public static void CreateMediator(string mediatorName, string viewName, string tempClassName,
+            string mediatorPath, string tempClassPath, string namespaceName, List<string> actionsList)
         {
             var newMediatorPath = mediatorPath + "/" + mediatorName + ".cs";
 
             var tempMediatorContent = File.ReadAllLines(tempClassPath);
             var newMediatorContent = new List<string>();
-            
+
             for (var ii = 0; ii < tempMediatorContent.Length; ii++)
             {
                 var content = tempMediatorContent[ii];
@@ -74,6 +77,7 @@ namespace MVC.Editor.CodeGenerator
                         var line = "\t\t\t_view." + actionName + " += " + actionName + "Listener;";
                         newMediatorContent.Add(line);
                     }
+
                     continue;
                 }
                 else if (content.Contains("//@Remove"))
@@ -83,6 +87,7 @@ namespace MVC.Editor.CodeGenerator
                         var line = "\t\t\t_view." + actionName + " -= " + actionName + "Listener;";
                         newMediatorContent.Add(line);
                     }
+
                     continue;
                 }
                 else if (content.Contains("//@Methods"))
@@ -95,21 +100,22 @@ namespace MVC.Editor.CodeGenerator
                         newMediatorContent.Add("\t\t}");
                         newMediatorContent.Add("");
                     }
-                    newMediatorContent.RemoveAt(newMediatorContent.Count-1);
+
+                    newMediatorContent.RemoveAt(newMediatorContent.Count - 1);
                     continue;
                 }
-                
+
                 newMediatorContent.Add(content);
             }
-            
-            if (!Directory.Exists(mediatorPath))
-                Directory.CreateDirectory(mediatorPath);
-            
+
+            if (!Directory.Exists(mediatorPath)) Directory.CreateDirectory(mediatorPath);
+
             File.WriteAllLines(newMediatorPath, newMediatorContent.ToArray());
             AssetDatabase.Refresh();
         }
 
-        public static void CreateContext(string contextName, string tempClassName, string contextPath, string tempClassPath, string namespaceName)
+        public static void CreateContext(string contextName, string tempClassName, string contextPath,
+            string tempClassPath, string namespaceName)
         {
             var directoryPath = contextPath;
             var path = directoryPath + "/" + contextName + ".cs";
@@ -140,8 +146,8 @@ namespace MVC.Editor.CodeGenerator
             AssetDatabase.Refresh();
         }
 
-        public static void CreateRoot(string rootName, string contextName, string tempContextName, string tempRootName, string rootPath,
-            string tempClassPath, string namespaceName)
+        public static void CreateRoot(string rootName, string contextName, string tempContextName, string tempRootName,
+            string rootPath, string tempClassPath, string namespaceName)
         {
             var directoryPath = rootPath;
             var path = directoryPath + "/" + rootName + ".cs";
@@ -173,7 +179,8 @@ namespace MVC.Editor.CodeGenerator
             AssetDatabase.Refresh();
         }
 
-        public static void BindMediationInContext(string contextPath, string viewName, string mediationName, string tempViewName, string tempMediationName, string viewNamespace)
+        public static void BindMediationInContext(string contextPath, string viewName, string mediationName,
+            string tempViewName, string tempMediationName, string viewNamespace)
         {
             var contextLines = File.ReadAllLines(contextPath);
             var newRootContent = new List<string>();
@@ -193,6 +200,52 @@ namespace MVC.Editor.CodeGenerator
             
             File.WriteAllLines(contextPath, newRootContent.ToArray());
             AssetDatabase.Refresh();
+        }
+
+        public static void CreateScreenEnum(string screenType)
+        {
+            var gameScreenEnumPath = CodeGeneratorStrings.ScreenTypeEnumPath + "/" + CodeGeneratorStrings.ScreenTypeEnumFileName + ".cs";
+
+            var isFileExist = File.Exists(gameScreenEnumPath);
+
+            if (!isFileExist)
+            {
+                if (!Directory.Exists(CodeGeneratorStrings.ScreenTypeEnumPath))
+                    Directory.CreateDirectory(CodeGeneratorStrings.ScreenTypeEnumPath);
+                
+                var lineList = new List<string>();
+
+                var namespaceTxt = CodeGeneratorStrings.ScreenTypeEnumPath
+                    .Replace(Application.dataPath + "/Scripts/", "")
+                    .Replace("/", ".")
+                    .TrimEnd('.');
+                
+                lineList.Add("namespace " + namespaceTxt);
+                lineList.Add("{");
+                    lineList.Add("\tpublic enum " + CodeGeneratorStrings.ScreenTypeEnumFileName);
+                        lineList.Add("\t{");
+                        lineList.Add("\t\t//[?] Dont Delete this line");
+                        lineList.Add("\t}");
+                lineList.Add("}");
+                
+                File.WriteAllLines(gameScreenEnumPath, lineList);
+            }
+
+            var fileLineArray = File.ReadAllLines(gameScreenEnumPath);
+            var newLineList = new List<string>();
+            for (var ii = 0; ii < fileLineArray.Length; ii++)
+            {
+                var line = fileLineArray[ii];
+
+                if (line.Contains("//[?]"))
+                {
+                    newLineList.Add("\t\t"+ screenType + ",");
+                }
+                
+                newLineList.Add(line);
+            }
+            
+            File.WriteAllLines(gameScreenEnumPath, newLineList);
         }
     }
 }

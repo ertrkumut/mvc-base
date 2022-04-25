@@ -53,10 +53,12 @@ namespace MVC.Editor.CodeGenerator.Menus
         {
             var scenePath = CodeGeneratorStrings.ScreenTestScenePath;
 
-            if (!Directory.Exists(scenePath)) Directory.CreateDirectory(scenePath);
+            if (!Directory.Exists(scenePath)) 
+                Directory.CreateDirectory(scenePath);
 
             var sceneName = PlayerPrefs.GetString("create-screen-menu-clicked") + "TestScene";
             sceneName = sceneName.Replace("View", "");
+            CodeGeneratorUtils.CreateScreenEnum(sceneName);
             var scene = EditorSceneManager.NewScene(NewSceneSetup.DefaultGameObjects, NewSceneMode.Single);
             scene.name = sceneName;
 
@@ -73,7 +75,8 @@ namespace MVC.Editor.CodeGenerator.Menus
 
                 var screenName = PlayerPrefs.GetString("create-screen-menu-clicked");
                 var rootName = PlayerPrefs.GetString("create-screen-root-name");
-                
+
+                screenName = screenName.Replace("View", "");
                 var path = PlayerPrefs.GetString("create-screen-scene-path") + screenName + ".unity";
 
                 PlayerPrefs.DeleteKey("create-screen-menu-clicked");
@@ -126,6 +129,9 @@ namespace MVC.Editor.CodeGenerator.Menus
             {
                 PlayerPrefs.DeleteKey("create-screen-menu-clicked");
                 PlayerPrefs.DeleteKey("create-screen-scene-path");
+                PlayerPrefs.DeleteKey("create-screen-root-name");
+                
+                Debug.LogError(e);
             }
         }
     }
