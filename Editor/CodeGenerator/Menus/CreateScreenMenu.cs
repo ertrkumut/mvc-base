@@ -56,9 +56,12 @@ namespace MVC.Editor.CodeGenerator.Menus
             if (!Directory.Exists(scenePath)) 
                 Directory.CreateDirectory(scenePath);
 
-            var sceneName = PlayerPrefs.GetString("create-screen-menu-clicked") + "TestScene";
-            sceneName = sceneName.Replace("View", "");
-            CodeGeneratorUtils.CreateScreenEnum(sceneName);
+            var className = PlayerPrefs.GetString("create-screen-menu-clicked");
+            className = className.Replace("View", "");
+            var sceneName = className + "TestScene";
+            
+            CodeGeneratorUtils.CreateScreenEnum(className);
+            
             var scene = EditorSceneManager.NewScene(NewSceneSetup.DefaultGameObjects, NewSceneMode.Single);
             scene.name = sceneName;
 
@@ -76,7 +79,7 @@ namespace MVC.Editor.CodeGenerator.Menus
                 var screenName = PlayerPrefs.GetString("create-screen-menu-clicked");
                 var rootName = PlayerPrefs.GetString("create-screen-root-name");
 
-                screenName = screenName.Replace("View", "");
+                var prefabName = screenName.Replace("View", "");
                 var path = PlayerPrefs.GetString("create-screen-scene-path") + screenName + ".unity";
 
                 PlayerPrefs.DeleteKey("create-screen-menu-clicked");
@@ -105,7 +108,7 @@ namespace MVC.Editor.CodeGenerator.Menus
                 var screenManager =
                     (ScreenManager) PrefabUtility.InstantiatePrefab(screenManagerPrefab, canvasGameObject.transform);
 
-                var screenGameObject = new GameObject(screenName, typeof(RectTransform));
+                var screenGameObject = new GameObject(prefabName, typeof(RectTransform));
                 screenGameObject.transform.SetParent(screenManager.ScreenLayerList[0].transform);
 
                 screenGameObject.AddComponent(screenType);
@@ -119,7 +122,7 @@ namespace MVC.Editor.CodeGenerator.Menus
                 if (!Directory.Exists(CodeGeneratorStrings.ScreenPrefabPath))
                     Directory.CreateDirectory(CodeGeneratorStrings.ScreenPrefabPath);
                 
-                PrefabUtility.SaveAsPrefabAssetAndConnect(screenGameObject, CodeGeneratorStrings.ScreenPrefabPath + screenName + ".prefab",
+                PrefabUtility.SaveAsPrefabAssetAndConnect(screenGameObject, CodeGeneratorStrings.ScreenPrefabPath + prefabName + ".prefab",
                     InteractionMode.UserAction);
 
                 EditorSceneManager.SaveScene(EditorSceneManager.GetActiveScene(), path);
