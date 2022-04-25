@@ -94,6 +94,7 @@ namespace MVC.Editor.CodeGenerator.Menus
                 var rootGameObject = new GameObject(rootName).AddComponent(rootType);
                 
                 var canvasGameObject = new GameObject("Canvas", typeof(Canvas));
+                canvasGameObject.GetComponent<Canvas>().renderMode = RenderMode.ScreenSpaceOverlay;
                 canvasGameObject.transform.SetParent(rootGameObject.transform);
                 
                 var canvasScaler = canvasGameObject.AddComponent<CanvasScaler>();
