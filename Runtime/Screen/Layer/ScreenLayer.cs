@@ -91,6 +91,9 @@ namespace MVC.Runtime.Screen.Layer
         
         private void CreateDictionaryKeyIfIsNotExist(System.Enum screenType)
         {
+            if (ScreensDict == null)
+                ScreensDict = new Dictionary<System.Enum, List<IScreenBody>>();
+            
             if(!ScreensDict.ContainsKey(screenType))
                 ScreensDict.Add(screenType, new List<IScreenBody>());
         }

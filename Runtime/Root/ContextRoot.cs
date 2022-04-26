@@ -84,10 +84,10 @@ namespace MVC.Runtime.Root
             commandsBound = false;
         }
 
-        private void BeforeCreateContext(){}
+        protected virtual void BeforeCreateContext(){}
 
-        private void AfterCreateBeforeStartContext(){}
+        protected virtual void AfterCreateBeforeStartContext(){}
 
-        private void AfterStarBeforeLaunchContext(){}
+        protected virtual void AfterStarBeforeLaunchContext(){}
     }
 }

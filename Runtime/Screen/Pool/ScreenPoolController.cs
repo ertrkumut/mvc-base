@@ -40,7 +40,8 @@ namespace MVC.Runtime.Screen.Pool
                 var prefab = Resources.Load<ScreenBody>("Screens/"+ screenType);
                 availableScreen = Object.Instantiate(prefab, _poolParent);
             }
-            
+
+            availableScreen.ScreenType = screenType;
             AddScreenToActiveDict(availableScreen);
             
             return availableScreen;
