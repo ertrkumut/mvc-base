@@ -9,6 +9,8 @@ namespace MVC.Runtime.Screen
         IScreenDataContainer SetManagerIndex(int managerIndex = 0);
         IScreenDataContainer SetLayer(ScreenLayerIndex layerIndex = ScreenLayerIndex.Layer_1);
         IScreenDataContainer SetParameters(params object[] screenParameters);
+        
         TScreenType Show<TScreenType>() where TScreenType : MonoBehaviour, IScreenBody;
+        IScreenBody Show();
     }
 }

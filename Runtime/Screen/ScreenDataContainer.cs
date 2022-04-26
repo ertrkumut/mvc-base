@@ -47,6 +47,12 @@ namespace MVC.Runtime.Screen
             var screen = _screenModel.CreateOrGetScreen<TScreenType>(this);
             return screen;
         }
+
+        public IScreenBody Show()
+        {
+            var screen = _screenModel.CreateOrGetScreen<IScreenBody>(this);
+            return screen;
+        }
         
         public void Dispose()
         {

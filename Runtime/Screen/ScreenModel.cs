@@ -48,7 +48,7 @@ namespace MVC.Runtime.Screen
         }
         
         internal TScreenType CreateOrGetScreen<TScreenType>(ScreenDataContainer screenDataContainer)
-            where TScreenType : MonoBehaviour, IScreenBody
+            where TScreenType : IScreenBody
         {
             var screenManager = GetScreenManager(screenDataContainer.ManagerIndex);
 
