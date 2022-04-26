@@ -68,16 +68,7 @@ namespace MVC.Runtime.Contexts
                 if(InjectionBinderCrossContext.PostConstructedObjects.Contains(injectedType.Value))
                     continue;
                 
-                var type = injectedType.Value.GetType();
-                var postConstructMethods =
-                    type.GetMethods(BindingFlags.Instance | BindingFlags.NonPublic | BindingFlags.Public)
-                        .Where(methodInfo => methodInfo.GetCustomAttributes(typeof(PostConstructAttribute), true).Length != 0)
-                        .ToList();
-
-                foreach (var postConstructMethod in postConstructMethods)
-                {
-                    postConstructMethod.Invoke(injectedType.Value, null);
-                }
+                PostConstructUtils.ExecutePostConstructMethod(injectedType.Value);
                 
                 InjectionBinderCrossContext.PostConstructedObjects.Add(injectedType.Value);
             }

@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using MVC.Runtime.Attributes;
 using MVC.Runtime.Bind.Bindings.Pool;
+using MVC.Runtime.Injectable.Utils;
 using MVC.Runtime.Root;
 using UnityEngine;
 using Object = UnityEngine.Object;
@@ -126,10 +127,11 @@ namespace MVC.Runtime.Injectable
         protected void UnBind(Type key, string name = "")
         {
             var injectionBinding = GetInjectionBinding(key, name);
+            PostConstructUtils.ExecuteDeconstructMethod(injectionBinding.Value);
             _container[key].Remove(injectionBinding);
             _bindingPoolController.ReturnBindingToPool(injectionBinding);
             
-            Debug.LogWarning("UnBind: " + key.Name + "- name: " + name);
+//            Debug.LogWarning("UnBind: " + key.Name + "- name: " + name);
         }
 
         #endregion
