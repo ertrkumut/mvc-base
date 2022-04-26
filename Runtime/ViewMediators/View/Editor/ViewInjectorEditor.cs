@@ -5,6 +5,7 @@ using MVC.Runtime.Injectable.Components;
 using MVC.Runtime.ViewMediators.Utils;
 using MVC.Runtime.ViewMediators.View.Data;
 using UnityEditor;
+using UnityEditor.Experimental.SceneManagement;
 using UnityEditor.SceneManagement;
 using UnityEngine;
 using Object = UnityEngine.Object;
@@ -79,7 +80,19 @@ namespace MVC.Runtime.ViewMediators.View.Editor
                 return;
 
             if (EditorGUI.EndChangeCheck())
-                EditorSceneManager.MarkSceneDirty(EditorSceneManager.GetActiveScene());
+            {
+                var prefabScene = PrefabStageUtility.GetCurrentPrefabStage();
+                if (prefabScene != null)
+                {
+                    EditorSceneManager.MarkSceneDirty(prefabScene.scene);
+                }
+                else if (PrefabUtility.IsOutermostPrefabInstanceRoot(_target.gameObject))
+                {
+                    PrefabUtility.RecordPrefabInstancePropertyModifications(_target);
+                }
+                else
+                    EditorSceneManager.MarkSceneDirty(EditorSceneManager.GetActiveScene());
+            }
         }
 
         private void DrawViewInjectorDataList()
