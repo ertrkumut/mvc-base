@@ -202,6 +202,28 @@ namespace MVC.Editor.CodeGenerator
             AssetDatabase.Refresh();
         }
 
+        public static void ShowScreenInLaunch(string contextPath, string screenName, string tempScreenName, string screenType)
+        {
+            var contextLines = File.ReadAllLines(contextPath);
+            var newRootContent = new List<string>();
+            
+            newRootContent.Add("using Runtime.Enums;");
+            for (var ii = 0; ii < contextLines.Length; ii++)
+            {
+                var content = contextLines[ii];
+                if (content.Contains("_screenModel."))
+                {
+                    content = content.Replace("(default", "(" + screenType);
+                    content = content.Replace(tempScreenName, screenName);
+                }
+                
+                newRootContent.Add(content);
+            }
+            
+            File.WriteAllLines(contextPath, newRootContent.ToArray());
+            AssetDatabase.Refresh();
+        }
+        
         public static void CreateScreenEnum(string screenType)
         {
             var gameScreenEnumPath = CodeGeneratorStrings.ScreenTypeEnumPath + "/" + CodeGeneratorStrings.ScreenTypeEnumFileName + ".cs";

@@ -45,6 +45,7 @@ namespace MVC.Editor.CodeGenerator.Menus
                 CodeGeneratorStrings.TempScreenRootPath, rootNamespace);
             
             CodeGeneratorUtils.BindMediationInContext(rootPath + "/" + contextName + ".cs", _viewName, _mediatorName, "TempScreenView", "TempScreenMediator", _viewNamespace);
+            CodeGeneratorUtils.ShowScreenInLaunch(rootPath + "/" + contextName + ".cs", _viewName, "TempScreenView", "GameScreens." + _fileName.Replace("View", ""));
             
             CreateScene();
         }

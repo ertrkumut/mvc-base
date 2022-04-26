@@ -29,6 +29,8 @@ namespace MVC.Editor.CodeGenerator.TempScreens
         public override void Launch()
         {
             base.Launch();
+            
+            _screenModel.NewScreen(default).Show<TempScreenView>();
         }
     }
 }
