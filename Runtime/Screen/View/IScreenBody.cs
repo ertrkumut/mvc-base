@@ -7,8 +7,8 @@ namespace MVC.Runtime.Screen.View
 {
     public interface IScreenBody : IView, IPoolable
     {
-        Transform transform { get; }
-        GameObject gameObject { get; }
+        new Transform transform { get; }
+        new GameObject gameObject { get; }
         
         /// <summary>
         /// It shows the state of the screen. None, InPool, InUse, InOpeningAnimation, InClosingAnimation
