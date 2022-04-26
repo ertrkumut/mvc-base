@@ -1,6 +1,7 @@
 using System;
 using System.IO;
 using System.Linq;
+using MVC.Runtime.Injectable.Components;
 using MVC.Runtime.Screen;
 using UnityEditor;
 using UnityEditor.SceneManagement;
@@ -113,6 +114,7 @@ namespace MVC.Editor.CodeGenerator.Menus
                 var screenGameObject = new GameObject(prefabName, typeof(RectTransform));
                 screenGameObject.transform.SetParent(screenManager.ScreenLayerList[0].transform);
 
+                var viewInjector = screenGameObject.AddComponent<ViewInjector>();
                 screenGameObject.AddComponent(screenType);
                 var rectTransform = screenGameObject.transform as RectTransform;
                 rectTransform.localScale = Vector3.one;
@@ -121,6 +123,8 @@ namespace MVC.Editor.CodeGenerator.Menus
                 rectTransform.offsetMin = Vector2.zero;
                 rectTransform.offsetMax = Vector2.zero;
 
+                viewInjector.InitializeForEditor();
+                
                 if (!Directory.Exists(CodeGeneratorStrings.ScreenPrefabPath))
                     Directory.CreateDirectory(CodeGeneratorStrings.ScreenPrefabPath);
                 
@@ -129,6 +133,8 @@ namespace MVC.Editor.CodeGenerator.Menus
 
                 EditorSceneManager.SaveScene(EditorSceneManager.GetActiveScene(), path);
                 AssetDatabase.Refresh();
+
+                Selection.activeGameObject = screenGameObject;
             }
             catch (Exception e)
             {

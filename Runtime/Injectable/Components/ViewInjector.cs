@@ -91,5 +91,24 @@ namespace MVC.Runtime.Injectable.Components
         }
 
         #endregion
+
+        internal void InitializeForEditor()
+        {
+            viewDataList = new List<ViewInjectorData>();
+
+            var viewComponentList = GetComponents<IView>().ToList();
+
+            foreach (var viewComponent in viewComponentList)
+            {
+                var viewInjectorData = new ViewInjectorData
+                {
+                    view = viewComponent as Object,
+                    autoInject = true,
+                    isInjected = false
+                };
+                
+                viewDataList.Add(viewInjectorData);
+            }
+        }
     }
 }
