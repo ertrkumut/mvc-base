@@ -2,15 +2,12 @@ using System;
 
 namespace MVC.Editor.ModelViewer.PropertyDrawer
 {
-    public class PropertyDrawer<TPropertyType> : PropertyDrawerBase, IDisposable
+    internal class PropertyDrawer<TPropertyType> : PropertyDrawerBase, IDisposable
     {
-        public Action<TPropertyType> OnValueChanged;
-        
         protected TPropertyType _property;
         
-        public PropertyDrawer(TPropertyType property, string fieldName, bool readOnly) : base(fieldName, readOnly)
+        public PropertyDrawer(string fieldName, bool readOnly) : base(fieldName, readOnly)
         {
-            _property = property;
         }
 
         public TPropertyType GetValue()
@@ -21,12 +18,11 @@ namespace MVC.Editor.ModelViewer.PropertyDrawer
         public void SetValue(TPropertyType newValue)
         {
             _property = newValue;
-            OnValueChanged?.Invoke(_property);
+            OnValueChanged?.Invoke();
         }
 
         public void Dispose()
         {
-            OnValueChanged = null;
         }
     }
 }

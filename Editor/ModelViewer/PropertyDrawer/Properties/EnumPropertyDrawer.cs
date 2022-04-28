@@ -6,11 +6,11 @@ namespace MVC.Editor.ModelViewer.PropertyDrawer.Properties
 {
     internal class EnumPropertyDrawer : PropertyDrawer<Enum>
     {
-        public EnumPropertyDrawer(Enum property, string fieldName, bool readOnly) : base(property, fieldName, readOnly)
+        public EnumPropertyDrawer(string fieldName, bool readOnly) : base(fieldName, readOnly)
         {
         }
 
-        public override void OnDrawGUI()
+        protected override void OnDrawGUI()
         {
             base.OnDrawGUI();
             

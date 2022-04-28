@@ -5,11 +5,11 @@ namespace MVC.Editor.ModelViewer.PropertyDrawer.Properties
 {
     internal class BoolPropertyDrawer : PropertyDrawer<bool>
     {
-        public BoolPropertyDrawer(bool property, string fieldName, bool readOnly) : base(property, fieldName, readOnly)
+        public BoolPropertyDrawer(string fieldName, bool readOnly) : base(fieldName, readOnly)
         {
         }
         
-        public override void OnDrawGUI()
+        protected override void OnDrawGUI()
         {
             base.OnDrawGUI();
             

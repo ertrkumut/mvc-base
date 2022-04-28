@@ -1,5 +1,7 @@
-﻿using System.Linq;
+﻿using System;
+using System.Linq;
 using System.Reflection;
+using MVC.Editor.ModelViewer.PropertyDrawer;
 using MVC.Runtime.Attributes;
 using UnityEngine;
 
@@ -7,12 +9,15 @@ namespace MVC.Editor.ModelViewer.MemberInfoDrawer
 {
     internal class MemberInfoDrawerBase
     {
+        protected virtual Type _propertyDrawerType { get; }
+        protected PropertyDrawerBase _propertyDrawer;
+
         protected MemberInfo _memberInfo;
         protected object _targetObject;
 
         protected string _fieldName;
 
-        private bool _hasPropertyReadOnly;
+        protected bool _hasPropertyReadOnly;
         
         public MemberInfoDrawerBase(MemberInfo memberInfo, object targetObject)
         {
@@ -25,10 +30,20 @@ namespace MVC.Editor.ModelViewer.MemberInfoDrawer
             _fieldName = memberInfo.Name.Replace("<", "").Replace(">k__backingField", "");
 
             _hasPropertyReadOnly = memberInfo.GetCustomAttributes(typeof(ReadOnlyAttribute)).ToList().Count != 0;
+
+            if (_propertyDrawerType != null)
+            {
+                CreatePropertyDrawer();
+            }
         }
+        
+        protected virtual void CreatePropertyDrawer(){}
         
         public void OnGUI()
         {
+            if(_propertyDrawer == null)
+                return;
+            
             OnBeforeDrawGUI();
             OnDrawGUI();
             OnDrawCompletedGUI();
@@ -41,8 +56,12 @@ namespace MVC.Editor.ModelViewer.MemberInfoDrawer
         
         public virtual void OnDrawGUI()
         {
+            _propertyDrawer.OnGUI();
         }
-        
-        protected virtual void OnDrawCompletedGUI(){}
+
+        protected virtual void OnDrawCompletedGUI()
+        {
+            GUI.enabled = true;
+        }
     }
 }

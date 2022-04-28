@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
 using MVC.Editor.ModelViewer.MemberInfoDrawer;
+using MVC.Editor.ModelViewer.PropertyDrawer;
 using MVC.Runtime.Attributes;
 using Object = UnityEngine.Object;
 
@@ -11,6 +12,7 @@ namespace MVC.Editor.ModelViewer
 {
     internal static class ModelViewerUtils
     {
+        private static Dictionary<Type, Type> _memberInfoDrawerTypesDict;
         private static Dictionary<Type, Type> _propertyDrawerTypesDict;
 
         public static List<MemberInfo> GetTypeMembersList(object rootObject)
@@ -34,10 +36,10 @@ namespace MVC.Editor.ModelViewer
         
         public static bool IsPropertyDrawerTypeExist(Type type)
         {
-            if(_propertyDrawerTypesDict == null)
-                InitializePropertyDrawerTypes();
+            if(_memberInfoDrawerTypesDict == null)
+                InitializeMemberInfoDrawerTypes();
             
-            var result = _propertyDrawerTypesDict.ContainsKey(type);
+            var result = _memberInfoDrawerTypesDict.ContainsKey(type);
             if (result)
                 return true;
 
@@ -47,6 +49,37 @@ namespace MVC.Editor.ModelViewer
             return false;
         }
         
+        public static Type GetMemberInfoDrawerType(Type memberInfoType)
+        {
+            if(_memberInfoDrawerTypesDict == null)
+                InitializeMemberInfoDrawerTypes();
+
+            if (memberInfoType.IsSubclassOf(typeof(Object)))
+                memberInfoType = typeof(Object);
+
+            Type memberInfoDrawerType;
+                
+            if (!_memberInfoDrawerTypesDict.ContainsKey(memberInfoType))
+            {
+                if (typeof(IList).IsAssignableFrom(memberInfoType))
+                {
+                    var listPropertyDrawer = typeof(MemberInfoDrawerBase)
+                        .Assembly
+                        .GetTypes()
+                        .FirstOrDefault(x => x.Name.Contains("ListPropertyDrawer"))
+                        .MakeGenericType(memberInfoType.GetGenericArguments());
+
+                    memberInfoDrawerType = listPropertyDrawer;
+                }
+                else
+                    return null;
+            }
+            else
+                memberInfoDrawerType = _memberInfoDrawerTypesDict[memberInfoType];
+            
+            return memberInfoDrawerType;
+        }
+
         public static Type GetPropertyDrawerType(Type propertyType)
         {
             if(_propertyDrawerTypesDict == null)
@@ -78,9 +111,9 @@ namespace MVC.Editor.ModelViewer
             return propertyDrawerType;
         }
         
-        private static void InitializePropertyDrawerTypes()
+        private static void InitializeMemberInfoDrawerTypes()
         {
-            _propertyDrawerTypesDict = new Dictionary<Type, Type>();
+            _memberInfoDrawerTypesDict = new Dictionary<Type, Type>();
             
             var propertyDrawerTypes = typeof(MemberInfoDrawerBase).Assembly.GetTypes()
                 .Where(x => x.IsSubclassOf(typeof(MemberInfoDrawerBase)))
@@ -89,10 +122,25 @@ namespace MVC.Editor.ModelViewer
             foreach (var propertyDrawerType in propertyDrawerTypes)
             {
                 var drawerType = propertyDrawerType.GetProperty("PropertyType").PropertyType;
-                _propertyDrawerTypesDict.Add(drawerType, propertyDrawerType);
+                _memberInfoDrawerTypesDict.Add(drawerType, propertyDrawerType);
             }
         }
 
+        private static void InitializePropertyDrawerTypes()
+        {
+            _propertyDrawerTypesDict = new Dictionary<Type, Type>();
+            
+            var propertyDrawerTypes = typeof(PropertyDrawerBase).Assembly.GetTypes()
+                .Where(x => x.IsSubclassOf(typeof(PropertyDrawerBase)))
+                .ToList();
+
+            foreach (var propertyDrawerType in propertyDrawerTypes)
+            {
+                var drawerType = propertyDrawerType.GetProperty("PropertyType").PropertyType;
+                _propertyDrawerTypesDict.Add(drawerType, propertyDrawerType);
+            }
+        }
+        
         public static Type GetMemberType(this MemberInfo memberInfo)
         {
             if (memberInfo.MemberType == MemberTypes.Field)

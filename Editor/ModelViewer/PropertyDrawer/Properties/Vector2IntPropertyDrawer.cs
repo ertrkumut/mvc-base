@@ -5,11 +5,11 @@ namespace MVC.Editor.ModelViewer.PropertyDrawer.Properties
 {
     internal class Vector2IntPropertyDrawer : PropertyDrawer<Vector2Int>
     {
-        public Vector2IntPropertyDrawer(Vector2Int property, string fieldName, bool readOnly) : base(property, fieldName, readOnly)
+        public Vector2IntPropertyDrawer(string fieldName, bool readOnly) : base(fieldName, readOnly)
         {
         }
 
-        public override void OnDrawGUI()
+        protected override void OnDrawGUI()
         {
             base.OnDrawGUI();
             

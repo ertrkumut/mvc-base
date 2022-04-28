@@ -6,11 +6,11 @@ namespace MVC.Editor.ModelViewer.PropertyDrawer.Properties
 {
     internal class FloatPropertyDrawer : PropertyDrawer<float>
     {
-        public FloatPropertyDrawer(float property, string fieldName, bool readOnly) : base(property, fieldName, readOnly)
+        public FloatPropertyDrawer(string fieldName, bool readOnly) : base(fieldName, readOnly)
         {
         }
 
-        public override void OnDrawGUI()
+        protected override void OnDrawGUI()
         {
             base.OnDrawGUI();
             

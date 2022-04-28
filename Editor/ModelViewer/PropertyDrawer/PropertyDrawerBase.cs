@@ -1,9 +1,12 @@
+using System;
 using UnityEngine;
 
 namespace MVC.Editor.ModelViewer.PropertyDrawer
 {
-    public class PropertyDrawerBase
+    internal class PropertyDrawerBase
     {
+        public Action OnValueChanged;
+        
         protected bool _readOnly;
         protected string _fieldName;
         
@@ -25,7 +28,7 @@ namespace MVC.Editor.ModelViewer.PropertyDrawer
             GUI.enabled = !_readOnly;
         }
         
-        public virtual void OnDrawGUI()
+        protected virtual void OnDrawGUI()
         {
         }
         

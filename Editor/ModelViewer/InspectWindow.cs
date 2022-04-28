@@ -65,7 +65,7 @@ namespace MVC.Editor.ModelViewer
             MemberInfoDrawerBase memberInfoDrawer = null;
             if (!_activePropertyDrawersDict.ContainsKey(memberInfo))
             {
-                Type propertyDrawerType = ModelViewerUtils.GetPropertyDrawerType(memberInfo.GetMemberType());
+                Type propertyDrawerType = ModelViewerUtils.GetMemberInfoDrawerType(memberInfo.GetMemberType());
 
                 memberInfoDrawer = (MemberInfoDrawerBase) Activator.CreateInstance(propertyDrawerType, memberInfo, rootObject);
                 _activePropertyDrawersDict.Add(memberInfo, memberInfoDrawer);

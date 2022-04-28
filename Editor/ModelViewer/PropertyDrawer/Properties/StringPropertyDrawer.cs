@@ -5,11 +5,11 @@ namespace MVC.Editor.ModelViewer.PropertyDrawer.Properties
 {
     internal class StringPropertyDrawer : PropertyDrawer<string>
     {
-        public StringPropertyDrawer(string property, string fieldName, bool readOnly) : base(property, fieldName, readOnly)
+        public StringPropertyDrawer(string fieldName, bool readOnly) : base(fieldName, readOnly)
         {
         }
 
-        public override void OnDrawGUI()
+        protected override void OnDrawGUI()
         {
             base.OnDrawGUI();
             

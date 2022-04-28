@@ -1,4 +1,6 @@
-﻿using System.Reflection;
+﻿using System;
+using System.Reflection;
+using MVC.Editor.ModelViewer.PropertyDrawer.Properties;
 using UnityEditor;
 using UnityEngine;
 
@@ -6,6 +8,8 @@ namespace MVC.Editor.ModelViewer.MemberInfoDrawer.Properties
 {
     internal class IntMemberInfoDrawer : MemberInfoDrawer<int>
     {
+        protected override Type _propertyDrawerType => typeof(IntPropertyDrawer);
+        
         public IntMemberInfoDrawer(MemberInfo memberInfo, object targetObject) : base(memberInfo, targetObject)
         {
         }
@@ -13,11 +17,6 @@ namespace MVC.Editor.ModelViewer.MemberInfoDrawer.Properties
         public override void OnDrawGUI()
         {
             base.OnDrawGUI();
-
-            var propertyValue = GetPropertyValue();
-            var newValue = EditorGUILayout.IntField(new GUIContent(_fieldName), propertyValue);
-            if(newValue != propertyValue)
-                SetValue(newValue);
         }
     }
 }
