@@ -1,21 +1,20 @@
-﻿using System;
-using System.Reflection;
+using System;
 using UnityEditor;
 using UnityEngine;
 
-namespace MVC.Editor.ModelViewer.MemberInfoDrawer.Properties
+namespace MVC.Editor.ModelViewer.PropertyDrawer.Properties
 {
-    internal class EnumMemberInfoDrawer : MemberInfoDrawer<Enum>
+    internal class EnumPropertyDrawer : PropertyDrawer<Enum>
     {
-        public EnumMemberInfoDrawer(MemberInfo memberInfo, object targetObject) : base(memberInfo, targetObject)
+        public EnumPropertyDrawer(Enum property, string fieldName, bool readOnly) : base(property, fieldName, readOnly)
         {
         }
-        
+
         public override void OnDrawGUI()
         {
             base.OnDrawGUI();
-
-            var propertyValue = GetPropertyValue();
+            
+            var propertyValue = GetValue();
             var newValue = EditorGUILayout.EnumPopup(new GUIContent(_fieldName), propertyValue);
             if(!Equals(newValue, propertyValue))
                 SetValue(newValue);

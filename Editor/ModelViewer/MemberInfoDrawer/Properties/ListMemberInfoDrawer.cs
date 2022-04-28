@@ -8,13 +8,10 @@ namespace MVC.Editor.ModelViewer.MemberInfoDrawer.Properties
 {
     internal class ListMemberInfoDrawer<T> : MemberInfoDrawer<List<T>>
     {
-        private List<MemberInfoDrawerBase> _drawersList;
-
         private bool _foldOut;
         
         public ListMemberInfoDrawer(MemberInfo memberInfo, object targetObject) : base(memberInfo, targetObject)
         {
-            _drawersList = new List<MemberInfoDrawerBase>();
         }
 
         public override void OnDrawGUI()
@@ -37,9 +34,6 @@ namespace MVC.Editor.ModelViewer.MemberInfoDrawer.Properties
                 return;
             }
 
-            if (value.Count != _drawersList.Count)
-                RegeneratePropertyDrawerList();
-            
             for (var ii = 0; ii < value.Count; ii++)
             {
                 var piece = value[ii];
@@ -47,10 +41,6 @@ namespace MVC.Editor.ModelViewer.MemberInfoDrawer.Properties
             }
             
             EditorGUILayout.EndVertical();
-        }
-
-        private void RegeneratePropertyDrawerList()
-        {
         }
 
         private void PieceGUI(T piece, int listIndex)

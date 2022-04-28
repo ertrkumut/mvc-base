@@ -7,7 +7,7 @@ namespace MVC.Editor.ModelViewer.MemberInfoDrawer.Properties
 {
     internal class FloatMemberInfoDrawer : MemberInfoDrawer<float>
     {
-        public FloatMemberInfoDrawer(FieldInfo memberInfo, object targetObject) : base(memberInfo, targetObject)
+        public FloatMemberInfoDrawer(MemberInfo memberInfo, object targetObject) : base(memberInfo, targetObject)
         {
         }
         

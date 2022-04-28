@@ -8,7 +8,7 @@ namespace MVC.Editor.ModelViewer.MemberInfoDrawer.Properties
 {
     internal class ObjectMemberInfoDrawer : MemberInfoDrawer<Object>
     {
-        public ObjectMemberInfoDrawer(FieldInfo memberInfo, object targetObject) : base(memberInfo, targetObject)
+        public ObjectMemberInfoDrawer(MemberInfo memberInfo, object targetObject) : base(memberInfo, targetObject)
         {
         }
         

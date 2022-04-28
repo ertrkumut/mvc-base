@@ -6,12 +6,12 @@ using UnityEngine;
 
 namespace MVC.Editor.ModelViewer
 {
-    internal class MVCModelViewerEditorWindow : EditorWindow
+    internal class ModelViewerEditorWindow : EditorWindow
     {
         [MenuItem("Tools/MVC/Model Viewer")]
         private static void OpenModelViewer()
         {
-            GetWindow<MVCModelViewerEditorWindow>("Model Viewer");
+            GetWindow<ModelViewerEditorWindow>("Model Viewer");
         }
         
         private RootBase _inspectedRoot;

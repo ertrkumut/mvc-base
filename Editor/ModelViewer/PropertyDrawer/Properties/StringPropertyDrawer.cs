@@ -1,20 +1,19 @@
-﻿using System.Reflection;
 using UnityEditor;
 using UnityEngine;
 
-namespace MVC.Editor.ModelViewer.MemberInfoDrawer.Properties
+namespace MVC.Editor.ModelViewer.PropertyDrawer.Properties
 {
-    internal class StringMemberInfoDrawer : MemberInfoDrawer<string>
+    internal class StringPropertyDrawer : PropertyDrawer<string>
     {
-        public StringMemberInfoDrawer(MemberInfo memberInfo, object targetObject) : base(memberInfo, targetObject)
+        public StringPropertyDrawer(string property, string fieldName, bool readOnly) : base(property, fieldName, readOnly)
         {
         }
 
         public override void OnDrawGUI()
         {
             base.OnDrawGUI();
-
-            var propertyValue = GetPropertyValue();
+            
+            var propertyValue = GetValue();
             var newValue = EditorGUILayout.TextField(new GUIContent(_fieldName), propertyValue);
             if(newValue != propertyValue)
                 SetValue(newValue);
