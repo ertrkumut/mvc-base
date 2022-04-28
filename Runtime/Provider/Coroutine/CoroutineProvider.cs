@@ -1,9 +1,11 @@
 using System.Collections;
+using MVC.Runtime.Attributes;
 using UnityEngine;
 using UnityEngine.Events;
 
 namespace MVC.Runtime.Provider.Coroutine
 {
+    [HideInModelViewer]
     public class CoroutineProvider : MonoBehaviour, ICoroutineProvider
     {
         #region WaitForSeconds

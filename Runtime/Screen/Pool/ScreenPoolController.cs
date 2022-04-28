@@ -1,11 +1,13 @@
 using System.Collections.Generic;
 using System.Linq;
+using MVC.Runtime.Attributes;
 using MVC.Runtime.Screen.Enum;
 using MVC.Runtime.Screen.View;
 using UnityEngine;
 
 namespace MVC.Runtime.Screen.Pool
 {
+    [HideInModelViewer]
     internal class ScreenPoolController : IScreenPoolController
     {
         private RectTransform _poolParent;
