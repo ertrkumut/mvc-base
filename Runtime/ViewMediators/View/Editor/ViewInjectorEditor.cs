@@ -5,6 +5,7 @@ using MVC.Runtime.Injectable.Components;
 using MVC.Runtime.ViewMediators.Utils;
 using MVC.Runtime.ViewMediators.View.Data;
 using UnityEditor;
+using UnityEditor.Experimental.SceneManagement;
 using UnityEditor.SceneManagement;
 using UnityEngine;
 using Object = UnityEngine.Object;
@@ -46,7 +47,7 @@ namespace MVC.Runtime.ViewMediators.View.Editor
 
             foreach (var mvcView in _viewList)
             {
-                var injectorData = _target.viewDataList.FirstOrDefault(x => x.view == mvcView);
+                var injectorData = _target.viewDataList.FirstOrDefault(x => x.view == (Object) mvcView);
                 if(injectorData == null)
                 {
                     injectorData = new ViewInjectorData
@@ -79,7 +80,19 @@ namespace MVC.Runtime.ViewMediators.View.Editor
                 return;
 
             if (EditorGUI.EndChangeCheck())
-                EditorSceneManager.MarkSceneDirty(EditorSceneManager.GetActiveScene());
+            {
+                var prefabScene = PrefabStageUtility.GetCurrentPrefabStage();
+                if (prefabScene != null)
+                {
+                    EditorSceneManager.MarkSceneDirty(prefabScene.scene);
+                }
+                else if (PrefabUtility.IsOutermostPrefabInstanceRoot(_target.gameObject))
+                {
+                    PrefabUtility.RecordPrefabInstancePropertyModifications(_target);
+                }
+                else
+                    EditorSceneManager.MarkSceneDirty(EditorSceneManager.GetActiveScene());
+            }
         }
 
         private void DrawViewInjectorDataList()
@@ -112,7 +125,7 @@ namespace MVC.Runtime.ViewMediators.View.Editor
             EditorGUILayout.BeginHorizontal();
             EditorGUILayout.LabelField(viewInjectorData.view.GetType().Name, EditorStyles.boldLabel);
             EditorGUILayout.Space(3);
-            EditorGUILayout.ObjectField(viewInjectorData.view, typeof(Object));
+            EditorGUILayout.ObjectField(viewInjectorData.view, typeof(Object), false);
 
             EditorGUILayout.EndHorizontal();
             EditorGUILayout.Space(5);

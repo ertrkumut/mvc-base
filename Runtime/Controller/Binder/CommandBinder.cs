@@ -25,7 +25,7 @@ namespace MVC.Runtime.Controller.Binder
             _activeSequenceList = new List<CommandSequencer>();
         }
         
-        public new virtual CommandBinding Bind<TSignal>(TSignal key)
+        public virtual CommandBinding Bind<TSignal>(TSignal key)
             where TSignal : ISignalBody
         {
             key.InternalCallback = null;

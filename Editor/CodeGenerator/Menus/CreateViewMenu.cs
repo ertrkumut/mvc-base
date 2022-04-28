@@ -7,16 +7,33 @@ namespace MVC.Editor.CodeGenerator.Menus
 {
     internal class CreateViewMenu : EditorWindow
     {
-        private string _viewPath = "*Name*";
+        protected virtual string _classLabelName => "View Name: ";
+        protected virtual string _classViewName => "View";
+        protected virtual string _classMediatorName => "Mediator";
+        protected virtual string _screenNamespace => "Runtime.Views.";
 
-        private List<string> _actionNames;
+        protected virtual string _tempViewName => "TempView";
+        protected virtual string _tempMediatorName => "TempMediator";
+        
+        protected virtual string _targetViewPath => CodeGeneratorStrings.ViewPath;
+        protected virtual string _tempViewPath => CodeGeneratorStrings.TempViewPath;
+        protected virtual string _tempMediatorPath => CodeGeneratorStrings.TempMediatorPath;
 
-        private void OnEnable()
+        protected string _fileName;
+        protected string _viewPath = "*Name*";
+
+        protected List<string> _actionNames;
+
+        protected string _viewNamespace;
+        protected string _viewName;
+        protected string _mediatorName;
+        
+        protected virtual void OnEnable()
         {
             _actionNames = new List<string>();
         }
 
-        private void OnGUI()
+        protected virtual void OnGUI()
         {
             #region ViewName
 
@@ -24,7 +41,7 @@ namespace MVC.Editor.CodeGenerator.Menus
 
             EditorGUILayout.BeginHorizontal();
 
-            EditorGUILayout.LabelField("View Name: ", GUILayout.Width(75));
+            EditorGUILayout.LabelField(_classLabelName, GUILayout.Width(75));
             _viewPath = EditorGUILayout.TextField(_viewPath);
             
             EditorGUILayout.EndHorizontal();
@@ -32,7 +49,7 @@ namespace MVC.Editor.CodeGenerator.Menus
             EditorGUILayout.BeginHorizontal();
             
             GUILayout.Space(80);
-            EditorGUILayout.LabelField(_viewPath + "View", EditorStyles.boldLabel);
+            EditorGUILayout.LabelField(_viewPath + _classViewName, EditorStyles.boldLabel);
             EditorGUILayout.EndHorizontal();
             EditorGUILayout.EndVertical();
 
@@ -86,119 +103,18 @@ namespace MVC.Editor.CodeGenerator.Menus
             #endregion
         }
 
-        private void CreateViewMediator()
+        protected virtual void CreateViewMediator()
         {
-            var path = Application.dataPath + CodeGeneratorStrings.ViewPath + _viewPath;
-            var viewName = _viewPath.Split('/')[_viewPath.Split('/').Length - 1] + "View";
-            var mediatorName = _viewPath.Split('/')[_viewPath.Split('/').Length - 1] + "Mediator";
+            var path = Application.dataPath + _targetViewPath + _viewPath;
+            _viewName = _viewPath.Split('/')[_viewPath.Split('/').Length - 1] + _classViewName;
+            _mediatorName = _viewPath.Split('/')[_viewPath.Split('/').Length - 1] + _classMediatorName;
             
-            var namespaceText = "Runtime.Views." + _viewPath.Replace("/",".");
+            _viewNamespace = _screenNamespace + _viewPath.Replace("/",".");
             
-            CreateView(path, viewName, namespaceText);
-            CreateMediator(path, mediatorName, viewName, namespaceText);
-        }
+            CodeGeneratorUtils.CreateView(_viewName, _tempViewName, path, _tempViewPath, _viewNamespace, _actionNames);
+            CodeGeneratorUtils.CreateMediator(_mediatorName, _viewName, _tempMediatorName, path, _tempMediatorPath, _viewNamespace, _actionNames);
 
-        private void CreateView(string path, string fileName, string namespaceText)
-        {
-            var newViewPath = path + "/" + fileName + ".cs";
-            var tempViewClassPath = CodeGeneratorStrings.TempViewPath;
-
-            var tempViewContent = File.ReadAllLines(tempViewClassPath);
-            var newViewContent = new List<string>();
-            
-            for (var ii = 0; ii < tempViewContent.Length; ii++)
-            {
-                var content = tempViewContent[ii];
-                if (content.Contains("namespace "))
-                {
-                    content = "namespace " + namespaceText;
-                }
-                else if (content.Contains("internal class "))
-                {
-                    content = "\tpublic class " + fileName + " : MonoBehaviour, IView";
-                }
-                else if (content.Contains("//@Actions"))
-                {
-                    foreach (var actionName in _actionNames)
-                    {
-                        newViewContent.Add("\t\tpublic Action " + actionName + ";");
-                    }
-                    continue;
-                }
-                
-                newViewContent.Add(content);
-            }
-
-            if (!Directory.Exists(path))
-                Directory.CreateDirectory(path);
-            
-            File.WriteAllLines(newViewPath, newViewContent.ToArray());
-            AssetDatabase.Refresh();
-        }
-
-        private void CreateMediator(string path, string fileName, string viewName, string namespaceText)
-        {
-            var newMediatorPath = path + "/" + fileName + ".cs";
-            var tempMediatorClassPath = CodeGeneratorStrings.TempMediatorPath;
-
-            var tempMediatorContent = File.ReadAllLines(tempMediatorClassPath);
-            var newMediatorContent = new List<string>();
-            
-            for (var ii = 0; ii < tempMediatorContent.Length; ii++)
-            {
-                var content = tempMediatorContent[ii];
-                if (content.Contains("namespace "))
-                {
-                    content = "namespace " + namespaceText;
-                }
-                else if (content.Contains("internal class "))
-                {
-                    content = "\tpublic class " + fileName + " : IMediator";
-                }
-                else if (content.Contains("[Inject]"))
-                {
-                    content = "\t\t[Inject] private " + viewName + " _view { get; set; }";
-                }
-                else if (content.Contains("//@Register"))
-                {
-                    foreach (var actionName in _actionNames)
-                    {
-                        var line = "\t\t\t_view." + actionName + " += " + actionName + "Listener;";
-                        newMediatorContent.Add(line);
-                    }
-                    continue;
-                }
-                else if (content.Contains("//@Remove"))
-                {
-                    foreach (var actionName in _actionNames)
-                    {
-                        var line = "\t\t\t_view." + actionName + " -= " + actionName + "Listener;";
-                        newMediatorContent.Add(line);
-                    }
-                    continue;
-                }
-                else if (content.Contains("//@Methods"))
-                {
-                    foreach (var actionName in _actionNames)
-                    {
-                        var line = "\t\tprivate void " + actionName + "Listener()";
-                        newMediatorContent.Add(line);
-                        newMediatorContent.Add("\t\t{");
-                        newMediatorContent.Add("\t\t}");
-                        newMediatorContent.Add("");
-                    }
-                    newMediatorContent.RemoveAt(newMediatorContent.Count-1);
-                    continue;
-                }
-                
-                newMediatorContent.Add(content);
-            }
-            
-            if (!Directory.Exists(path))
-                Directory.CreateDirectory(path);
-            
-            File.WriteAllLines(newMediatorPath, newMediatorContent.ToArray());
-            AssetDatabase.Refresh();
+            _fileName = _viewName;
         }
     }
 }

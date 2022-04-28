@@ -7,6 +7,8 @@ using MVC.Runtime.Injectable.Attributes;
 using MVC.Runtime.Injectable.Binders;
 using MVC.Runtime.Injectable.CrossContext;
 using MVC.Runtime.Injectable.Utils;
+using MVC.Runtime.Provider.Coroutine;
+using MVC.Runtime.Provider.Update;
 using UnityEngine;
 
 namespace MVC.Runtime.Contexts
@@ -36,8 +38,6 @@ namespace MVC.Runtime.Contexts
             ContextStarted = true;
             
             CoreBindings();
-            MapBindings();
-            PostBindings();
         }
 
         void IContext.InjectAllInstances()
@@ -65,16 +65,12 @@ namespace MVC.Runtime.Contexts
             
             foreach (InjectionBinding injectedType in injectedTypes)
             {
-                var type = injectedType.Value.GetType();
-                var postConstructMethods =
-                    type.GetMethods(BindingFlags.Instance | BindingFlags.NonPublic | BindingFlags.Public)
-                        .Where(methodInfo => methodInfo.GetCustomAttributes(typeof(PostConstructAttribute), true).Length != 0)
-                        .ToList();
-
-                foreach (var postConstructMethod in postConstructMethods)
-                {
-                    postConstructMethod.Invoke(injectedType.Value, null);
-                }
+                if(InjectionBinderCrossContext.PostConstructedObjects.Contains(injectedType.Value))
+                    continue;
+                
+                PostConstructUtils.ExecutePostConstructMethod(injectedType.Value);
+                
+                InjectionBinderCrossContext.PostConstructedObjects.Add(injectedType.Value);
             }
         }
 
@@ -90,13 +86,16 @@ namespace MVC.Runtime.Contexts
 
             var functionProvider = (FunctionProvider) InjectionBinder.Bind<IFunctionProvider, FunctionProvider>();
             functionProvider.Context = this;
-        }
-
-        public virtual void MapBindings()
-        {
             
+            InjectionBinderCrossContext.BindMonoBehaviorInstance<IUpdateProvider, UpdateProvider>();
+            InjectionBinderCrossContext.BindMonoBehaviorInstance<ICoroutineProvider, CoroutineProvider>();
         }
 
+        public virtual void SignalBindings(){}
+        public virtual void InjectionBindings(){}
+        public virtual void MediationBindings(){}
+        public virtual void CommandBindings(){}
+        
         public virtual void PostBindings()
         {
             
@@ -109,8 +108,8 @@ namespace MVC.Runtime.Contexts
         public virtual void DestroyContext()
         {
             ContextStarted = false;
-            MediationBinder.UnBindAll();
-            InjectionBinder.UnBindAll();
+            MediationBinder?.UnBindAll();
+            InjectionBinder?.UnBindAll();
         }
     }
 }

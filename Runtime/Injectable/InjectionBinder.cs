@@ -3,8 +3,10 @@ using System.Collections.Generic;
 using System.Linq;
 using MVC.Runtime.Attributes;
 using MVC.Runtime.Bind.Bindings.Pool;
+using MVC.Runtime.Injectable.Utils;
 using MVC.Runtime.Root;
 using UnityEngine;
+using Object = UnityEngine.Object;
 
 namespace MVC.Runtime.Injectable
 {
@@ -54,6 +56,43 @@ namespace MVC.Runtime.Injectable
             _container[injectionType].Add(injectionBinding);    
         }
 
+        public void BindInstance<TAbstract>(object instance, string name = "")
+        {
+            var injectionType = typeof(TAbstract);
+            var hasInstanceExist = GetInstance(injectionType, name);
+            if (hasInstanceExist != null)
+                return;
+
+            if(!_container.ContainsKey(injectionType))
+                _container.Add(injectionType, new List<InjectionBinding>());
+
+            var injectionBinding = _bindingPoolController.GetAvailableBinding<InjectionBinding>();
+            injectionBinding.Name = name;
+            injectionBinding.SetValue(instance);
+            injectionBinding.SetKey(injectionType);
+            
+            _container[injectionType].Add(injectionBinding);    
+        }
+        
+        public TAbstract BindMonoBehaviorInstance<TAbstract, TConcrete>(string name = "")
+            where TConcrete : MonoBehaviour, TAbstract
+        {
+            var hasInstanceExist = HasInstanceExist<TAbstract>(name);
+            TAbstract instance;
+            if(hasInstanceExist)
+            {
+                instance = GetInstance<TAbstract>(name);
+                return instance;
+            }
+
+            var instanceGameObject = new GameObject(typeof(TConcrete).Name);
+            instance = instanceGameObject.AddComponent<TConcrete>();
+            
+            BindInstance<TAbstract>(instance, name);
+            
+            return instance;
+        }
+
         #endregion
 
         #region UnBind
@@ -68,6 +107,15 @@ namespace MVC.Runtime.Injectable
             UnBind(typeof(TBindingType), name);
         }
 
+        public virtual void UnBind<TBindingType>(object injectedObject)
+        {
+            var injectionBinding = GetInjectionBinding<TBindingType>(injectedObject);
+            if(injectedObject == null)
+                return;
+            
+            UnBind(typeof(TBindingType), injectionBinding.Name);
+        }
+        
         public virtual void UnBindAll()
         {
             foreach (var injectionBindingList in _container)
@@ -88,10 +136,11 @@ namespace MVC.Runtime.Injectable
         protected void UnBind(Type key, string name = "")
         {
             var injectionBinding = GetInjectionBinding(key, name);
+            PostConstructUtils.ExecuteDeconstructMethod(injectionBinding.Value);
             _container[key].Remove(injectionBinding);
             _bindingPoolController.ReturnBindingToPool(injectionBinding);
             
-            Debug.LogWarning("UnBind: " + key.Name + "- name: " + name);
+//            Debug.LogWarning("UnBind: " + key.Name + "- name: " + name);
         }
 
         #endregion
@@ -210,6 +259,13 @@ namespace MVC.Runtime.Injectable
             return injectionBinding;
         }
 
+        internal InjectionBinding GetInjectionBinding<TBindingType>(object value)
+        {
+            var key = typeof(TBindingType);
+            var injectionBinding = _container[key].FirstOrDefault(x => x.Value == value);
+            return injectionBinding;
+        }
+
         protected bool HasInstanceExist<TBindingType>(string name = "")
         {
             var bindingType = typeof(TBindingType);
@@ -219,5 +275,7 @@ namespace MVC.Runtime.Injectable
             var instanceList = _container[bindingType];
             return instanceList.FirstOrDefault(x => x.Name == name) != null;
         }
+        
+        
     }
 }

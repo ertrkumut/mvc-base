@@ -1,14 +1,10 @@
 ﻿using MVC.Runtime.Contexts;
-using UnityEngine;
 
 namespace MVC.Runtime.Root
 {
-    public class ContextRoot<TContextType> : RootBase, IContextRoot
+    public class ContextRoot<TContextType> : RootBase
         where TContextType : IContext, new()
     {
-        public int initializeOrder;
-        protected RootsManager _rootsManager;
-
         protected TContextType _context
         {
             get
@@ -50,35 +46,48 @@ namespace MVC.Runtime.Root
             BeforeCreateContext();
             
             _context = new TContextType();
+            Context = _context;
             _context.Initialize(gameObject, initializeOrder, _rootsManager.injectionBinderCrossContext);
         }
         
-        public virtual void StartContext()
+        public override void StartContext(bool forceToStart = false)
         {
+            if(!autoInitialize && !forceToStart)
+                return;
+
+            hasInitialized = true;
             AfterCreateBeforeStartContext();
 
             _context.Start();
+            
+            BindSignals();
+            BindInjections();
+            BindMediations();
+            BindCommands();
+            
             _context.InjectAllInstances();
             _context.ExecutePostConstructMethods();
                 
             AfterStarBeforeLaunchContext();
+            
+            _rootsManager.OnContextReady?.Invoke(Context);
         }
         
         public virtual void DestroyContext()
         {
             _rootsManager.UnRegisterContext(this);
             _context.DestroyContext();
-        } 
-            
-        public IContext GetContext()
-        {
-            return _context;
+
+            signalsBound = false;
+            injectionsBound = false;
+            mediationsBound = false;
+            commandsBound = false;
         }
-        
-        private void BeforeCreateContext(){}
 
-        private void AfterCreateBeforeStartContext(){}
+        protected virtual void BeforeCreateContext(){}
 
-        private void AfterStarBeforeLaunchContext(){}
+        protected virtual void AfterCreateBeforeStartContext(){}
+
+        protected virtual void AfterStarBeforeLaunchContext(){}
     }
 }

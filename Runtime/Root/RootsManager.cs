@@ -70,12 +70,11 @@ namespace MVC.Runtime.Root
             foreach (var contextRoot in unreadyContextList)
             {
                 contextRoot.StartContext();
-                OnContextReady?.Invoke(contextRoot.GetContext());
             }
 
             foreach (var contextRoot in _contextRootList)
             {
-                contextRoot.GetContext().Launch();
+                contextRoot.Launch();
             }
         }
 

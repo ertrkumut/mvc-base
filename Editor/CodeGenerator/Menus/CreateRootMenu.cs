@@ -117,73 +117,16 @@ namespace MVC.Editor.CodeGenerator.Menus
 
         private void CreateRootAndContext()
         {
+            var namespaceText = "Runtime.Roots." + _rootPath.Replace("/",".");
             CreateScene();
-            CreateContext();
-            CreateRoot();
-        }
-
-        private void CreateContext()
-        {
-            var directoryPath = Application.dataPath + CodeGeneratorStrings.RootPath + _rootPath;
-            var path = Application.dataPath + CodeGeneratorStrings.RootPath + _rootPath + "/" + _contextName + ".cs";
-
-            var tempContextContent = File.ReadAllLines(CodeGeneratorStrings.TempContextPath);
-            var newContextContent = new List<string>();
             
-            var namespaceText = "Runtime.Roots." + _rootPath.Replace("/",".");
+            var contextPath = Application.dataPath + CodeGeneratorStrings.RootPath + _rootPath;
             
-            for (var ii = 0; ii < tempContextContent.Length; ii++)
-            {
-                var content = tempContextContent[ii];
-                if (content.Contains("namespace "))
-                {
-                    content = "namespace " + namespaceText;
-                }
-                else if (content.Contains("internal class "))
-                {
-                    content = "\tpublic class " + _contextName + " : Context";
-                }
-
-                newContextContent.Add(content);
-            }
+            CodeGeneratorUtils.CreateContext(_contextName, "TempContext", contextPath,
+                CodeGeneratorStrings.TempContextPath, namespaceText);
             
-            if (!Directory.Exists(directoryPath))
-                Directory.CreateDirectory(directoryPath);
-            
-            File.WriteAllLines(path, newContextContent.ToArray());
-            AssetDatabase.Refresh();
-        }
-
-        private void CreateRoot()
-        {
-            var directoryPath = Application.dataPath + CodeGeneratorStrings.RootPath + _rootPath;
-            var path = Application.dataPath + CodeGeneratorStrings.RootPath + _rootPath + "/" + _rootName + ".cs";
-
-            var tempRootContent = File.ReadAllLines(CodeGeneratorStrings.TempRootPath);
-            var newRootContent = new List<string>();
-            
-            var namespaceText = "Runtime.Roots." + _rootPath.Replace("/",".");
-            
-            for (var ii = 0; ii < tempRootContent.Length; ii++)
-            {
-                var content = tempRootContent[ii];
-                if (content.Contains("namespace "))
-                {
-                    content = "namespace " + namespaceText;
-                }
-                else if (content.Contains("internal class "))
-                {
-                    content = "\tpublic class " + _rootName + " : ContextRoot<" + _contextName + ">";
-                }
-
-                newRootContent.Add(content);
-            }
-            
-            if (!Directory.Exists(directoryPath))
-                Directory.CreateDirectory(directoryPath);
-            
-            File.WriteAllLines(path, newRootContent.ToArray());
-            AssetDatabase.Refresh();
+            CodeGeneratorUtils.CreateRoot(_rootName, _contextName, "TempContext", "TempRoot", contextPath,
+                CodeGeneratorStrings.TempRootPath, namespaceText);
         }
 
         private void CreateScene()

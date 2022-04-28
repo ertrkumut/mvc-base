@@ -58,6 +58,9 @@ namespace MVC.Runtime.ViewMediators.Utils
             }
             
             var mediationBinder = viewContext.MediationBinder;
+            if(mediationBinder == null)
+                return;
+            
             var injectedMediatorData = mediationBinder.GetOrCreateInjectedMediatorData(view);
             if (injectedMediatorData.mediator == null)
                 return;
@@ -91,6 +94,7 @@ namespace MVC.Runtime.ViewMediators.Utils
             while (contextRoot == null)
             {
                 contextRoot = parent.GetComponent<IContextRoot>();
+                parent = parent.parent;
             }
             
             return contextRoot == null ? null : contextRoot.GetContext();
