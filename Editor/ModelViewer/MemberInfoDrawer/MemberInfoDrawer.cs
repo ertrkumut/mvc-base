@@ -14,7 +14,8 @@ namespace MVC.Editor.ModelViewer.MemberInfoDrawer
 
         protected override void CreatePropertyDrawer()
         {
-            base.CreatePropertyDrawer();
+            if(_propertyDrawerType == null)
+                return;
 
             _propertyDrawer = (PropertyDrawerBase) Activator.CreateInstance(_propertyDrawerType, _fieldName, _hasPropertyReadOnly);
 

@@ -9,7 +9,7 @@ namespace MVC.Editor.ModelViewer.MemberInfoDrawer
 {
     internal class MemberInfoDrawerBase
     {
-        protected virtual Type _propertyDrawerType { get; }
+        protected virtual Type _propertyDrawerType { get; set; }
         protected PropertyDrawerBase _propertyDrawer;
 
         protected MemberInfo _memberInfo;
@@ -31,10 +31,7 @@ namespace MVC.Editor.ModelViewer.MemberInfoDrawer
 
             _hasPropertyReadOnly = memberInfo.GetCustomAttributes(typeof(ReadOnlyAttribute)).ToList().Count != 0;
 
-            if (_propertyDrawerType != null)
-            {
-                CreatePropertyDrawer();
-            }
+            CreatePropertyDrawer();
         }
         
         protected virtual void CreatePropertyDrawer(){}

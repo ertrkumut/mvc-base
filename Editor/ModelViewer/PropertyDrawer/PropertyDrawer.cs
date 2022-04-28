@@ -4,6 +4,8 @@ namespace MVC.Editor.ModelViewer.PropertyDrawer
 {
     internal class PropertyDrawer<TPropertyType> : PropertyDrawerBase, IDisposable
     {
+        public TPropertyType PropertyType { get; set; }
+        
         protected TPropertyType _property;
         
         public PropertyDrawer(string fieldName, bool readOnly) : base(fieldName, readOnly)

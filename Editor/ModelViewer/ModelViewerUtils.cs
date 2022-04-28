@@ -63,13 +63,18 @@ namespace MVC.Editor.ModelViewer
             {
                 if (typeof(IList).IsAssignableFrom(memberInfoType))
                 {
-                    var listPropertyDrawer = typeof(MemberInfoDrawerBase)
+                    var listMemberInfoDrawer = typeof(MemberInfoDrawerBase)
                         .Assembly
                         .GetTypes()
-                        .FirstOrDefault(x => x.Name.Contains("ListPropertyDrawer"))
+                        .FirstOrDefault(x => x.Name.Contains("ListMemberInfoDrawer"))
                         .MakeGenericType(memberInfoType.GetGenericArguments());
 
-                    memberInfoDrawerType = listPropertyDrawer;
+                    memberInfoDrawerType = listMemberInfoDrawer;
+                }
+                else if (typeof(IDictionary).IsAssignableFrom(memberInfoType))
+                {
+                    //TODO: DictionaryMemberInfoDrawer
+                    return null;
                 }
                 else
                     return null;
@@ -130,13 +135,18 @@ namespace MVC.Editor.ModelViewer
         {
             _propertyDrawerTypesDict = new Dictionary<Type, Type>();
             
-            var propertyDrawerTypes = typeof(PropertyDrawerBase).Assembly.GetTypes()
+            var propertyDrawerTypes = typeof(PropertyDrawerBase)
+                .Assembly
+                .GetTypes()
                 .Where(x => x.IsSubclassOf(typeof(PropertyDrawerBase)))
                 .ToList();
 
             foreach (var propertyDrawerType in propertyDrawerTypes)
             {
-                var drawerType = propertyDrawerType.GetProperty("PropertyType").PropertyType;
+                var drawerType = propertyDrawerType.GetProperty("PropertyType")?.PropertyType;
+                if(drawerType == null)
+                    continue;
+                
                 _propertyDrawerTypesDict.Add(drawerType, propertyDrawerType);
             }
         }

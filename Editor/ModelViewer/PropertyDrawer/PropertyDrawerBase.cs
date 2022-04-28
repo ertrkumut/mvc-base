@@ -15,6 +15,11 @@ namespace MVC.Editor.ModelViewer.PropertyDrawer
             _readOnly = readOnly;
             _fieldName = fieldName;
         }
+
+        public void SetFieldName(string fieldName)
+        {
+            _fieldName = fieldName;
+        }
         
         public void OnGUI()
         {
