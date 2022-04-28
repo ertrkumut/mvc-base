@@ -41,9 +41,6 @@ namespace MVC.Editor.ModelViewer.MemberInfoDrawer
         
         public void OnGUI()
         {
-            if(_propertyDrawer == null)
-                return;
-            
             OnBeforeDrawGUI();
             OnDrawGUI();
             OnDrawCompletedGUI();
@@ -56,6 +53,9 @@ namespace MVC.Editor.ModelViewer.MemberInfoDrawer
         
         public virtual void OnDrawGUI()
         {
+            if(_propertyDrawer == null)
+                return;
+            
             _propertyDrawer.OnGUI();
         }
 

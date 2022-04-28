@@ -14,8 +14,6 @@ namespace MVC.Editor.ModelViewer.MemberInfoDrawer.Properties
         
         public override void OnDrawGUI()
         {
-            base.OnDrawGUI();
-
             Type propertyType = null;
 
             if (_memberInfo.MemberType == MemberTypes.Field)
