@@ -1,8 +1,6 @@
 ﻿using System;
 using System.Reflection;
 using MVC.Editor.ModelViewer.PropertyDrawer.Properties;
-using UnityEditor;
-using UnityEngine;
 
 namespace MVC.Editor.ModelViewer.MemberInfoDrawer.Properties
 {
@@ -12,11 +10,6 @@ namespace MVC.Editor.ModelViewer.MemberInfoDrawer.Properties
         
         public IntMemberInfoDrawer(MemberInfo memberInfo, object targetObject) : base(memberInfo, targetObject)
         {
-        }
-
-        public override void OnDrawGUI()
-        {
-            base.OnDrawGUI();
         }
     }
 }
