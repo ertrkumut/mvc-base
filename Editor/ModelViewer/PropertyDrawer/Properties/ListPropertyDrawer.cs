@@ -109,7 +109,7 @@ namespace MVC.Editor.ModelViewer.PropertyDrawer.Properties
         
         private PropertyDrawerBase GetAvailablePropertyDrawer()
         {
-            PropertyDrawerBase availablePropertyDrawer = null;
+            PropertyDrawerBase availablePropertyDrawer;
             if (_disabledProperties.Count == 0)
             {
                 availablePropertyDrawer =

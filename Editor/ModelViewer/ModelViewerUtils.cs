@@ -45,6 +45,9 @@ namespace MVC.Editor.ModelViewer
 
             if (typeof(IList).IsAssignableFrom(type))
                 return true;
+
+            if (typeof(IDictionary).IsAssignableFrom(type))
+                return true;
             
             return false;
         }
@@ -73,8 +76,13 @@ namespace MVC.Editor.ModelViewer
                 }
                 else if (typeof(IDictionary).IsAssignableFrom(memberInfoType))
                 {
-                    //TODO: DictionaryMemberInfoDrawer
-                    return null;
+                    var dictMemberInfoDrawer = typeof(MemberInfoDrawerBase)
+                        .Assembly
+                        .GetTypes()
+                        .FirstOrDefault(x => x.Name.Contains("DictMemberInfoDrawer"))
+                        .MakeGenericType(memberInfoType.GetGenericArguments());
+
+                    memberInfoDrawerType = dictMemberInfoDrawer;
                 }
                 else
                     return null;
