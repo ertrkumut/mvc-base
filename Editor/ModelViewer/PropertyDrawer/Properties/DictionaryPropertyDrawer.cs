@@ -73,7 +73,7 @@ namespace MVC.Editor.ModelViewer.PropertyDrawer.Properties
                 ((PropertyDrawer<TKey>) keyPropertyDrawer).SetValue(key);
                 keyPropertyDrawer.OnValueChanged += () =>
                 {
-                    
+                    //TODO; Update dictionary keys
                 };
                 
                 var valuePropertyDrawer = GetAvailablePropertyDrawer(_valueType);
