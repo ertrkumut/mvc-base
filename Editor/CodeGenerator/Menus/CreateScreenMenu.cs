@@ -6,6 +6,7 @@ using MVC.Runtime.Screen;
 using UnityEditor;
 using UnityEditor.SceneManagement;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 using UnityEngine.UI;
 
 namespace MVC.Editor.CodeGenerator.Menus
@@ -28,6 +29,12 @@ namespace MVC.Editor.CodeGenerator.Menus
 
         protected override void CreateViewMediator()
         {
+            var activeScene = SceneManager.GetActiveScene();
+            if (activeScene.isDirty)
+            {
+                EditorSceneManager.SaveModifiedScenesIfUserWantsTo(new []{activeScene});
+            }
+            
             base.CreateViewMediator();
 
             var rootNamespace = _testContextNamespace + _viewPath.Replace("/", ".");
