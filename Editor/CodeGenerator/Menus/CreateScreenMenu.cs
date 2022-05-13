@@ -16,8 +16,7 @@ namespace MVC.Editor.CodeGenerator.Menus
         protected override string _classLabelName => "Screen Name: ";
         protected override string _classViewName => "ScreenView";
         protected override string _classMediatorName => "ScreenMediator";
-
-        protected override string _screenNamespace => "Runtime.Views.Screens.";
+        
         protected string _testContextNamespace => "Runtime.Test.Roots.Screens.";
 
         protected override string _tempViewName => "TempScreenView";

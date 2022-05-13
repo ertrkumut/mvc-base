@@ -4,7 +4,7 @@ namespace MVC.Editor.CodeGenerator
 {
     internal static class CodeGeneratorStrings
     {
-        internal const string ViewPath = "/Scripts/Runtime/Views/";
+        internal const string ViewPath = "/Scripts/Runtime/{0}/Views/";
         internal const string ScreenPath = "/Scripts/Runtime/Views/Screens/";
         internal const string RootPath = "/Scripts/Runtime/{0}/Root/";
 

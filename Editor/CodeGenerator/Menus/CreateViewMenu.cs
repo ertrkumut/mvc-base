@@ -13,7 +13,6 @@ namespace MVC.Editor.CodeGenerator.Menus
         protected virtual string _classLabelName => "View Name: ";
         protected virtual string _classViewName => "View";
         protected virtual string _classMediatorName => "Mediator";
-        protected virtual string _screenNamespace => "Runtime.Views.";
 
         protected virtual string _tempViewName => "TempView";
         protected virtual string _tempMediatorName => "TempMediator";
@@ -38,6 +37,9 @@ namespace MVC.Editor.CodeGenerator.Menus
         {
             _actionNames = new List<string>();
             _contextGUI = new Dictionary<string, bool>();
+            _contextGUI.Add("Global", true);
+
+            _selectedContextName = "Global";
         }
 
         protected virtual void OnGUI()
@@ -118,12 +120,12 @@ namespace MVC.Editor.CodeGenerator.Menus
 
         protected virtual void CreateViewMediator()
         {
-            var path = Application.dataPath + _targetViewPath + _viewPath;
+            var path = Application.dataPath + string.Format(_targetViewPath, _selectedContextName.Replace("Context", "")) + _viewPath;
+            _viewNamespace = path.Replace(Application.dataPath + "/Scripts/", "").Replace("/", ".").TrimEnd('.');
+            
             _viewName = _viewPath.Split('/')[_viewPath.Split('/').Length - 1] + _classViewName;
             _mediatorName = _viewPath.Split('/')[_viewPath.Split('/').Length - 1] + _classMediatorName;
-            
-            _viewNamespace = _screenNamespace + _viewPath.Replace("/",".");
-            
+
             CodeGeneratorUtils.CreateView(_viewName, _tempViewName, path, _tempViewPath, _viewNamespace, _actionNames);
             CodeGeneratorUtils.CreateMediator(_mediatorName, _viewName, _tempMediatorName, path, _tempMediatorPath, _viewNamespace, _actionNames);
 
