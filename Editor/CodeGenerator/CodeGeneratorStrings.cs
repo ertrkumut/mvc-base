@@ -6,7 +6,7 @@ namespace MVC.Editor.CodeGenerator
     {
         internal const string ViewPath = "/Scripts/Runtime/Views/";
         internal const string ScreenPath = "/Scripts/Runtime/Views/Screens/";
-        internal const string RootPath = "/Scripts/Runtime/Roots/";
+        internal const string RootPath = "/Scripts/Runtime/{0}/Root/";
 
         internal static readonly string TempViewPath = Application.dataPath.Replace("Assets", "") + "Packages/mvc-base/Editor/CodeGenerator/TempViews/TempView.cs";
         internal static readonly string TempMediatorPath = Application.dataPath.Replace("Assets", "") + "Packages/mvc-base/Editor/CodeGenerator/TempViews/TempMediator.cs";

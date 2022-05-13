@@ -117,11 +117,10 @@ namespace MVC.Editor.CodeGenerator.Menus
 
         private void CreateRootAndContext()
         {
-            var namespaceText = "Runtime.Roots." + _rootPath.Replace("/",".");
+            var contextPath = Application.dataPath + string.Format(CodeGeneratorStrings.RootPath, _rootPath);;
+            var namespaceText = contextPath.Replace(Application.dataPath + "/Scripts/", "").Replace("/", ".").TrimEnd('.');
             CreateScene();
-            
-            var contextPath = Application.dataPath + CodeGeneratorStrings.RootPath + _rootPath;
-            
+
             CodeGeneratorUtils.CreateContext(_contextName, "TempContext", contextPath,
                 CodeGeneratorStrings.TempContextPath, namespaceText);
             
@@ -151,22 +150,30 @@ namespace MVC.Editor.CodeGenerator.Menus
         {
             if(!PlayerPrefs.HasKey("create-root-menu-clicked"))
                 return;
-            
-            var rootName = PlayerPrefs.GetString("create-root-menu-clicked");
-            var path = PlayerPrefs.GetString("create-root-scene-path") + rootName + ".unity";
-            
-            PlayerPrefs.DeleteKey("create-root-menu-clicked");
-            PlayerPrefs.DeleteKey("create-root-scene-path");
-            
-            var rootGameObject = new GameObject(rootName);
-            var assemblyList = AppDomain.CurrentDomain.GetAssemblies();
-            var currentAssembly = assemblyList.FirstOrDefault(x => x.FullName.StartsWith("Assembly-CSharp"));
-            var rootType = currentAssembly.GetTypes().FirstOrDefault(x => x.Name == rootName);
-            
-            rootGameObject.AddComponent(rootType);
 
-            EditorSceneManager.SaveScene(EditorSceneManager.GetActiveScene(), path);
-            AssetDatabase.Refresh();
+            try
+            {
+                var rootName = PlayerPrefs.GetString("create-root-menu-clicked");
+                var path = PlayerPrefs.GetString("create-root-scene-path") + rootName + ".unity";
+            
+                PlayerPrefs.DeleteKey("create-root-menu-clicked");
+                PlayerPrefs.DeleteKey("create-root-scene-path");
+            
+                var rootGameObject = new GameObject(rootName);
+                var assemblyList = AppDomain.CurrentDomain.GetAssemblies();
+                var currentAssembly = assemblyList.FirstOrDefault(x => x.FullName.StartsWith("Assembly-CSharp"));
+                var rootType = currentAssembly.GetTypes().FirstOrDefault(x => x.Name == rootName);
+            
+                rootGameObject.AddComponent(rootType);
+
+                EditorSceneManager.SaveScene(EditorSceneManager.GetActiveScene(), path);
+                AssetDatabase.Refresh();
+            }
+            catch (Exception e)
+            {
+                PlayerPrefs.DeleteKey("create-root-menu-clicked");
+                PlayerPrefs.DeleteKey("create-root-scene-path");
+            }
         }
     }
 }

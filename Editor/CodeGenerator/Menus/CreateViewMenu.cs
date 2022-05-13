@@ -1,5 +1,8 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.IO;
+using System.Linq;
+using MVC.Runtime.Contexts;
 using UnityEditor;
 using UnityEngine;
 
@@ -27,10 +30,14 @@ namespace MVC.Editor.CodeGenerator.Menus
         protected string _viewNamespace;
         protected string _viewName;
         protected string _mediatorName;
-        
+
+        protected string _selectedContextName;
+        private Dictionary<string, bool> _contextGUI;
+
         protected virtual void OnEnable()
         {
             _actionNames = new List<string>();
+            _contextGUI = new Dictionary<string, bool>();
         }
 
         protected virtual void OnGUI()
@@ -89,6 +96,12 @@ namespace MVC.Editor.CodeGenerator.Menus
             EditorGUILayout.EndVertical();
             #endregion
 
+            #region SelectContext
+
+            DrawAllContexts();
+
+            #endregion
+            
             #region Create
             
             EditorGUILayout.Space(25);
@@ -115,6 +128,45 @@ namespace MVC.Editor.CodeGenerator.Menus
             CodeGeneratorUtils.CreateMediator(_mediatorName, _viewName, _tempMediatorName, path, _tempMediatorPath, _viewNamespace, _actionNames);
 
             _fileName = _viewName;
+        }
+
+        private void DrawAllContexts()
+        {
+            var assemblyList = AppDomain.CurrentDomain.GetAssemblies();
+            var currentAssembly = assemblyList.FirstOrDefault(x => x.FullName.StartsWith("Assembly-CSharp"));
+            var contextTypes = currentAssembly
+                .GetTypes()
+                .Where(x => x.IsSubclassOf(typeof(Context)))
+                .ToList()
+                .Select(x => x.Name)
+                .ToList();
+
+            contextTypes.Insert(0, "Global");
+            
+            EditorGUILayout.BeginVertical("box");
+            for (var ii = 0; ii < contextTypes.Count; ii++)
+            {
+                EditorGUILayout.BeginHorizontal();
+                var contextName = contextTypes[ii];
+                
+                if(!_contextGUI.ContainsKey(contextName))
+                    _contextGUI.Add(contextName, false);
+                
+                var result = EditorGUILayout.ToggleLeft(contextName, _contextGUI[contextName]);
+                if (result && _selectedContextName != contextName)
+                {
+                    if (!string.IsNullOrEmpty(_selectedContextName))
+                    {
+                        _contextGUI[_selectedContextName] = false;
+                    }
+                    _selectedContextName = contextName;
+                }
+                
+                _contextGUI[contextName] = result;
+                
+                EditorGUILayout.EndHorizontal();
+            }
+            EditorGUILayout.EndVertical();
         }
     }
 }
