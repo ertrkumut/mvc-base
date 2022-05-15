@@ -40,7 +40,8 @@ public override void CommandBindings()
 }
 ```
 
-![GameContext](https://ibb.co/BsjNsrm)
+#### In inspector, there are some toggles and fields that shows some information about status of **Context**. At the beginning of game, Bindings methods executed one by one. If you want you can disable these methods in inspector.
+[![GameContext](https://i.postimg.cc/R02CzDJn/Screen-Shot-2022-05-14-at-4-55-54-PM.png)](https://postimg.cc/xkyVvgR0)
 
 
 
