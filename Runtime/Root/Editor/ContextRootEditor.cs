@@ -6,7 +6,7 @@ using UnityEngine.SceneManagement;
 
 namespace MVC.Runtime.Root.Editor
 {
-    [CustomEditor(typeof(ContextRoot<>), true)]
+    [CustomEditor(typeof(RootBase), true)]
     public class ContextRootEditor : UnityEditor.Editor
     {
         private RootBase _root;
@@ -51,29 +51,6 @@ namespace MVC.Runtime.Root.Editor
             
             EditorGUI.BeginChangeCheck();
             
-            #region Signal
-            
-            EditorGUILayout.BeginHorizontal();
-            
-            var signalBinding = EditorGUILayout.ToggleLeft("Bind Signals", _root.autoBindSignals, GUILayout.Width(125));
-            GUI.enabled = (Application.isPlaying && !_root.signalsBound);
-
-            if (GUI.enabled && !_root.signalsBound)
-                GUI.backgroundColor = Color.green;
-            else
-                GUI.backgroundColor = Color.red;
-
-            var signalButton = GUILayout.Button("Bind Signals");
-            if(signalButton)
-                _root.BindSignals(true);
-            
-            GUI.backgroundColor = Color.white;
-            
-            GUI.enabled = true;
-            EditorGUILayout.EndHorizontal();
-
-            #endregion
-
             #region Injection
 
             EditorGUILayout.BeginHorizontal();
@@ -89,6 +66,29 @@ namespace MVC.Runtime.Root.Editor
             var injectionButton = GUILayout.Button("Bind Injections");
             if(injectionButton)
                 _root.BindInjections(true);
+            
+            GUI.backgroundColor = Color.white;
+            
+            GUI.enabled = true;
+            EditorGUILayout.EndHorizontal();
+
+            #endregion
+            
+            #region Signal
+            
+            EditorGUILayout.BeginHorizontal();
+            
+            var signalBinding = EditorGUILayout.ToggleLeft("Bind Signals", _root.autoBindSignals, GUILayout.Width(125));
+            GUI.enabled = (Application.isPlaying && !_root.signalsBound);
+
+            if (GUI.enabled && !_root.signalsBound)
+                GUI.backgroundColor = Color.green;
+            else
+                GUI.backgroundColor = Color.red;
+
+            var signalButton = GUILayout.Button("Bind Signals");
+            if(signalButton)
+                _root.BindSignals(true);
             
             GUI.backgroundColor = Color.white;
             

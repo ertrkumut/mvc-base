@@ -60,8 +60,8 @@ namespace MVC.Runtime.Root
 
             _context.Start();
             
-            BindSignals();
             BindInjections();
+            BindSignals();
             BindMediations();
             BindCommands();
             
