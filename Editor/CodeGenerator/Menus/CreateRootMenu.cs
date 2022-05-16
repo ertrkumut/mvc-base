@@ -161,7 +161,7 @@ namespace MVC.Editor.CodeGenerator.Menus
             
                 var rootGameObject = new GameObject(rootName);
                 var assemblyList = AppDomain.CurrentDomain.GetAssemblies();
-                var currentAssembly = assemblyList.FirstOrDefault(x => x.FullName.StartsWith("Assembly-CSharp"));
+                var currentAssembly = assemblyList.FirstOrDefault(x => x.FullName.StartsWith("Assembly-CSharp,"));
                 var rootType = currentAssembly.GetTypes().FirstOrDefault(x => x.Name == rootName);
             
                 rootGameObject.AddComponent(rootType);
