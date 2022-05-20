@@ -135,7 +135,7 @@ namespace MVC.Editor.CodeGenerator.Menus
         private void DrawAllContexts()
         {
             var assemblyList = AppDomain.CurrentDomain.GetAssemblies();
-            var currentAssembly = assemblyList.FirstOrDefault(x => x.FullName.StartsWith("Assembly-CSharp"));
+            var currentAssembly = assemblyList.FirstOrDefault(x => x.FullName.StartsWith("Assembly-CSharp,"));
             var contextTypes = currentAssembly
                 .GetTypes()
                 .Where(x => x.IsSubclassOf(typeof(Context)))

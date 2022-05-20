@@ -95,7 +95,7 @@ namespace MVC.Editor.CodeGenerator.Menus
                 PlayerPrefs.DeleteKey("create-screen-root-name");
                 
                 var assemblyList = AppDomain.CurrentDomain.GetAssemblies();
-                var currentAssembly = assemblyList.FirstOrDefault(x => x.FullName.StartsWith("Assembly-CSharp"));
+                var currentAssembly = assemblyList.FirstOrDefault(x => x.FullName.StartsWith("Assembly-CSharp,"));
                 var screenType = currentAssembly.GetTypes().FirstOrDefault(x => x.Name == screenName);
                 var rootType = currentAssembly.GetTypes().FirstOrDefault(x => x.Name == rootName);
 
