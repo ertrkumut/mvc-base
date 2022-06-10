@@ -1,4 +1,5 @@
 ﻿using MVC.Runtime.Contexts;
+using UnityEngine;
 
 namespace MVC.Runtime.Root
 {
@@ -59,6 +60,7 @@ namespace MVC.Runtime.Root
             AfterCreateBeforeStartContext();
 
             _context.Start();
+            _rootsManager.injectionBinderCrossContext.BindInstance<GameObject>(gameObject, typeof(TContextType).Name);
             
             BindInjections();
             BindSignals();

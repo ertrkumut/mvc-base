@@ -7,6 +7,7 @@ using MVC.Runtime.Injectable.Attributes;
 using MVC.Runtime.Injectable.Binders;
 using MVC.Runtime.Injectable.CrossContext;
 using MVC.Runtime.Injectable.Utils;
+using MVC.Runtime.Pool;
 using MVC.Runtime.Provider.Coroutine;
 using MVC.Runtime.Provider.Update;
 using UnityEngine;
@@ -89,6 +90,7 @@ namespace MVC.Runtime.Contexts
             
             InjectionBinderCrossContext.BindMonoBehaviorInstance<IUpdateProvider, UpdateProvider>();
             InjectionBinderCrossContext.BindMonoBehaviorInstance<ICoroutineProvider, CoroutineProvider>();
+            InjectionBinderCrossContext.Bind<IObjectPoolModel, ObjectPoolModel>();
         }
 
         public virtual void SignalBindings(){}

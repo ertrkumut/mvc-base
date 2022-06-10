@@ -6,5 +6,15 @@ namespace MVC.Runtime.Injectable.Attributes
     public class InjectAttribute : Attribute
     {
         public string Name = "";
+
+        public InjectAttribute()
+        {
+            
+        }
+
+        public InjectAttribute(string name)
+        {
+            Name = name;
+        }
     }
 }

@@ -137,7 +137,10 @@ namespace MVC.Runtime.Injectable.Utils
             where TAttribute : Attribute
         {
             var injectableTypes = instance.GetType().GetAllChildClasses();
-
+            
+            if(!injectableTypes.Contains(instance.GetType()))
+                injectableTypes.Add(instance.GetType());
+            
             var injectableFields = new List<FieldInfo>();
             foreach (var injectableType in injectableTypes)
             {
@@ -157,6 +160,9 @@ namespace MVC.Runtime.Injectable.Utils
         {
             var injectableTypes = instance.GetType().GetAllChildClasses();
 
+            if(!injectableTypes.Contains(instance.GetType()))
+                injectableTypes.Add(instance.GetType());
+            
             var injectableProperties = new List<PropertyInfo>();
             foreach (var injectableType in injectableTypes)
             {
@@ -187,7 +193,7 @@ namespace MVC.Runtime.Injectable.Utils
             {
                 Debug.LogError("Injection Failed! There is no injected property in container! " +
                                "\n Instance Type: " + objectInstance.GetType().Name + 
-                               "\n Injection Type: " + injectionType.Name);
+                               "\n Injection Type: " + injectionType.Name + " - " + injectedMemberInfo.Name);
             }
             
             if (injectedMemberInfo.MemberType == MemberTypes.Field)

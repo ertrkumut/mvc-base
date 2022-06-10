@@ -1,3 +1,4 @@
+#if UNITY_EDITOR
 using System.Linq;
 using MVC.Runtime.Screen.Root;
 using MVC.Runtime.Screen.View;
@@ -21,3 +22,4 @@ namespace MVC.Editor.CodeGenerator.TempScreens
         }
     }
 }
+#endif

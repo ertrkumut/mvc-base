@@ -1,10 +1,10 @@
 using System;
 using System.Collections.Generic;
 using MVC.Runtime.Injectable.Attributes;
+using MVC.Runtime.Screen.Enum;
 using MVC.Runtime.Screen.Pool;
 using MVC.Runtime.Screen.View;
 using MVC.Runtime.ViewMediators.Utils;
-using UnityEngine;
 
 namespace MVC.Runtime.Screen
 {
@@ -15,7 +15,7 @@ namespace MVC.Runtime.Screen
         private List<ScreenDataContainer> _screenDataContainerPool;
 
         [Inject] protected IScreenPoolController _screenPoolController;
-        
+
         [PostConstruct]
         protected void PostConstruct()
         {
@@ -44,9 +44,36 @@ namespace MVC.Runtime.Screen
 
         public void HideScreen(IScreenBody screenBody)
         {
+            var screenManagerId = screenBody.ScreenManagerId;
+            var screenManager = GetScreenManager(screenManagerId);
+
+            screenManager.HideScreen(screenBody);
+            _screenPoolController.SendScreenToPool(screenBody);
+            (screenBody as ScreenBody).Close();
+            
+            screenBody.RemoveRegistration();
+        }
+        
+        public void HideAllScreens(int screenManagerId = 0)
+        {
             
         }
         
+        public ScreenState HasScreenOpen(System.Enum screenType, int screenManagerId = 0)
+        {
+            var screenManager = GetScreenManager(screenManagerId);
+            var screen = screenManager.GetScreens(screenType);
+            return screen.Count == 0 ? ScreenState.None : screen[0].ScreenState;
+        }
+
+        public TScreenType GetScreen<TScreenType>(System.Enum screenType, int screenManagerId = 0)
+            where TScreenType : IScreenBody
+        {
+            var screenManager = GetScreenManager(screenManagerId);
+            var screen = screenManager.GetScreens(screenType);
+            return screen.Count == 0 ? default : (TScreenType) screen[0];
+        }
+
         internal TScreenType CreateOrGetScreen<TScreenType>(ScreenDataContainer screenDataContainer)
             where TScreenType : IScreenBody
         {
@@ -89,15 +116,5 @@ namespace MVC.Runtime.Screen
             
             return dataContainer;
         }
-    }
-
-    public interface IScreenModel
-    {
-        void RegisterScreenManager(ScreenManager screenManager);
-        void UnRegisterScreenManager(ScreenManager screenManager);
-
-        IScreenDataContainer NewScreen(System.Enum screenType);
-
-        IScreenManager GetScreenManager(int managerId);
     }
 }

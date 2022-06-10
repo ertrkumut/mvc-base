@@ -17,6 +17,7 @@ namespace MVC.Runtime.Screen.View
 
         System.Enum ScreenType { get; set; }
         ScreenLayerIndex LayerIndex { get; set; }
+        int ScreenManagerId { get; set; }
         
         /// <summary>
         /// It must be true, if there is custom opening animation like Timeline.

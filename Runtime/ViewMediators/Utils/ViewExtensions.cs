@@ -42,6 +42,11 @@ namespace MVC.Runtime.ViewMediators.Utils
             if (injectionResult)
             {
                 var injectedMediatorData = mediationBinder.GetOrCreateInjectedMediatorData(view);
+                if (injectedMediatorData == null)
+                {
+                    Debug.LogError("Injection Data not found! ", view.gameObject);
+                    return false;
+                }
                 injectedMediatorData.viewInjector.ViewInjectionCompleted(view);
                 injectedMediatorData.mediator = mediator;
             }

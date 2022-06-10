@@ -16,6 +16,8 @@ namespace MVC.Runtime.Screen.View
         public System.Enum ScreenType { get; set; }
         public ScreenLayerIndex LayerIndex { get; set; }
 
+        public int ScreenManagerId { get; set; }
+        
         public bool CustomOpeningAnimation => _customOpeningAnimation;
         public bool CustomClosingAnimation => _customClosingAnimation;
 
