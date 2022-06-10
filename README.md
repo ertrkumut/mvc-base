@@ -192,8 +192,42 @@ public class SavePlayerDataCommand : Command<IPlayerModel>
 }
 ```
 
+## Functions
 
+#### Functions are the best feature in this framework. They work like commands but as you know, commands can not return values. Also if you want to execute command, you need to dispatch signal. But functions work by `FunctionProvider`. Functions created for some functions that developer need to execute wherever he/she wants. It's kinda injectable methods. There are two kind of functions, first one can return value, the other one is void function.
 
+#### If you want to use Functions, you need to Inject `IFunctionProvider` property.
+
+```csharp
+[Inject] private IFunctionProvider _functionProvider;
+```
+
+#### In this example, as you can see function have 2 generic types. The first type specify the return type of Function. And other types specify Execute method parameter types.
+
+```csharp
+public class CalculateDamageFunction : FunctionReturn<double, string>
+{
+    [Inject] private IPlayerModel _playerModel;
+    [Inject] private IWeaponsModel _weaponsModel;
+    
+    public override double Execute(string weaponId)
+    {
+        var weaponConfigVO = _weaponsModel.GetConfigVO(weaponId);
+
+        var damage = weaponConfigVO.baseDamage * _playerModel.GetPlayerDamageMultiplier();
+        return damage;
+    }
+}
+```
+
+#### Simple execution for this function like this:
+
+```csharp
+_functionProvider
+    .Execute<CalculateDamageFunction>()
+    .AddParams(_weaponId)
+    .SetReturn<double>();
+```
 
 
 
