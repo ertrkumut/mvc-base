@@ -229,20 +229,38 @@ _functionProvider
     .SetReturn<double>();
 ```
 
-## Screens
+## Screens - UI Popups
 
 ###### In mvc-base there is a `ScreenManager` to handle UI panels and everything about UI. Every UI popup or screens need to inherit from `ScreenView` class to integrate into system.
 ###### There is a editor window to create Screen. 
 >Navigate **Tools/MVC/Create Screen**
 ###### In this editor, there is a list shows all Context files in your project. You can choose the context to organize your file structure. Every context has a uniq folder in the Scripts/Contexts folder. And Views and Screens that you want to create will be created the context folder that you chose.
 
+[![Create Screen Editor Window](https://i.postimg.cc/6QQczJRH/Screen-Shot-2022-06-23-at-1-56-07-PM.png)](https://postimg.cc/hXHVPY2x)
+
+###### After screen creation, you current scene will be changed by the editor. System automatically create a TestScene, TestContext and TestRoot classes for you. In this test scene you will be able to make your own test. You can bind your classes into TestContext and you can simulate special situations.
+###### And editor creates a prefab file that you can design your popup in it. You can find prefab in Resources/Screens folder.
+
+[![TestScene](https://i.postimg.cc/R0nkGHwp/Screen-Shot-2022-06-23-at-2-11-22-PM.png)](https://postimg.cc/kVqYgD1W)
 
 
+###### Screens also work the same way as Views. You need to bind them into your context.
+```csharp
+MediationBinder.Bind<LauncherScreenView>().To<LauncherScreenMediator>();
+```
 
+###### All screen operations handling by `IScreenModel`. It already bound in context file so you don't need to bind it again.
 
-
-
-
+```csharp
+_screenModel.NewScreen(GameScreens.LauncherScreen)
+    .SetLayer(ScreenLayerIndex.Layer_8)
+    .SetParameters(_playerId)
+    .Show<LauncherScreenView>();
+```
+g
+```csharp
+_screenModel.HideScreen(_launcherScreen);
+```
 
 
 

@@ -29,7 +29,7 @@ namespace MVC.Runtime.Screen
             return this;
         }
         
-        public IScreenDataContainer SetLayer(ScreenLayerIndex layerIndex = ScreenLayerIndex.Layer_1)
+        public IScreenDataContainer SetLayer(ScreenLayerIndex layerIndex = ScreenLayerIndex.Layer_0)
         {
             LayerIndex = layerIndex;
             return this;
@@ -60,7 +60,7 @@ namespace MVC.Runtime.Screen
             ScreenParameters = null;
             
             ManagerIndex = 0;
-            LayerIndex = ScreenLayerIndex.Layer_1;
+            LayerIndex = ScreenLayerIndex.Layer_0;
         }
     }
 }

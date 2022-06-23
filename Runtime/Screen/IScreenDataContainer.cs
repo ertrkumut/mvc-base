@@ -7,7 +7,7 @@ namespace MVC.Runtime.Screen
     public interface IScreenDataContainer
     {
         IScreenDataContainer SetManagerIndex(int managerIndex = 0);
-        IScreenDataContainer SetLayer(ScreenLayerIndex layerIndex = ScreenLayerIndex.Layer_1);
+        IScreenDataContainer SetLayer(ScreenLayerIndex layerIndex = ScreenLayerIndex.Layer_0);
         IScreenDataContainer SetParameters(params object[] screenParameters);
         
         TScreenType Show<TScreenType>() where TScreenType : MonoBehaviour, IScreenBody;
