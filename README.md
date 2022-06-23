@@ -257,7 +257,7 @@ _screenModel.NewScreen(GameScreens.LauncherScreen)
     .SetParameters(_playerId)
     .Show<LauncherScreenView>();
 ```
-g
+
 ```csharp
 _screenModel.HideScreen(_launcherScreen);
 ```
