@@ -5,6 +5,7 @@ using MVC.Runtime.Attributes;
 using MVC.Runtime.Bind.Binders;
 using MVC.Runtime.Contexts;
 using MVC.Runtime.Signals;
+using UnityEngine;
 
 namespace MVC.Runtime.Controller.Binder
 {
@@ -51,20 +52,39 @@ namespace MVC.Runtime.Controller.Binder
             sequence.RunCommands();
         }
 
-        public void ReleaseCommand(ICommandBody commandBody, params object[] commandParameters)
+        public virtual void ReleaseCommand(ICommandBody commandBody, params object[] commandParameters)
         {
             var sequence = GetActiveSequence(commandBody);
             if (sequence == null)
+            {
+                Debug.LogError("RELEASE FAILED! - Command Sequence not found! \n CommandType: " + commandBody.GetType().Name);
                 return;
+            }
             
             sequence.ReleaseCommand(commandBody, commandParameters);
         }
 
-        public void StopCommand(ICommandBody commandBody)
+        public virtual void Jump<TCommandType>(ICommandBody commandBody, params object[] commandParameters)
+            where TCommandType : ICommandBody 
         {
             var sequence = GetActiveSequence(commandBody);
             if (sequence == null)
+            {
+                Debug.LogError("JUMP FAILED! - Command Sequence not found! \n CommandType: " + commandBody.GetType().Name);
                 return;
+            }
+            
+            sequence.JumpCommand<TCommandType>(commandBody, commandParameters);
+        }
+        
+        public virtual void StopCommand(ICommandBody commandBody)
+        {
+            var sequence = GetActiveSequence(commandBody);
+            if (sequence == null)
+            {
+                Debug.LogError("COMMAND STOP FAILED! - Command Sequence not found! \n CommandType: " + commandBody.GetType().Name);
+                return;
+            }
 
             sequence.Stop();
         }

@@ -24,6 +24,18 @@ namespace MVC.Runtime.Controller
             }
             CommandBinder.ReleaseCommand(this, sequenceData);
         }
+        
+        public virtual void Jump<TCommandType>(params object[] sequenceData)
+            where TCommandType : ICommandBody
+        {
+            if (!IsRetain)
+            {
+                Debug.LogError("Command must be retain, if you want to JUMP!");
+                return;
+            }
+            
+            CommandBinder.Jump<TCommandType>(this, sequenceData);
+        }
 
         public virtual void Stop()
         {

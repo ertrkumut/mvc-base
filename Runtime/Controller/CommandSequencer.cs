@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using MVC.Runtime.Controller.Binder;
 using MVC.Runtime.Injectable.Utils;
+using UnityEngine;
 
 namespace MVC.Runtime.Controller
 {
@@ -21,7 +22,7 @@ namespace MVC.Runtime.Controller
         private object[] _signalParameters;
         private int _sequenceId;
 
-        public void Initialize(ICommandBinding commandBinding, CommandBinder commandBinder, params object[] signalParameters)
+        public virtual void Initialize(ICommandBinding commandBinding, CommandBinder commandBinder, params object[] signalParameters)
         {
             _sequenceCompleted = false;
             
@@ -34,12 +35,12 @@ namespace MVC.Runtime.Controller
             _commands = commandBinding.GetBindedCommands();
         }
 
-        public void RunCommands()
+        public virtual void RunCommands()
         {
             ExecuteCommand();
         }
 
-        private void ExecuteCommand(params object[] commandParameters)
+        internal virtual void ExecuteCommand(params object[] commandParameters)
         {
             if(_sequenceCompleted)
                 return;
@@ -55,7 +56,14 @@ namespace MVC.Runtime.Controller
             AutoReleaseCommand(command);
         }
         
-        private void AutoReleaseCommand(ICommandBody command)
+        private void ExecuteCommand(ICommandBody commandBody, params object[] parameters)
+        {
+            var commandType = commandBody.GetType();
+            var executeMethodInfo = commandType.GetMethod("Execute");
+            executeMethodInfo.Invoke(commandBody, parameters);
+        }
+        
+        internal virtual void AutoReleaseCommand(ICommandBody command)
         {
             if(command.IsRetain)
                 return;
@@ -67,13 +75,28 @@ namespace MVC.Runtime.Controller
                 NextCommand();
         }
 
-        public void ReleaseCommand(ICommandBody command, params object[] commandParameters)
+        public virtual void ReleaseCommand(ICommandBody command, params object[] commandParameters)
         {
             _commandBinder.ReturnCommandToPool(command);
             NextCommand(commandParameters);
         }
+
+        public virtual void JumpCommand<TCommandType>(ICommandBody command, params object[] commandParameters)
+            where TCommandType : ICommandBody
+        {
+            _commandBinder.ReturnCommandToPool(command);
+            var nextCommandType = FindCommand<TCommandType>();
+            if (nextCommandType == null)
+            {
+                Debug.LogError("JUMP FAILED! - Command Type not found! \n Command Type: " + command.GetType().Name);
+                return;
+            }
+
+            _sequenceId = FindCommandIndex(nextCommandType);
+            ExecuteCommand(commandParameters);
+        }
         
-        private void NextCommand(params object[] commandParameters)
+        internal virtual void NextCommand(params object[] commandParameters)
         {
             _sequenceId++;
             if(!IsSequenceCompleted())
@@ -82,35 +105,40 @@ namespace MVC.Runtime.Controller
                 SequenceCompleted();
         }
 
-        private void ExecuteCommand(ICommandBody commandBody, params object[] parameters)
-        {
-            var commandType = commandBody.GetType();
-            var executeMethodInfo = commandType.GetMethod("Execute");
-            executeMethodInfo.Invoke(commandBody, parameters);
-        }
-        
-        private void SequenceCompleted()
+        internal virtual void SequenceCompleted()
         {
             _sequenceCompleted = true;
             SequenceFinished?.Invoke(this);
         }
 
-        private bool IsSequenceCompleted()
+        protected bool IsSequenceCompleted()
         {
             return _sequenceId >= _commands.Count;
         }
         
-        private Type GetCurrentCommandType()
+        protected Type GetCurrentCommandType()
         {
             return _commands[_sequenceId];
         }
 
-        public void Stop()
+        protected Type FindCommand<TCommandBody>()
+            where TCommandBody : ICommandBody
+        {
+            var command = _commands.FirstOrDefault(x => x == typeof(TCommandBody));
+            return command;
+        }
+
+        protected int FindCommandIndex(Type commandType)
+        {
+            return _commands.IndexOf(commandType);
+        }
+
+        public virtual void Stop()
         {
             SequenceCompleted();
         }
         
-        public void Dispose()
+        public virtual void Dispose()
         {
             SequenceFinished = null;
             _commands = null;
