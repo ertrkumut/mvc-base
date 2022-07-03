@@ -14,8 +14,8 @@ namespace MVC.Runtime.Controller.Binder
     public class CommandBinder : Binder<CommandBinding>, ICommandBinder
     {
         private Dictionary<Type, List<ICommandBody>> _commandPool;
-        private List<CommandSequencer> _sequencePool;
-        private List<CommandSequencer> _activeSequenceList;
+        private List<ICommandSequencer> _sequencePool;
+        private List<ICommandSequencer> _activeSequenceList;
 
         internal IContext Context;
         
@@ -23,8 +23,8 @@ namespace MVC.Runtime.Controller.Binder
         {
             _commandPool = new Dictionary<Type, List<ICommandBody>>();
             
-            _sequencePool = new List<CommandSequencer>();
-            _activeSequenceList = new List<CommandSequencer>();
+            _sequencePool = new List<ICommandSequencer>();
+            _activeSequenceList = new List<ICommandSequencer>();
         }
         
         public virtual CommandBinding Bind<TSignal>(TSignal key)
@@ -92,7 +92,7 @@ namespace MVC.Runtime.Controller.Binder
         
         #region SequencePool
 
-        private CommandSequencer GetAvailableSequence()
+        private ICommandSequencer GetAvailableSequence()
         {
             var availableSequencer = _sequencePool.Count != 0 ? _sequencePool[0] : null;
 
@@ -104,7 +104,7 @@ namespace MVC.Runtime.Controller.Binder
             return availableSequencer;
         }
         
-        private void ReturnSequenceToPool(CommandSequencer commandSequencer)
+        private void ReturnSequenceToPool(ICommandSequencer commandSequencer)
         {
             commandSequencer.Dispose();
             
@@ -112,10 +112,10 @@ namespace MVC.Runtime.Controller.Binder
             _sequencePool.Add(commandSequencer);
         }
 
-        private CommandSequencer GetActiveSequence(ICommandBody commandBody)
+        private ICommandSequencer GetActiveSequence(ICommandBody commandBody)
         {
             var sequence =
-                _activeSequenceList.FirstOrDefault(x => x.currentCommand != null && x.currentCommand == commandBody);
+                _activeSequenceList.FirstOrDefault(x => x.CurrentCommand != null && x.CurrentCommand == commandBody);
             return sequence;
         }
         

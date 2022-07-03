@@ -7,20 +7,20 @@ using UnityEngine;
 
 namespace MVC.Runtime.Controller.Sequencer
 {
-    internal class CommandSequencer
+    internal class CommandSequencer : ICommandSequencer
     {
-        public Action<CommandSequencer> SequenceFinished;
+        public Action<ICommandSequencer> SequenceFinished { get; set; }
 
-        private bool _sequenceCompleted;
-        public ICommandBody currentCommand;
-        private ICommandBinding _commandBinding;
+        protected bool _sequenceCompleted;
+        public ICommandBody CurrentCommand { get; set; }
+        protected ICommandBinding _commandBinding;
 
-        private CommandBinder _commandBinder;
+        protected CommandBinder _commandBinder;
 
-        private List<Type> _commands;
+        protected List<Type> _commands;
 
-        private object[] _signalParameters;
-        private int _sequenceId;
+        protected object[] _signalParameters;
+        protected int _sequenceId;
 
         public virtual void Initialize(ICommandBinding commandBinding, CommandBinder commandBinder, params object[] signalParameters)
         {
@@ -37,23 +37,23 @@ namespace MVC.Runtime.Controller.Sequencer
 
         public virtual void RunCommands()
         {
-            ExecuteCommand();
+            (this as ICommandSequencer).ExecuteCommand();
         }
 
-        internal virtual void ExecuteCommand(params object[] commandParameters)
+        void ICommandSequencer.ExecuteCommand(params object[] commandParameters)
         {
             if(_sequenceCompleted)
                 return;
             
             var commandType = GetCurrentCommandType();
             var command = _commandBinder.GetCommand(commandType);
-            currentCommand = command;
-
+            CurrentCommand = command;
+            
             var context = _commandBinding.Context;
             context.InjectCommand(command, _signalParameters);
-
+            
             ExecuteCommand(command, commandParameters);
-            AutoReleaseCommand(command);
+            (this as ICommandSequencer).AutoReleaseCommand(command);
         }
         
         private void ExecuteCommand(ICommandBody commandBody, params object[] parameters)
@@ -63,7 +63,7 @@ namespace MVC.Runtime.Controller.Sequencer
             executeMethodInfo.Invoke(commandBody, parameters);
         }
         
-        internal virtual void AutoReleaseCommand(ICommandBody command)
+        void ICommandSequencer.AutoReleaseCommand(ICommandBody command)
         {
             if(command.IsRetain)
                 return;
@@ -72,13 +72,13 @@ namespace MVC.Runtime.Controller.Sequencer
             
             var next = !(_sequenceCompleted || _commands.Last() == command.GetType());
             if(next)
-                NextCommand();
+                (this as ICommandSequencer).NextCommand();
         }
 
         public virtual void ReleaseCommand(ICommandBody command, params object[] commandParameters)
         {
             _commandBinder.ReturnCommandToPool(command);
-            NextCommand(commandParameters);
+            (this as ICommandSequencer).NextCommand(commandParameters);
         }
 
         public virtual void JumpCommand<TCommandType>(ICommandBody command, params object[] commandParameters)
@@ -93,19 +93,19 @@ namespace MVC.Runtime.Controller.Sequencer
             }
 
             _sequenceId = FindCommandIndex(nextCommandType);
-            ExecuteCommand(commandParameters);
+            (this as ICommandSequencer).ExecuteCommand(commandParameters);
         }
         
-        internal virtual void NextCommand(params object[] commandParameters)
+        void ICommandSequencer.NextCommand(params object[] commandParameters)
         {
             _sequenceId++;
             if(!IsSequenceCompleted())
-                ExecuteCommand(commandParameters);
+                (this as ICommandSequencer).ExecuteCommand(commandParameters);
             else
-                SequenceCompleted();
+                (this as ICommandSequencer).CompleteSequence();
         }
 
-        internal virtual void SequenceCompleted()
+        void ICommandSequencer.CompleteSequence()
         {
             _sequenceCompleted = true;
             SequenceFinished?.Invoke(this);
@@ -135,7 +135,7 @@ namespace MVC.Runtime.Controller.Sequencer
 
         public virtual void Stop()
         {
-            SequenceCompleted();
+            (this as ICommandSequencer).CompleteSequence();
         }
         
         public virtual void Dispose()
