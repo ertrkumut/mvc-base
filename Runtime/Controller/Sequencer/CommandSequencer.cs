@@ -5,7 +5,7 @@ using MVC.Runtime.Controller.Binder;
 using MVC.Runtime.Injectable.Utils;
 using UnityEngine;
 
-namespace MVC.Runtime.Controller
+namespace MVC.Runtime.Controller.Sequencer
 {
     internal class CommandSequencer
     {
