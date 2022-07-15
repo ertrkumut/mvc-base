@@ -8,7 +8,7 @@ namespace MVC.Editor.ModelViewer
 {
     internal class ModelViewerEditorWindow : EditorWindow
     {
-        [MenuItem("Tools/MVC/Model Viewer")]
+        [MenuItem("Tools/MVC/Model Viewer", false, 2)]
         private static void OpenModelViewer()
         {
             GetWindow<ModelViewerEditorWindow>("Model Viewer");

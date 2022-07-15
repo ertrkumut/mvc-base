@@ -1,8 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using MVC.Editor.Console;
 using MVC.Runtime.Attributes;
 using MVC.Runtime.Bind.Binders;
+using MVC.Runtime.Console;
 using MVC.Runtime.Contexts;
 using MVC.Runtime.Controller.Sequencer;
 using MVC.Runtime.Signals;
@@ -50,6 +52,7 @@ namespace MVC.Runtime.Controller.Binder
                 ReturnSequenceToPool(sequencer);
             };
             _activeSequenceList.Add(sequence);
+            MVCConsole.Log(ConsoleLogType.Command,"Signal Dispatched: " + signal.Name);
             sequence.RunCommands();
         }
 

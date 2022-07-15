@@ -1,5 +1,7 @@
 ﻿using System.Linq;
 using System.Reflection;
+using MVC.Editor.Console;
+using MVC.Runtime.Console;
 using MVC.Runtime.Controller.Binder;
 using MVC.Runtime.Function.Provider;
 using MVC.Runtime.Injectable;
@@ -73,6 +75,8 @@ namespace MVC.Runtime.Contexts
                 
                 InjectionBinderCrossContext.PostConstructedObjects.Add(injectedType.Value);
             }
+            
+            MVCConsole.Log(ConsoleLogType.Context, "Context Executed Post Construct Methods! Context: " + GetType().Name);
         }
 
         protected virtual void CoreBindings()
@@ -110,6 +114,7 @@ namespace MVC.Runtime.Contexts
         public virtual void DestroyContext()
         {
             ContextStarted = false;
+            
             MediationBinder?.UnBindAll();
             InjectionBinder?.UnBindAll();
         }

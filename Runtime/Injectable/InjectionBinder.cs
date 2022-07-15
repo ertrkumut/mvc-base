@@ -1,12 +1,13 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using MVC.Editor.Console;
 using MVC.Runtime.Attributes;
 using MVC.Runtime.Bind.Bindings.Pool;
+using MVC.Runtime.Console;
 using MVC.Runtime.Injectable.Utils;
 using MVC.Runtime.Root;
 using UnityEngine;
-using Object = UnityEngine.Object;
 
 namespace MVC.Runtime.Injectable
 {
@@ -28,12 +29,14 @@ namespace MVC.Runtime.Injectable
         public TBindingType Bind<TBindingType>(string name = "")
             where TBindingType : new()
         {
+            MVCConsole.Log(ConsoleLogType.Injection, "Binding: " + typeof(TBindingType).Name + (name != "" ? (" Name: " + name) : ""));
             return GetOrCreateInstance<TBindingType>(name);
         }
 
         public TAbstract Bind<TAbstract, TConcrete>(string name = "")
             where TConcrete : TAbstract, new()
         {
+            MVCConsole.Log(ConsoleLogType.Injection, "Binding: " + typeof(TAbstract).Name + (name != "" ? (" Name: " + name) : ""));
             return GetOrCreateInstance<TAbstract, TConcrete>(name);
         }
 
@@ -53,6 +56,7 @@ namespace MVC.Runtime.Injectable
             injectionBinding.SetValue(instance);
             injectionBinding.SetKey(injectionType);
             
+            MVCConsole.Log(ConsoleLogType.Injection, "Binding: " + injectionType.Name + (name != "" ? (" Name: " + name) : ""));
             _container[injectionType].Add(injectionBinding);    
         }
 
@@ -71,6 +75,7 @@ namespace MVC.Runtime.Injectable
             injectionBinding.SetValue(instance);
             injectionBinding.SetKey(injectionType);
             
+            MVCConsole.Log(ConsoleLogType.Injection, "Binding: " + typeof(TAbstract).Name + (name != "" ? (" Name: " + name) : ""));
             _container[injectionType].Add(injectionBinding);    
         }
         
@@ -140,7 +145,7 @@ namespace MVC.Runtime.Injectable
             _container[key].Remove(injectionBinding);
             _bindingPoolController.ReturnBindingToPool(injectionBinding);
             
-//            Debug.LogWarning("UnBind: " + key.Name + "- name: " + name);
+            MVCConsole.Log(ConsoleLogType.Injection, "Unbinding: " + key.Name + (name != "" ? (" Name: " + name) : ""));
         }
 
         #endregion
@@ -275,7 +280,5 @@ namespace MVC.Runtime.Injectable
             var instanceList = _container[bindingType];
             return instanceList.FirstOrDefault(x => x.Name == name) != null;
         }
-        
-        
     }
 }

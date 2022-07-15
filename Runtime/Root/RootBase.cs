@@ -1,4 +1,6 @@
-﻿using MVC.Runtime.Contexts;
+﻿using MVC.Editor.Console;
+using MVC.Runtime.Console;
+using MVC.Runtime.Contexts;
 using UnityEngine;
 
 namespace MVC.Runtime.Root
@@ -41,6 +43,8 @@ namespace MVC.Runtime.Root
             
             Context.SignalBindings();
             signalsBound = true;
+            
+            MVCConsole.Log(ConsoleLogType.Context, "Context Bind Signals! Context: " + GetType().Name);
         }
 
         public void BindInjections(bool forceToBind = false)
@@ -56,6 +60,8 @@ namespace MVC.Runtime.Root
             
             Context.InjectionBindings();
             injectionsBound = true;
+            
+            MVCConsole.Log(ConsoleLogType.Context, "Context Bind Injections! Context: " + GetType().Name);
         }
 
         public void BindMediations(bool forceToBind = false)
@@ -71,6 +77,8 @@ namespace MVC.Runtime.Root
             
             Context.MediationBindings();
             mediationsBound = true;
+            
+            MVCConsole.Log(ConsoleLogType.Context, "Context Bind Mediations! Context: " + GetType().Name);
         }
 
         public void BindCommands(bool forceToBind = false)
@@ -86,6 +94,8 @@ namespace MVC.Runtime.Root
             
             Context.CommandBindings();
             commandsBound = true;
+            
+            MVCConsole.Log(ConsoleLogType.Context, "Context Bind Commands! Context: " + GetType().Name);
         }
         
         public IContext GetContext()
@@ -106,6 +116,8 @@ namespace MVC.Runtime.Root
             
             Context.Launch();
             hasLaunched = true;
+            
+            MVCConsole.Log(ConsoleLogType.Context, "Context Launched! Context: " + GetType().Name);
         }
     }
 }

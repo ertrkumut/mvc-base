@@ -1,4 +1,6 @@
-﻿using MVC.Runtime.Contexts;
+﻿using MVC.Editor.Console;
+using MVC.Runtime.Console;
+using MVC.Runtime.Contexts;
 using UnityEngine;
 
 namespace MVC.Runtime.Root
@@ -56,6 +58,8 @@ namespace MVC.Runtime.Root
             if(!autoInitialize && !forceToStart)
                 return;
 
+            MVCConsole.Log(ConsoleLogType.Context, "Context Started! Context: " + GetType().Name);
+            
             hasInitialized = true;
             AfterCreateBeforeStartContext();
 
@@ -78,6 +82,7 @@ namespace MVC.Runtime.Root
         public virtual void DestroyContext()
         {
             _rootsManager.UnRegisterContext(this);
+            
             _context.DestroyContext();
 
             signalsBound = false;
