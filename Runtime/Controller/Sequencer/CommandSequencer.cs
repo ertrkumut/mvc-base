@@ -1,6 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using MVC.Editor.Console;
+using MVC.Runtime.Console;
 using MVC.Runtime.Controller.Binder;
 using MVC.Runtime.Injectable.Utils;
 using UnityEngine;
@@ -59,6 +61,9 @@ namespace MVC.Runtime.Controller.Sequencer
         private void ExecuteCommand(ICommandBody commandBody, params object[] parameters)
         {
             var commandType = commandBody.GetType();
+            
+            MVCConsole.Log(ConsoleLogType.Command, "Command Executed! - " + commandType.Name);
+            
             var executeMethodInfo = commandType.GetMethod("Execute");
             executeMethodInfo.Invoke(commandBody, parameters);
         }
