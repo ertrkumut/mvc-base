@@ -1,6 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
+using MVC.Editor.Console;
 using MVC.Runtime.Attributes;
+using MVC.Runtime.Console;
 using MVC.Runtime.Contexts;
 using MVC.Runtime.Injectable.Utils;
 using UnityEngine;
@@ -96,8 +98,8 @@ namespace MVC.Runtime.Function.Provider
                 _functionPool[functionType].Remove(function);
                 return function;
             }
-
-            Debug.LogWarning("Function Created! " + functionType.Name);
+            
+            MVCConsole.LogWarning(ConsoleLogType.Function, "Function Created! " + functionType.Name);
             function = (IFunctionBody) Activator.CreateInstance(functionType);
             
             return function;

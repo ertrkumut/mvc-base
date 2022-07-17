@@ -1,6 +1,8 @@
 ﻿using System.Collections.Generic;
+using MVC.Editor.Console;
 using MVC.Runtime.Bind.Bindings;
 using MVC.Runtime.Bind.Bindings.Pool;
+using MVC.Runtime.Console;
 using MVC.Runtime.Root;
 using UnityEngine;
 
@@ -25,7 +27,7 @@ namespace MVC.Runtime.Bind.Binders
             var keyType = typeof(TKeyType);
             if(IsBindingExist(keyType))
             {
-                Debug.LogWarning("Binding already exist! keyType: " + keyType.Name);
+                MVCConsole.LogWarning(ConsoleLogType.Injection, "Binding already exist! keyType: " + keyType.Name);
                 return default;
             }
 
@@ -39,7 +41,7 @@ namespace MVC.Runtime.Bind.Binders
         {
             if(IsBindingExist(key))
             {
-                Debug.LogWarning("Binding already exist! keyType: " + key);
+                MVCConsole.LogWarning(ConsoleLogType.Injection, "Binding already exist! keyType: " + key);
                 return default;
             }
 
@@ -74,7 +76,7 @@ namespace MVC.Runtime.Bind.Binders
         {
             _bindings.Remove(binding.Key);
             _bindingPoolController.ReturnBindingToPool(binding);
-            Debug.LogWarning("UnBind: " + binding.Key);
+            MVCConsole.LogWarning(ConsoleLogType.Injection, "UnBind: " + binding.Key);
         }
         
         #endregion

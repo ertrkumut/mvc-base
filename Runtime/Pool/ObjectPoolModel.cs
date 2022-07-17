@@ -1,5 +1,7 @@
 using System;
 using System.Collections.Generic;
+using MVC.Editor.Console;
+using MVC.Runtime.Console;
 using MVC.Runtime.Injectable.Attributes;
 using MVC.Runtime.Pool.UnityObject;
 using UnityEngine;
@@ -37,6 +39,7 @@ namespace MVC.Runtime.Pool
             if (_data == null)
             {
                 Debug.LogError("There is no CD_PoolData File!");
+                MVCConsole.LogError(ConsoleLogType.Pool, "There is no CD_PoolData File!");
                 return;
             }
             
@@ -62,6 +65,7 @@ namespace MVC.Runtime.Pool
             if (_poolConfigVODict.ContainsKey(key))
             {
                 Debug.LogError("There is already pool config data for key: " + key);
+                MVCConsole.LogError(ConsoleLogType.Pool, "There is already pool config data for key: " + key);
                 return;
             }
             
@@ -80,6 +84,7 @@ namespace MVC.Runtime.Pool
             if (!_poolConfigVODict.ContainsKey(key))
             {
                 Debug.LogError("There is no pool data for: " + key);
+                MVCConsole.LogError(ConsoleLogType.Pool, "There is no pool data for: " + key);
                 return;
             }
 
@@ -92,6 +97,7 @@ namespace MVC.Runtime.Pool
             if (!_poolConfigVODict.ContainsKey(key))
             {
                 Debug.LogError("Pool Config Data not found for: " + key + " PoolType: " + typeof(PoolType).Name);
+                MVCConsole.LogError(ConsoleLogType.Pool, "Pool Config Data not found for: " + key + " PoolType: " + typeof(PoolType).Name);
                 return default;
             }
 
@@ -112,6 +118,7 @@ namespace MVC.Runtime.Pool
             if (configVO == null)
             {
                 Debug.LogError("Pool Config Data couldn't found. PoolType: " + poolType, poolItem.transform.gameObject);
+                MVCConsole.LogError(ConsoleLogType.Pool, "Pool Config Data couldn't found. PoolType: " + poolType);
                 return;
             }
             

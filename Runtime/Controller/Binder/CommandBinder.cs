@@ -62,6 +62,7 @@ namespace MVC.Runtime.Controller.Binder
             if (sequence == null)
             {
                 Debug.LogError("RELEASE FAILED! - Command Sequence not found! \n CommandType: " + commandBody.GetType().Name);
+                MVCConsole.LogError(ConsoleLogType.Command, "RELEASE FAILED! - Command Sequence not found! \n CommandType: " + commandBody.GetType().Name);
                 return;
             }
             
@@ -75,6 +76,7 @@ namespace MVC.Runtime.Controller.Binder
             if (sequence == null)
             {
                 Debug.LogError("JUMP FAILED! - Command Sequence not found! \n CommandType: " + commandBody.GetType().Name);
+                MVCConsole.LogError(ConsoleLogType.Command, "JUMP FAILED! - Command Sequence not found! \n CommandType: " + commandBody.GetType().Name);
                 return;
             }
             
@@ -87,6 +89,7 @@ namespace MVC.Runtime.Controller.Binder
             if (sequence == null)
             {
                 Debug.LogError("COMMAND STOP FAILED! - Command Sequence not found! \n CommandType: " + commandBody.GetType().Name);
+                MVCConsole.LogError(ConsoleLogType.Command, "COMMAND STOP FAILED! - Command Sequence not found! \n CommandType: " + commandBody.GetType().Name);
                 return;
             }
 

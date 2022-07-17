@@ -2,6 +2,8 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
+using MVC.Editor.Console;
+using MVC.Runtime.Console;
 using MVC.Runtime.Contexts;
 using MVC.Runtime.Controller;
 using MVC.Runtime.Function;
@@ -194,6 +196,10 @@ namespace MVC.Runtime.Injectable.Utils
                 Debug.LogError("Injection Failed! There is no injected property in container! " +
                                "\n Instance Type: " + objectInstance.GetType().Name + 
                                "\n Injection Type: " + injectionType.Name + " - " + injectedMemberInfo.Name);
+                
+                MVCConsole.LogError(ConsoleLogType.Injection, "Injection Failed! There is no injected property in container! " +
+                                                                  "\n Instance Type: " + objectInstance.GetType().Name + 
+                                                                  "\n Injection Type: " + injectionType.Name + " - " + injectedMemberInfo.Name);
             }
             
             if (injectedMemberInfo.MemberType == MemberTypes.Field)

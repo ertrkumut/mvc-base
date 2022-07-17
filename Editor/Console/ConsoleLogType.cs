@@ -6,6 +6,8 @@ namespace MVC.Editor.Console
         Context = 5,
         Injection = 10,
         Command = 15,
-        Function = 20
+        Function = 20,
+        Screen = 25,
+        Pool = 30
     }
 }

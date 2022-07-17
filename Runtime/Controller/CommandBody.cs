@@ -1,4 +1,6 @@
-﻿using MVC.Runtime.Controller.Binder;
+﻿using MVC.Editor.Console;
+using MVC.Runtime.Console;
+using MVC.Runtime.Controller.Binder;
 using MVC.Runtime.Injectable.Attributes;
 using UnityEngine;
 
@@ -20,6 +22,7 @@ namespace MVC.Runtime.Controller
             if (!IsRetain)
             {
                 Debug.LogError("Command must be retain, if you want to call manual RELEASE!");
+                MVCConsole.LogError(ConsoleLogType.Command, "Command must be retain, if you want to call manual RELEASE!");
                 return;
             }
             CommandBinder.ReleaseCommand(this, sequenceData);
@@ -31,6 +34,7 @@ namespace MVC.Runtime.Controller
             if (!IsRetain)
             {
                 Debug.LogError("Command must be retain, if you want to JUMP!");
+                MVCConsole.LogError(ConsoleLogType.Command, "Command must be retain, if you want to JUMP!");
                 return;
             }
             

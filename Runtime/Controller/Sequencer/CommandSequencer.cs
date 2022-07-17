@@ -94,9 +94,11 @@ namespace MVC.Runtime.Controller.Sequencer
             if (nextCommandType == null)
             {
                 Debug.LogError("JUMP FAILED! - Command Type not found! \n Command Type: " + command.GetType().Name);
+                MVCConsole.LogError(ConsoleLogType.Command, "JUMP FAILED! - Command Type not found! \n Command Type: " + command.GetType().Name);
                 return;
             }
 
+            MVCConsole.Log(ConsoleLogType.Command, "Command Jumped! - " + nextCommandType.Name);
             _sequenceId = FindCommandIndex(nextCommandType);
             (this as ICommandSequencer).ExecuteCommand(commandParameters);
         }

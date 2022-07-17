@@ -1,4 +1,6 @@
 using System.Collections.Generic;
+using MVC.Editor.Console;
+using MVC.Runtime.Console;
 using MVC.Runtime.Screen.Enum;
 using MVC.Runtime.Screen.View;
 using UnityEngine;
@@ -34,6 +36,8 @@ namespace MVC.Runtime.Screen.Layer
             }
             
             Debug.LogError("Screen already in this layer! ScreenType: " + screenType + " Layer: " + _layerIndex);
+            MVCConsole.LogError(ConsoleLogType.Screen, "Screen already in this layer! ScreenType: " + screenType + " Layer: " + _layerIndex);
+            
             return false;
         }
 

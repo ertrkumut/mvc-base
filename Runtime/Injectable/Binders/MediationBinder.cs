@@ -1,8 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
+using MVC.Editor.Console;
 using MVC.Runtime.Attributes;
 using MVC.Runtime.Bind.Binders;
 using MVC.Runtime.Bind.Bindings.Mediator;
+using MVC.Runtime.Console;
 using MVC.Runtime.Injectable.Components;
 using MVC.Runtime.Injectable.Mediator;
 using MVC.Runtime.Root;
@@ -36,6 +38,7 @@ namespace MVC.Runtime.Injectable.Binders
             if (!typeof(IView).IsAssignableFrom(viewType))
             {
                 Debug.LogError("Binding View require to inherit from IMVCView interface! " + viewType.Name);
+                MVCConsole.LogError(ConsoleLogType.Injection, "Binding View require to inherit from IMVCView interface! " + viewType.Name);
                 return null;
             }
             

@@ -29,14 +29,14 @@ namespace MVC.Runtime.Injectable
         public TBindingType Bind<TBindingType>(string name = "")
             where TBindingType : new()
         {
-            MVCConsole.Log(ConsoleLogType.Injection, "Binding: " + typeof(TBindingType).Name + (name != "" ? (" Name: " + name) : ""));
+            MVCConsole.LogWarning(ConsoleLogType.Injection, "Binding: " + typeof(TBindingType).Name + (name != "" ? (" Name: " + name) : ""));
             return GetOrCreateInstance<TBindingType>(name);
         }
 
         public TAbstract Bind<TAbstract, TConcrete>(string name = "")
             where TConcrete : TAbstract, new()
         {
-            MVCConsole.Log(ConsoleLogType.Injection, "Binding: " + typeof(TAbstract).Name + (name != "" ? (" Name: " + name) : ""));
+            MVCConsole.LogWarning(ConsoleLogType.Injection, "Binding: " + typeof(TAbstract).Name + (name != "" ? (" Name: " + name) : ""));
             return GetOrCreateInstance<TAbstract, TConcrete>(name);
         }
 
@@ -56,7 +56,7 @@ namespace MVC.Runtime.Injectable
             injectionBinding.SetValue(instance);
             injectionBinding.SetKey(injectionType);
             
-            MVCConsole.Log(ConsoleLogType.Injection, "Binding: " + injectionType.Name + (name != "" ? (" Name: " + name) : ""));
+            MVCConsole.LogWarning(ConsoleLogType.Injection, "Binding: " + injectionType.Name + (name != "" ? (" Name: " + name) : ""));
             _container[injectionType].Add(injectionBinding);    
         }
 
@@ -75,7 +75,7 @@ namespace MVC.Runtime.Injectable
             injectionBinding.SetValue(instance);
             injectionBinding.SetKey(injectionType);
             
-            MVCConsole.Log(ConsoleLogType.Injection, "Binding: " + typeof(TAbstract).Name + (name != "" ? (" Name: " + name) : ""));
+            MVCConsole.LogWarning(ConsoleLogType.Injection, "Binding: " + typeof(TAbstract).Name + (name != "" ? (" Name: " + name) : ""));
             _container[injectionType].Add(injectionBinding);    
         }
         
@@ -145,7 +145,7 @@ namespace MVC.Runtime.Injectable
             _container[key].Remove(injectionBinding);
             _bindingPoolController.ReturnBindingToPool(injectionBinding);
             
-            MVCConsole.Log(ConsoleLogType.Injection, "Unbinding: " + key.Name + (name != "" ? (" Name: " + name) : ""));
+            MVCConsole.LogWarning(ConsoleLogType.Injection, "Unbinding: " + key.Name + (name != "" ? (" Name: " + name) : ""));
         }
 
         #endregion

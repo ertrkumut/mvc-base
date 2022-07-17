@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using System.Linq;
 using MVC.Runtime.Console;
 using UnityEditor;
@@ -23,12 +24,20 @@ namespace MVC.Editor.Console
         private ConsoleLogType _logType;
         private bool _isCollapsed;
 
+        private Dictionary<LogType, bool> _logFilter;
         private Vector2 _logsPanelScroll;
         
         private void OnEnable()
         {
             _logType = ConsoleLogType.All;
             _isCollapsed = true;
+
+            _logFilter = new Dictionary<LogType, bool>
+            {
+                {LogType.Log, true},
+                {LogType.Warning, true},
+                {LogType.Error, true}
+            };
         }
 
         private void OnDisable()
@@ -52,6 +61,7 @@ namespace MVC.Editor.Console
 
         private void TopPanelGUI()
         {
+            EditorGUILayout.BeginVertical();
             EditorGUILayout.BeginHorizontal();
 
             var consoleLogTypeArray = Enum.GetValues(typeof(ConsoleLogType));
@@ -78,6 +88,10 @@ namespace MVC.Editor.Console
             }
 
             GUI.backgroundColor = Color.white;
+            EditorGUILayout.EndHorizontal();
+
+            TopPanelConsoleFilterGUI();
+            
             EditorGUILayout.EndVertical();
             
             EditorGUILayout.LabelField("", GUI.skin.horizontalSlider);
@@ -102,13 +116,47 @@ namespace MVC.Editor.Console
             EditorGUILayout.EndScrollView();
         }
 
+        private void TopPanelConsoleFilterGUI()
+        {
+            var logs = MVCConsole.Logs;
+            if (_logType != ConsoleLogType.All)
+                logs = logs.Where(x => x.consoleLogType == _logType).ToList();
+            
+            EditorGUILayout.BeginHorizontal();
+
+            _logFilter[LogType.Log] = EditorGUILayout.ToggleLeft("Log(" + logs.Count(x => x.logType == LogType.Log) + ")", _logFilter[LogType.Log], GUILayout.Width(75));
+            
+            GUI.backgroundColor = Color.yellow;
+            _logFilter[LogType.Warning] = EditorGUILayout.ToggleLeft("War(" + logs.Count(x => x.logType == LogType.Warning) + ")", _logFilter[LogType.Warning], GUILayout.Width(75));
+            
+            GUI.backgroundColor = Color.red;
+            _logFilter[LogType.Error] = EditorGUILayout.ToggleLeft("Err(" + logs.Count(x => x.logType == LogType.Error) + ")", _logFilter[LogType.Error], GUILayout.Width(75));
+            GUI.backgroundColor = Color.white;
+            
+            EditorGUILayout.EndHorizontal();
+        }
+        
         private void LogGUI(ConsoleLog consoleLog)
         {
-            EditorGUILayout.BeginHorizontal("box");
+            if(_logFilter[consoleLog.logType] == false)
+                return;
             
-            EditorGUILayout.LabelField(consoleLog.hour.ToString("00") + ":" + consoleLog.minute.ToString("00") + " | " + consoleLog.message);
+            var bgColor = consoleLog.logType == LogType.Log ? Color.white :
+                consoleLog.logType == LogType.Warning ? Color.yellow : Color.red;
+
+            GUI.backgroundColor = bgColor;
+            
+            EditorGUILayout.BeginHorizontal("box");
+
+            var rect = GUILayoutUtility.GetRect(
+                new GUIContent(consoleLog.hour.ToString("00") + ":" + consoleLog.minute.ToString("00") + " | " +
+                               consoleLog.message), "label");
+            GUI.TextField(rect, consoleLog.hour.ToString("00") + ":" + consoleLog.minute.ToString("00") + " | " +
+                            consoleLog.message);
 
             EditorGUILayout.EndHorizontal();
+            
+            GUI.backgroundColor = Color.white;
         }
 
         private void ChangeConsoleLogType(ConsoleLogType consoleLogType)
