@@ -8,9 +8,9 @@ using MVC.Runtime.Console;
 using MVC.Runtime.Contexts;
 using MVC.Runtime.Injectable;
 using MVC.Runtime.Injectable.CrossContext;
+using MVC.Runtime.Provider.Coroutine;
 using MVC.Runtime.Signals;
 using MVC.Runtime.ViewMediators.Mediator;
-using UnityEngine;
 
 namespace MVC.Runtime.Root
 {
@@ -126,11 +126,15 @@ namespace MVC.Runtime.Root
                 SetSignalsNames();
                         
             #endif
-            
-            foreach (var contextRoot in _contextRootList)
+
+            var coroutineProvider = (ICoroutineProvider) injectionBinderCrossContext.GetInstance(typeof(ICoroutineProvider));
+            coroutineProvider.WaitForEndOfFrame(() =>
             {
-                contextRoot.Launch();
-            }
+                foreach (var contextRoot in _contextRootList)
+                {
+                    contextRoot.Launch();
+                }
+            });
         }
 
         public bool IsContextReady(IContext context)
