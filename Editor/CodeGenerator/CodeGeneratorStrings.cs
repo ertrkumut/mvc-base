@@ -26,6 +26,7 @@ namespace MVC.Editor.CodeGenerator
         internal static readonly string ScreenTypeEnumPath = Application.dataPath + "/Scripts/$/Enums/";
         internal static readonly string ScreenTypeEnumFileName = "GameScreens";
         
+        
         internal static readonly string TestScreenRootPath = "/Scripts/$/Test/Roots/Screens/";
 
         internal static string GetPath(string path)
