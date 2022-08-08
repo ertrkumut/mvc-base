@@ -161,10 +161,18 @@ namespace MVC.Runtime.Injectable
 
         public object GetInstance(Type instanceType, string name = "")
         {
+            var type = instanceType;
             if (!_container.ContainsKey(instanceType))
-                return null;
+            {
+                var injectedTypes = _container.Keys.ToList();
+                var assignedType = injectedTypes.FirstOrDefault(x => instanceType.IsAssignableFrom(x));
+                if(assignedType == null)
+                    return null;
+
+                type = assignedType;
+            }
             
-            var values = _container[instanceType];
+            var values = _container[type];
             var injectionData = values.FirstOrDefault(x => x.Name == name);
             return injectionData == null ? null : injectionData.Value;
         }

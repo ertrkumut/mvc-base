@@ -43,6 +43,14 @@ namespace MVC.Editor.ModelViewer
         private void DisplayFieldInfoGUI(MemberInfo memberInfo, object rootObject)
         {
             var memberType = memberInfo.GetMemberType();
+
+            if (memberType.IsInterface)
+            {
+                if(memberInfo.GetValue(rootObject) != null)
+                    memberType = memberInfo.GetValue(rootObject).GetType();
+                else
+                    return;
+            }
             
             if (memberType.IsClass && !ModelViewerUtils.IsPropertyDrawerTypeExist(memberType) && !memberType.IsSubclassOf(typeof(Object)))
             {
@@ -65,7 +73,17 @@ namespace MVC.Editor.ModelViewer
             MemberInfoDrawerBase memberInfoDrawer = null;
             if (!_activePropertyDrawersDict.ContainsKey(memberInfo))
             {
-                Type propertyDrawerType = ModelViewerUtils.GetMemberInfoDrawerType(memberInfo.GetMemberType());
+                var memberType = memberInfo.GetMemberType();
+
+                if (memberType.IsInterface)
+                {
+                    if(memberInfo.GetValue(rootObject) != null)
+                        memberType = memberInfo.GetValue(rootObject).GetType();
+                    else
+                        return null;
+                }
+                
+                Type propertyDrawerType = ModelViewerUtils.GetMemberInfoDrawerType(memberType);
 
                 memberInfoDrawer = (MemberInfoDrawerBase) Activator.CreateInstance(propertyDrawerType, memberInfo, rootObject);
                 _activePropertyDrawersDict.Add(memberInfo, memberInfoDrawer);
