@@ -1,12 +1,13 @@
-﻿using UnityEngine;
+﻿using UnityEditor;
+using UnityEngine;
 
 namespace MVC.Editor.CodeGenerator
 {
     internal static class CodeGeneratorStrings
     {
-        internal const string ViewPath = "/Scripts/Runtime/Contexts/{0}/Views/";
-        internal const string ScreenPath = "/Scripts/Runtime/Contexts/{0}/Views/Screens/";
-        internal const string RootPath = "/Scripts/Runtime/Contexts/{0}/Root/";
+        internal const string ViewPath = "/Scripts/$/Contexts/{0}/Views/";
+        internal const string ScreenPath = "/Scripts/$/Contexts/{0}/Views/Screens/";
+        internal const string RootPath = "/Scripts/$/Contexts/{0}/Root/";
 
         internal static readonly string TempViewPath = Application.dataPath.Replace("Assets", "") + "Packages/mvc-base/Editor/CodeGenerator/TempViews/TempView.cs";
         internal static readonly string TempMediatorPath = Application.dataPath.Replace("Assets", "") + "Packages/mvc-base/Editor/CodeGenerator/TempViews/TempMediator.cs";
@@ -22,9 +23,15 @@ namespace MVC.Editor.CodeGenerator
         internal static readonly string TempScreenMediatorPath = Application.dataPath.Replace("Assets", "") + "Packages/mvc-base/Editor/CodeGenerator/TempScreens/TempScreenMediator.cs";
         internal static readonly string TempScreenContextPath = Application.dataPath.Replace("Assets", "") + "Packages/mvc-base/Editor/CodeGenerator/TempScreens/TempScreenContext.cs";
         internal static readonly string TempScreenRootPath = Application.dataPath.Replace("Assets", "") + "Packages/mvc-base/Editor/CodeGenerator/TempScreens/TempScreenRoot.cs";
-        internal static readonly string ScreenTypeEnumPath = Application.dataPath + "/Scripts/Runtime/Enums/";
+        internal static readonly string ScreenTypeEnumPath = Application.dataPath + "/Scripts/$/Enums/";
         internal static readonly string ScreenTypeEnumFileName = "GameScreens";
         
-        internal static readonly string TestScreenRootPath = "/Scripts/Runtime/Test/Roots/Screens/";
+        internal static readonly string TestScreenRootPath = "/Scripts/$/Test/Roots/Screens/";
+
+        internal static string GetPath(string path)
+        {
+            var codeGenerationSettings = AssetDatabase.LoadAssetAtPath<MVCCodeGenerationSettings>("Assets/Editor/MVCCodeGenerationSettings.asset");
+            return codeGenerationSettings == null ? path.Replace("$", "Runtime") : path.Replace("$", codeGenerationSettings.MainFolderName);
+        }
     }
 }

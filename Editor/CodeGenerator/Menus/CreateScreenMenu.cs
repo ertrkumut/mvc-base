@@ -22,9 +22,9 @@ namespace MVC.Editor.CodeGenerator.Menus
         protected override string _tempViewName => "TempScreenView";
         protected override string _tempMediatorName => "TempScreenMediator";
 
-        protected override string _targetViewPath => CodeGeneratorStrings.ScreenPath;
-        protected override string _tempViewPath => CodeGeneratorStrings.TempScreenViewPath;
-        protected override string _tempMediatorPath => CodeGeneratorStrings.TempScreenMediatorPath;
+        protected override string _targetViewPath => CodeGeneratorStrings.GetPath(CodeGeneratorStrings.ScreenPath);
+        protected override string _tempViewPath => CodeGeneratorStrings.GetPath(CodeGeneratorStrings.TempScreenViewPath);
+        protected override string _tempMediatorPath => CodeGeneratorStrings.GetPath(CodeGeneratorStrings.TempScreenMediatorPath);
 
         protected override void CreateViewMediator()
         {
@@ -43,13 +43,13 @@ namespace MVC.Editor.CodeGenerator.Menus
             PlayerPrefs.SetString("create-screen-menu-clicked", _fileName);
             PlayerPrefs.SetString("create-screen-root-name", rootName);
 
-            var rootPath = Application.dataPath + CodeGeneratorStrings.TestScreenRootPath + _viewPath;
+            var rootPath = Application.dataPath + CodeGeneratorStrings.GetPath(CodeGeneratorStrings.TestScreenRootPath) + _viewPath;
 
-            CodeGeneratorUtils.CreateContext(contextName, "TempScreenContext", rootPath, CodeGeneratorStrings.TempScreenContextPath,
+            CodeGeneratorUtils.CreateContext(contextName, "TempScreenContext", rootPath, CodeGeneratorStrings.GetPath(CodeGeneratorStrings.TempScreenContextPath),
                 rootNamespace);
 
             CodeGeneratorUtils.CreateRoot(rootName, contextName, "TempScreenContext", "TempScreenRoot", rootPath,
-                CodeGeneratorStrings.TempScreenRootPath, rootNamespace);
+                CodeGeneratorStrings.GetPath(CodeGeneratorStrings.TempScreenRootPath), rootNamespace);
             
             CodeGeneratorUtils.BindMediationInContext(rootPath + "/" + contextName + ".cs", _viewName, _mediatorName, "TempScreenView", "TempScreenMediator", _viewNamespace);
             CodeGeneratorUtils.ShowScreenInLaunch(rootPath + "/" + contextName + ".cs", _viewName, "TempScreenView", "GameScreens." + _fileName.Replace("View", ""));
@@ -59,7 +59,7 @@ namespace MVC.Editor.CodeGenerator.Menus
 
         private void CreateScene()
         {
-            var scenePath = CodeGeneratorStrings.ScreenTestScenePath;
+            var scenePath = CodeGeneratorStrings.GetPath(CodeGeneratorStrings.ScreenTestScenePath);
 
             if (!Directory.Exists(scenePath)) 
                 Directory.CreateDirectory(scenePath);
@@ -113,7 +113,7 @@ namespace MVC.Editor.CodeGenerator.Menus
                 canvasGameObject.AddComponent<GraphicRaycaster>();
 
                 var screenManagerPrefab =
-                    AssetDatabase.LoadAssetAtPath<ScreenManager>(CodeGeneratorStrings.ScreenManagerPrefabPath);
+                    AssetDatabase.LoadAssetAtPath<ScreenManager>(CodeGeneratorStrings.GetPath(CodeGeneratorStrings.ScreenManagerPrefabPath));
                 var screenManager =
                     (ScreenManager) PrefabUtility.InstantiatePrefab(screenManagerPrefab, canvasGameObject.transform);
 
@@ -131,10 +131,10 @@ namespace MVC.Editor.CodeGenerator.Menus
 
                 viewInjector.InitializeForEditor();
                 
-                if (!Directory.Exists(CodeGeneratorStrings.ScreenPrefabPath))
-                    Directory.CreateDirectory(CodeGeneratorStrings.ScreenPrefabPath);
+                if (!Directory.Exists(CodeGeneratorStrings.GetPath(CodeGeneratorStrings.ScreenPrefabPath)))
+                    Directory.CreateDirectory(CodeGeneratorStrings.GetPath(CodeGeneratorStrings.ScreenPrefabPath));
                 
-                PrefabUtility.SaveAsPrefabAssetAndConnect(screenGameObject, CodeGeneratorStrings.ScreenPrefabPath + prefabName + ".prefab",
+                PrefabUtility.SaveAsPrefabAssetAndConnect(screenGameObject, CodeGeneratorStrings.GetPath(CodeGeneratorStrings.ScreenPrefabPath) + prefabName + ".prefab",
                     InteractionMode.UserAction);
 
                 EditorSceneManager.SaveScene(EditorSceneManager.GetActiveScene(), path);

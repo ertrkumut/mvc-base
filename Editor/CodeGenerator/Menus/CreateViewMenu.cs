@@ -17,9 +17,9 @@ namespace MVC.Editor.CodeGenerator.Menus
         protected virtual string _tempViewName => "TempView";
         protected virtual string _tempMediatorName => "TempMediator";
         
-        protected virtual string _targetViewPath => CodeGeneratorStrings.ViewPath;
-        protected virtual string _tempViewPath => CodeGeneratorStrings.TempViewPath;
-        protected virtual string _tempMediatorPath => CodeGeneratorStrings.TempMediatorPath;
+        protected virtual string _targetViewPath => CodeGeneratorStrings.GetPath(CodeGeneratorStrings.ViewPath);
+        protected virtual string _tempViewPath => CodeGeneratorStrings.GetPath(CodeGeneratorStrings.TempViewPath);
+        protected virtual string _tempMediatorPath => CodeGeneratorStrings.GetPath(CodeGeneratorStrings.TempMediatorPath);
 
         protected string _fileName;
         protected string _viewPath = "*Name*";

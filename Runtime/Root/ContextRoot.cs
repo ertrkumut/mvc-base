@@ -64,7 +64,7 @@ namespace MVC.Runtime.Root
             AfterCreateBeforeStartContext();
 
             _context.Start();
-            _rootsManager.injectionBinderCrossContext.BindInstance<GameObject>(gameObject, typeof(TContextType).Name);
+            _rootsManager.injectionBinderCrossContext.BindInstance<GameObject>(gameObject, gameObject.name);
             
             BindInjections();
             BindSignals();

@@ -69,11 +69,11 @@ namespace MVC.Editor.CodeGenerator.Menus
                 
                 if (GUILayout.Button("Choose Path"))
                 {
-                    if (!Directory.Exists(CodeGeneratorStrings.RootScenePath))
-                        Directory.CreateDirectory(CodeGeneratorStrings.RootScenePath);
+                    if (!Directory.Exists(CodeGeneratorStrings.GetPath(CodeGeneratorStrings.RootScenePath)))
+                        Directory.CreateDirectory(CodeGeneratorStrings.GetPath(CodeGeneratorStrings.RootScenePath));
 
                     _scenePath =
-                        EditorUtility.OpenFolderPanel("Choose Scene Path", CodeGeneratorStrings.RootScenePath, "") + "/";
+                        EditorUtility.OpenFolderPanel("Choose Scene Path", CodeGeneratorStrings.GetPath(CodeGeneratorStrings.RootScenePath), "") + "/";
                 }
             }
 
@@ -117,15 +117,15 @@ namespace MVC.Editor.CodeGenerator.Menus
 
         private void CreateRootAndContext()
         {
-            var contextPath = Application.dataPath + string.Format(CodeGeneratorStrings.RootPath, _rootPath);;
+            var contextPath = Application.dataPath + string.Format(CodeGeneratorStrings.GetPath(CodeGeneratorStrings.RootPath), _rootPath);;
             var namespaceText = contextPath.Replace(Application.dataPath + "/Scripts/", "").Replace("/", ".").TrimEnd('.');
             CreateScene();
 
             CodeGeneratorUtils.CreateContext(_contextName, "TempContext", contextPath,
-                CodeGeneratorStrings.TempContextPath, namespaceText);
+                CodeGeneratorStrings.GetPath(CodeGeneratorStrings.TempContextPath), namespaceText);
             
             CodeGeneratorUtils.CreateRoot(_rootName, _contextName, "TempContext", "TempRoot", contextPath,
-                CodeGeneratorStrings.TempRootPath, namespaceText);
+                CodeGeneratorStrings.GetPath(CodeGeneratorStrings.TempRootPath), namespaceText);
         }
 
         private void CreateScene()
@@ -133,7 +133,7 @@ namespace MVC.Editor.CodeGenerator.Menus
             if(!_createScene)
                 return;
             
-            var scenePath = _customScenePath ? _scenePath : CodeGeneratorStrings.RootScenePath;
+            var scenePath = _customScenePath ? _scenePath : CodeGeneratorStrings.GetPath(CodeGeneratorStrings.RootScenePath);
             
             PlayerPrefs.SetString("create-root-menu-clicked", _rootName);
             PlayerPrefs.SetString("create-root-scene-path", scenePath);

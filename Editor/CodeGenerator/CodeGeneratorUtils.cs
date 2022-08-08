@@ -226,18 +226,18 @@ namespace MVC.Editor.CodeGenerator
         
         public static void CreateScreenEnum(string screenType)
         {
-            var gameScreenEnumPath = CodeGeneratorStrings.ScreenTypeEnumPath + "/" + CodeGeneratorStrings.ScreenTypeEnumFileName + ".cs";
+            var gameScreenEnumPath = CodeGeneratorStrings.GetPath(CodeGeneratorStrings.ScreenTypeEnumPath) + "/" + CodeGeneratorStrings.ScreenTypeEnumFileName + ".cs";
 
             var isFileExist = File.Exists(gameScreenEnumPath);
 
             if (!isFileExist)
             {
-                if (!Directory.Exists(CodeGeneratorStrings.ScreenTypeEnumPath))
-                    Directory.CreateDirectory(CodeGeneratorStrings.ScreenTypeEnumPath);
+                if (!Directory.Exists(CodeGeneratorStrings.GetPath(CodeGeneratorStrings.ScreenTypeEnumPath)))
+                    Directory.CreateDirectory(CodeGeneratorStrings.GetPath(CodeGeneratorStrings.ScreenTypeEnumPath));
                 
                 var lineList = new List<string>();
 
-                var namespaceTxt = CodeGeneratorStrings.ScreenTypeEnumPath
+                var namespaceTxt = CodeGeneratorStrings.GetPath(CodeGeneratorStrings.ScreenTypeEnumPath)
                     .Replace(Application.dataPath + "/Scripts/", "")
                     .Replace("/", ".")
                     .TrimEnd('.');
