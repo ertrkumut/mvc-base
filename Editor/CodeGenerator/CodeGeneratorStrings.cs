@@ -23,10 +23,9 @@ namespace MVC.Editor.CodeGenerator
         internal static readonly string TempScreenMediatorPath = Application.dataPath.Replace("Assets", "") + "Packages/mvc-base/Editor/CodeGenerator/TempScreens/TempScreenMediator.cs";
         internal static readonly string TempScreenContextPath = Application.dataPath.Replace("Assets", "") + "Packages/mvc-base/Editor/CodeGenerator/TempScreens/TempScreenContext.cs";
         internal static readonly string TempScreenRootPath = Application.dataPath.Replace("Assets", "") + "Packages/mvc-base/Editor/CodeGenerator/TempScreens/TempScreenRoot.cs";
-        internal static readonly string ScreenTypeEnumPath = Application.dataPath + "/Scripts/$/Enums/";
+        internal static readonly string ScreenTypeEnumPath = Application.dataPath + "/Scripts/$/Contexts/Global/Enums/";
         internal static readonly string ScreenTypeEnumFileName = "GameScreens";
-        
-        
+
         internal static readonly string TestScreenRootPath = "/Scripts/$/Test/Roots/Screens/";
 
         internal static string GetPath(string path)
