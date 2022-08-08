@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using MVC.Runtime.Attributes;
 using UnityEngine;
@@ -52,5 +53,17 @@ namespace MVC.Runtime.Provider.Coroutine
         }
 
         #endregion
+
+        public UnityEngine.Coroutine WaitUntil(Func<bool> condition, UnityAction callback)
+        {
+            IEnumerator _(Func<bool> condition, UnityAction call)
+            {
+                yield return new WaitUntil(condition);
+                
+                call?.Invoke();
+            }
+
+            return StartCoroutine(_(condition, callback));
+        }
     }
 }

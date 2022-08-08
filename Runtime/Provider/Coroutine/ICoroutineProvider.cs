@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using UnityEngine.Events;
 
@@ -10,6 +11,8 @@ namespace MVC.Runtime.Provider.Coroutine
         UnityEngine.Coroutine WaitForEndOfFrame(UnityAction callback);
         UnityEngine.Coroutine WaitForEndOfFrames(int frameCount, UnityAction callback);
 
+        UnityEngine.Coroutine WaitUntil(Func<bool> condition, UnityAction callback);
+        
         UnityEngine.Coroutine StartCoroutine(IEnumerator enumerator);
         
         void StopCoroutine(UnityEngine.Coroutine coroutine);
