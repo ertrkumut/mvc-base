@@ -48,7 +48,7 @@ namespace MVC.Runtime.Injectable.Utils
             {
                 var fieldType = injectableFieldInfo.FieldType;
 
-                if (fieldType == viewType)
+                if (fieldType == viewType || viewType.IsSubclassOf(fieldType))
                 {
                     injectableFieldInfo.SetValue(mediator, view);
                 }
@@ -69,7 +69,7 @@ namespace MVC.Runtime.Injectable.Utils
             {
                 var fieldType = injectableProperty.PropertyType;
 
-                if (fieldType == viewType)
+                if (fieldType == viewType || viewType.IsSubclassOf(fieldType))
                 {
                     injectableProperty.SetValue(mediator, view);
                 }
