@@ -1,3 +1,4 @@
+#if UNITY_EDITOR
 using UnityEditor;
 using UnityEngine;
 
@@ -76,3 +77,4 @@ namespace MVC.Editor.UI
         }
     }
 }
+#endif

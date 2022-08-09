@@ -1,3 +1,4 @@
+#if UNITY_EDITOR
 using UnityEngine;
 
 namespace MVC.Editor.CodeGenerator
@@ -8,3 +9,4 @@ namespace MVC.Editor.CodeGenerator
         public string MainFolderName = "Runtime";
     }
 }
+#endif

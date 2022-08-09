@@ -11,9 +11,7 @@ namespace MVC.Runtime.Signals
             get => _internalCallback;
             set => _internalCallback = value;
         }
-        
-        #if UNITY_EDITOR
-        
+
         protected string _name;
 
         string ISignalBody.Name
@@ -21,7 +19,5 @@ namespace MVC.Runtime.Signals
             get => _name;
             set => _name = value;
         }
-        
-        #endif
     }
 }

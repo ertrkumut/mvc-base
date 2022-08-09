@@ -1,10 +1,11 @@
-using System;
+#if UNITY_EDITOR
+using MVC.Runtime.Root;
 using UnityEditor;
 using UnityEditor.SceneManagement;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 
-namespace MVC.Runtime.Root.Editor
+namespace MVC.Root.Editor
 {
     [CustomEditor(typeof(RootBase), true)]
     public class ContextRootEditor : UnityEditor.Editor
@@ -263,3 +264,4 @@ namespace MVC.Runtime.Root.Editor
         }
     }
 }
+#endif

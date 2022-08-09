@@ -1,4 +1,5 @@
-﻿using MVC.Runtime.Attributes;
+﻿#if UNITY_EDITOR
+using MVC.Runtime.Attributes;
 using MVC.Runtime.Injectable;
 using MVC.Runtime.Root;
 using UnityEditor;
@@ -108,3 +109,4 @@ namespace MVC.Editor.ModelViewer
         }
     }
 }
+#endif

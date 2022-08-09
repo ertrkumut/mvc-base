@@ -1,3 +1,4 @@
+#if UNITY_EDITOR
 using System;
 
 namespace MVC.Editor.ModelViewer.PropertyDrawer
@@ -28,3 +29,4 @@ namespace MVC.Editor.ModelViewer.PropertyDrawer
         }
     }
 }
+#endif

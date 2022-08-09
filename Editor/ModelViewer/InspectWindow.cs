@@ -1,4 +1,5 @@
-﻿using System;
+﻿#if UNITY_EDITOR
+using System;
 using System.Collections.Generic;
 using System.Reflection;
 using MVC.Editor.ModelViewer.MemberInfoDrawer;
@@ -100,3 +101,4 @@ namespace MVC.Editor.ModelViewer
         }
     }
 }
+#endif

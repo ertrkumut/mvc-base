@@ -1,19 +1,18 @@
-﻿using System;
+﻿#if UNITY_EDITOR
 using System.Collections.Generic;
 using System.Linq;
 using MVC.Runtime.Injectable.Components;
 using MVC.Runtime.ViewMediators.Utils;
 using MVC.Runtime.ViewMediators.View.Data;
 using UnityEditor;
-using UnityEditor.Experimental.SceneManagement;
 using UnityEditor.SceneManagement;
 using UnityEngine;
 using Object = UnityEngine.Object;
 
 namespace MVC.Runtime.ViewMediators.View.Editor
 {
-    [CustomEditor(typeof(ViewInjector))]
-    [CanEditMultipleObjects]
+    [UnityEditor.CustomEditor(typeof(ViewInjector))]
+    [UnityEditor.CanEditMultipleObjects]
     public class ViewInjectorEditor : UnityEditor.Editor
     {
         private Vector2 _guiScrollValue;
@@ -174,3 +173,4 @@ namespace MVC.Runtime.ViewMediators.View.Editor
         }
     }
 }
+#endif

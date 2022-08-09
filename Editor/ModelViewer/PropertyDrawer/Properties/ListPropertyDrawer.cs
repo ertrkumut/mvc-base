@@ -1,3 +1,4 @@
+#if UNITY_EDITOR
 using System;
 using System.Collections.Generic;
 using UnityEditor;
@@ -127,3 +128,4 @@ namespace MVC.Editor.ModelViewer.PropertyDrawer.Properties
         }
     }
 }
+#endif

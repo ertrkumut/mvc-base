@@ -1,8 +1,9 @@
+#if UNITY_EDITOR
 using System.Linq;
 using UnityEditor;
 using UnityEngine;
 
-namespace MVC.Runtime.Screen.Editor
+namespace MVC.Runtime.Screen
 {
     [CustomEditor(typeof(ScreenManager), true)]
     [CanEditMultipleObjects]
@@ -33,3 +34,4 @@ namespace MVC.Runtime.Screen.Editor
         }
     }
 }
+#endif

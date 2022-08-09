@@ -1,3 +1,4 @@
+#if UNITY_EDITOR
 using System;
 using UnityEngine;
 
@@ -40,3 +41,4 @@ namespace MVC.Editor.ModelViewer.PropertyDrawer
         protected virtual void OnDrawCompletedGUI(){}
     }
 }
+#endif

@@ -1,4 +1,5 @@
-﻿using UnityEditor;
+﻿#if UNITY_EDITOR
+using UnityEditor;
 using UnityEngine;
 
 namespace MVC.Editor.CodeGenerator
@@ -35,3 +36,4 @@ namespace MVC.Editor.CodeGenerator
         }
     }
 }
+#endif
