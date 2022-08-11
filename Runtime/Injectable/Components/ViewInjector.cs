@@ -37,6 +37,8 @@ namespace MVC.Runtime.Injectable.Components
             for (var ii = 0; ii < viewDataList.Count; ii++)
             {
                 var viewInjectorData = viewDataList[ii];
+                if(!viewInjectorData.isInjected)
+                    continue;
                 var view = viewInjectorData.view as IView;
                 view.RemoveRegistration();
             }

@@ -49,6 +49,8 @@ namespace MVC.Runtime.Pool
             {
                 var objectPoolVO = _data.list[ii];
                 RegisterPoolObject(objectPoolVO);
+
+                AutoInstantiateAtStart(objectPoolVO, _container.transform);
             }
         }
 
@@ -58,6 +60,11 @@ namespace MVC.Runtime.Pool
                 return;
             
             _poolConfigVODict.Add(objectPoolVO.key, objectPoolVO);
+            
+            if(!_disabledObjects.ContainsKey(objectPoolVO.key))
+                _disabledObjects.Add(objectPoolVO.key, new List<IPoolable>());
+            if(!_enabledObjects.ContainsKey(objectPoolVO.key))
+                _enabledObjects.Add(objectPoolVO.key, new List<IPoolable>());
         }
         
         public void RegisterPoolObject(string key, GameObject prefab, int count = 0)
@@ -91,6 +98,24 @@ namespace MVC.Runtime.Pool
             _poolConfigVODict.Remove(key);
         }
 
+        private void AutoInstantiateAtStart(ObjectPoolVO poolVO, Transform parent = null)
+        {
+            var key = poolVO.key;
+            if(poolVO.prefab.GetComponent<IPoolable>() == null)
+            {
+                MVCConsole.LogError(ConsoleLogType.Pool,
+                    "Pool Object prefab must be inherited from IPoolable interface! \n pool-key: " + key);
+                return;
+            }
+            
+            for(var ii = 0; ii < poolVO.count; ii++)
+            {
+                var poolableObject = Object.Instantiate(poolVO.prefab, parent).GetComponent<IPoolable>();
+                _disabledObjects[key].Add(poolableObject);
+                poolableObject.transform.gameObject.SetActive(false);
+            }
+        }
+        
         public PoolType Get<PoolType>(string key, Transform parent = null)
             where PoolType : IPoolable
         {
