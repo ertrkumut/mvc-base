@@ -157,6 +157,8 @@ namespace MVC.Runtime.Pool
             _disabledObjects[key].Add(poolItem);
             _enabledObjects[key].Remove(poolItem);
             
+            poolItem.transform.SetParent(_container.transform);
+            
             poolItem.OnReturnToPool();
         }
 
