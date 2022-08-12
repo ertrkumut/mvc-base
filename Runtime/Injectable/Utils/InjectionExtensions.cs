@@ -120,6 +120,16 @@ namespace MVC.Runtime.Injectable.Utils
             {
                 var paramType = signalField.FieldType;
                 var param = signalParams.FirstOrDefault(x => x.GetType() == paramType);
+                if (param == null)
+                {
+                    param = signalParams.FirstOrDefault(x => paramType.IsAssignableFrom(x.GetType()));
+                }
+
+                if (param == null)
+                {
+                    Debug.LogError("Signal Param is not found! \n ParamType: " + paramType.Name + "\nCommand: " + command.GetType().Name);
+                    MVCConsole.LogError(ConsoleLogType.Command, "Signal Param is not found! \n ParamType: " + paramType.Name + "\nCommand: " + command.GetType().Name);
+                }
                 signalField.SetValue(command, param);
             }
             
@@ -127,6 +137,16 @@ namespace MVC.Runtime.Injectable.Utils
             {
                 var paramType = signalProperty.PropertyType;
                 var param = signalParams.FirstOrDefault(x => x.GetType() == paramType);
+                if (param == null)
+                {
+                    param = signalParams.FirstOrDefault(x => paramType.IsAssignableFrom(x.GetType()));
+                }
+
+                if (param == null)
+                {
+                    Debug.LogError("Signal Param is not found! \n ParamType: " + paramType.Name + "\nCommand: " + command.GetType().Name);
+                    MVCConsole.LogError(ConsoleLogType.Command, "Signal Param is not found! \n ParamType: " + paramType.Name + "\nCommand: " + command.GetType().Name);
+                }
                 signalProperty.SetValue(command, param);
             }
         }
