@@ -21,13 +21,13 @@ namespace MVC.Editor.ModelViewer
             var rootType = rootObject.GetType();
             
             var fieldInfoList = rootType
-                .GetFields(BindingFlags.Instance | BindingFlags.Public)
+                .GetFields(BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic)
                 .Where(fieldInfo => fieldInfo.GetCustomAttributes(typeof(HideInModelViewerAttribute)).ToList().Count == 0)
                 .Cast<MemberInfo>()
                 .ToList();
             
             var propertyInfoList = rootType
-                .GetProperties(BindingFlags.Instance | BindingFlags.Public)
+                .GetProperties(BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic)
                 .Where(propertyInfo => propertyInfo.GetCustomAttributes(typeof(HideInModelViewerAttribute)).ToList().Count == 0)
                 .Cast<MemberInfo>()
                 .ToList();

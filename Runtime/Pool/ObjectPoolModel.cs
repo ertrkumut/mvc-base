@@ -98,7 +98,7 @@ namespace MVC.Runtime.Pool
             _poolConfigVODict.Remove(key);
         }
 
-        private void AutoInstantiateAtStart(ObjectPoolVO poolVO, Transform parent = null)
+        protected void AutoInstantiateAtStart(ObjectPoolVO poolVO, Transform parent = null)
         {
             var key = poolVO.key;
             if(poolVO.prefab.GetComponent<IPoolable>() == null)
@@ -116,7 +116,7 @@ namespace MVC.Runtime.Pool
             }
         }
         
-        public PoolType Get<PoolType>(string key, Transform parent = null)
+        public virtual PoolType Get<PoolType>(string key, Transform parent = null)
             where PoolType : IPoolable
         {
             if (!_poolConfigVODict.ContainsKey(key))
@@ -136,7 +136,7 @@ namespace MVC.Runtime.Pool
             return availableItem;
         }
 
-        public void Release(IPoolable poolItem)
+        public virtual void Release(IPoolable poolItem)
         {
             var poolType = poolItem.GetType();
             var configVO = GetConfigVOByPoolType(poolType);
@@ -160,7 +160,7 @@ namespace MVC.Runtime.Pool
             poolItem.OnReturnToPool();
         }
 
-        private IPoolable GetAvailablePoolItem(string key, Transform parent = null)
+        protected IPoolable GetAvailablePoolItem(string key, Transform parent = null)
         {
             var configVO = _poolConfigVODict[key];
             
@@ -187,12 +187,24 @@ namespace MVC.Runtime.Pool
             return availableItem;
         }
 
-        private ObjectPoolVO GetConfigVOByPoolType(Type poolType)
+        protected ObjectPoolVO GetConfigVOByPoolType(Type poolType)
         {
             foreach (var objectPool in _poolConfigVODict)
             {
                 var poolableType = objectPool.Value.prefab.GetComponent<IPoolable>().GetType();
                 if (poolableType == poolType)
+                    return objectPool.Value;
+            }
+            
+            return null;
+        }
+
+        protected ObjectPoolVO GetConfigVOByPrefab(IPoolable poolable)
+        {
+            foreach (var objectPool in _poolConfigVODict)
+            {
+                var poolableType = objectPool.Value.prefab.GetComponent<IPoolable>();
+                if (poolableType == poolable)
                     return objectPool.Value;
             }
             

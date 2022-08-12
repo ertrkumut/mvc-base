@@ -94,7 +94,6 @@ namespace MVC.Runtime.Contexts
             
             InjectionBinderCrossContext.BindMonoBehaviorInstance<IUpdateProvider, UpdateProvider>();
             InjectionBinderCrossContext.BindMonoBehaviorInstance<ICoroutineProvider, CoroutineProvider>();
-            InjectionBinderCrossContext.Bind<IObjectPoolModel, ObjectPoolModel>();
         }
 
         public virtual void SignalBindings(){}
