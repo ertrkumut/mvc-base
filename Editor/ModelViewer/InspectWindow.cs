@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.Reflection;
 using MVC.Editor.ModelViewer.MemberInfoDrawer;
 using UnityEditor;
+using UnityEngine;
 using Object = UnityEngine.Object;
 
 namespace MVC.Editor.ModelViewer
@@ -23,8 +24,14 @@ namespace MVC.Editor.ModelViewer
             _activePropertyDrawersDict = new Dictionary<MemberInfo, MemberInfoDrawerBase>();
         }
 
-        private void OnGUI()
+        public void OnGUI()
         {
+            if (!Application.isPlaying)
+            {
+                EditorGUILayout.LabelField("Enter Play Mode to view Models.");
+                return;
+            }
+            
             if(_inspectedObject == null)
                 return;
             

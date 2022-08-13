@@ -20,19 +20,38 @@ namespace MVC.Editor.ModelViewer
         {
             var rootType = rootObject.GetType();
             
-            var fieldInfoList = rootType
-                .GetFields(BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic)
-                .Where(fieldInfo => fieldInfo.GetCustomAttributes(typeof(HideInModelViewerAttribute)).ToList().Count == 0)
-                .Cast<MemberInfo>()
-                .ToList();
-            
-            var propertyInfoList = rootType
-                .GetProperties(BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic)
-                .Where(propertyInfo => propertyInfo.GetCustomAttributes(typeof(HideInModelViewerAttribute)).ToList().Count == 0)
+            var publicFieldInfoList = rootType
+                .GetFields(BindingFlags.Instance | BindingFlags.Public)
+                .Where(fieldInfo => 
+                    fieldInfo.GetCustomAttributes(typeof(HideInModelViewerAttribute)).ToList().Count == 0)
                 .Cast<MemberInfo>()
                 .ToList();
 
-            return fieldInfoList.Concat(propertyInfoList).ToList();
+            var privateFieldInfoList = rootType
+                .GetFields(BindingFlags.Instance | BindingFlags.NonPublic)
+                .Where(fieldInfo =>
+                    fieldInfo.GetCustomAttributes(typeof(ShowInModelViewerAttribute)).ToList().Count != 0)
+                .Cast<MemberInfo>()
+                .ToList();
+            
+            var publicPropertyInfoList = rootType
+                .GetProperties(BindingFlags.Instance | BindingFlags.Public)
+                .Where(propertyInfo => 
+                    propertyInfo.GetCustomAttributes(typeof(HideInModelViewerAttribute)).ToList().Count == 0)
+                .Cast<MemberInfo>()
+                .ToList();
+
+            var privatePropertyInfoList = rootType
+                .GetProperties(BindingFlags.Instance | BindingFlags.NonPublic)
+                .Where(propertyInfo =>
+                    propertyInfo.GetCustomAttributes(typeof(ShowInModelViewerAttribute)).ToList().Count != 0)
+                .Cast<MemberInfo>()
+                .ToList();
+
+            var allPropertyInfoList = publicPropertyInfoList.Concat(privatePropertyInfoList).ToList();
+            var allFieldInfoList = publicFieldInfoList.Concat(privateFieldInfoList).ToList();
+            
+            return allFieldInfoList.Concat(allPropertyInfoList).ToList();
         }
         
         public static bool IsPropertyDrawerTypeExist(Type type)
@@ -116,7 +135,16 @@ namespace MVC.Editor.ModelViewer
 
                     propertyDrawerType = listPropertyDrawer;
                 }
-                else
+                else if (propertyType.IsClass)
+                {
+                    var classPropertyDrawer = typeof(MemberInfoDrawerBase)
+                        .Assembly
+                        .GetTypes()
+                        .FirstOrDefault(x => x.Name.Contains("ClassPropertyDrawer"))
+                        .MakeGenericType(propertyType);
+                    return classPropertyDrawer;
+                }
+                else    
                     return null;
             }
             else
