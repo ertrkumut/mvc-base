@@ -62,11 +62,7 @@ namespace MVC.Runtime.ViewMediators.Utils
         {
             var viewContext = view.FindViewContext();
             if (viewContext == null)
-            {
-                Debug.LogError("There is no Context \nviewType: " + view.GetType().Name);
-                MVCConsole.LogError(ConsoleLogType.Injection, "There is no Context \nviewType: " + view.GetType().Name);
                 return;
-            }
             
             var mediationBinder = viewContext.MediationBinder;
             if(mediationBinder == null)
