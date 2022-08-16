@@ -34,7 +34,7 @@ namespace MVC.Runtime.Pool
 
         void IObjectPoolModel.Initialize()
         {
-            _data = Resources.Load<CD_PoolData>("Data/ConfigData/CD_PoolData");
+            _data = Resources.Load<CD_PoolData>("Data/Config/CD_PoolData");
             
             if (_data == null)
             {
