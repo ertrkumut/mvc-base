@@ -38,9 +38,8 @@ namespace MVC.Editor.CodeGenerator.Menus
         {
             _actionNames = new List<string>();
             _contextGUI = new Dictionary<string, bool>();
-            _contextGUI.Add("Global", true);
 
-            _selectedContextName = "Global";
+            _selectedContextName = "";
         }
 
         protected virtual void OnGUI()
@@ -144,8 +143,6 @@ namespace MVC.Editor.CodeGenerator.Menus
                 .Select(x => x.Name)
                 .ToList();
 
-            contextTypes.Insert(0, "Global");
-            
             EditorGUILayout.BeginVertical("box");
             for (var ii = 0; ii < contextTypes.Count; ii++)
             {
