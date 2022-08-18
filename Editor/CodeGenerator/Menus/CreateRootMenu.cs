@@ -170,7 +170,9 @@ namespace MVC.Editor.CodeGenerator.Menus
                 EditorSceneManager.SaveScene(EditorSceneManager.GetActiveScene(), path);
                 AssetDatabase.Refresh();
             }
+#pragma warning disable CS0168
             catch (Exception e)
+#pragma warning restore CS0168
             {
                 PlayerPrefs.DeleteKey("create-root-menu-clicked");
                 PlayerPrefs.DeleteKey("create-root-scene-path");
