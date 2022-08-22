@@ -106,11 +106,6 @@ namespace MVC.Runtime.Root
 
         public void StartContexts()
         {
-            if(_contextsStarted)
-                return;
-
-            _contextsStarted = true;
-
             var unreadyContextList = _contextRootList.
                 Where(context => !context.GetContext().ContextStarted)
                 .OrderBy(x => x.GetContext().InitializeOrder)
@@ -130,7 +125,7 @@ namespace MVC.Runtime.Root
             var coroutineProvider = (ICoroutineProvider) injectionBinderCrossContext.GetInstance(typeof(ICoroutineProvider));
             coroutineProvider.WaitForEndOfFrame(() =>
             {
-                foreach (var contextRoot in _contextRootList)
+                foreach (var contextRoot in unreadyContextList)
                 {
                     contextRoot.Launch();
                 }
