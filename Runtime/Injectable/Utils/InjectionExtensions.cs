@@ -52,6 +52,10 @@ namespace MVC.Runtime.Injectable.Utils
                 {
                     injectableFieldInfo.SetValue(mediator, view);
                 }
+                else if (fieldType.IsInterface && fieldType.IsAssignableFrom(viewType))
+                {
+                    injectableFieldInfo.SetValue(mediator, view);
+                }
                 else
                 {
                     SetInjectedValue(mediator, context, injectableFieldInfo);
@@ -70,6 +74,10 @@ namespace MVC.Runtime.Injectable.Utils
                 var fieldType = injectableProperty.PropertyType;
 
                 if (fieldType == viewType || viewType.IsSubclassOf(fieldType))
+                {
+                    injectableProperty.SetValue(mediator, view);
+                }
+                else if (fieldType.IsInterface && fieldType.IsAssignableFrom(viewType))
                 {
                     injectableProperty.SetValue(mediator, view);
                 }

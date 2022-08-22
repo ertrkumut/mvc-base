@@ -73,7 +73,7 @@ namespace MVC.Runtime.Root
             
             _context.InjectAllInstances();
             _context.ExecutePostConstructMethods();
-                
+
             AfterStarBeforeLaunchContext();
             
             _rootsManager.OnContextReady?.Invoke(Context);

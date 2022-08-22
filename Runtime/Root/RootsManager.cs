@@ -37,7 +37,7 @@ namespace MVC.Runtime.Root
 
         public Action<IContext> OnContextReady;
 
-        private bool _contextsStarted;
+        // private bool _contextsStarted;
         
         private List<IContextRoot> _contextRootList;
         
@@ -99,7 +99,7 @@ namespace MVC.Runtime.Root
 
         public void UnRegisterContext(IContextRoot contextRoot)
         {
-            _contextsStarted = false;
+            // _contextsStarted = false;
             _contextRootList.Remove(contextRoot);
             MVCConsole.Log(ConsoleLogType.Context, "Context Unregistered! Context: " + contextRoot.GetType().Name);
         }
