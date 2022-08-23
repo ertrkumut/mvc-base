@@ -108,10 +108,16 @@ namespace MVC.Editor.CodeGenerator.Menus
             
             EditorGUILayout.Space(25);
 
+            GUI.enabled = !string.IsNullOrEmpty(_selectedContextName);
+            if(!GUI.enabled)
+            {
+                GUI.backgroundColor = Color.red;
+                EditorGUILayout.HelpBox("Choose Context!", MessageType.Error);
+            }
             GUI.backgroundColor = Color.gray;
             var createButton = GUILayout.Button("Create");
             GUI.backgroundColor = Color.white;
-            
+            GUI.enabled = true;
             if(createButton)
                 CreateViewMediator();
 
@@ -160,6 +166,10 @@ namespace MVC.Editor.CodeGenerator.Menus
                         _contextGUI[_selectedContextName] = false;
                     }
                     _selectedContextName = contextName;
+                }
+                else if (!result && _selectedContextName == contextName)
+                {
+                    _selectedContextName = "";
                 }
                 
                 _contextGUI[contextName] = result;
