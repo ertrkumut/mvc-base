@@ -52,7 +52,7 @@ namespace MVC.Runtime.ViewMediators.View.Editor
                     injectorData = new ViewInjectorData
                     {
                         view = mvcView as Object,
-                        autoInject = true
+                        autoRegister = true
                     };
                     _target.viewDataList.Add(injectorData);
                 }
@@ -133,10 +133,10 @@ namespace MVC.Runtime.ViewMediators.View.Editor
             EditorGUILayout.BeginHorizontal();
 
             EditorGUILayout.BeginVertical();
-            viewInjectorData.autoInject = EditorGUILayout.Toggle(new GUIContent("Auto Inject"), viewInjectorData.autoInject);
+            viewInjectorData.autoRegister = EditorGUILayout.Toggle(new GUIContent("Auto Register"), viewInjectorData.autoRegister);
                 
             GUI.enabled = false;
-            EditorGUILayout.Toggle(new GUIContent("Is Injected"), viewInjectorData.isInjected);
+            EditorGUILayout.Toggle(new GUIContent("Is Registered"), viewInjectorData.isRegistered);
             GUI.enabled = true;
             
             EditorGUILayout.EndVertical();
@@ -145,7 +145,7 @@ namespace MVC.Runtime.ViewMediators.View.Editor
             {
                 EditorGUILayout.BeginVertical();
                 GUI.backgroundColor = Color.red;
-                GUI.enabled = viewInjectorData.isInjected;
+                GUI.enabled = viewInjectorData.isRegistered;
                 var removeButton = GUILayout.Button("Remove Registration");
                 GUI.backgroundColor = Color.white;
             
@@ -154,7 +154,7 @@ namespace MVC.Runtime.ViewMediators.View.Editor
                     (viewInjectorData.view as IView).RemoveRegistration();
                 }
 
-                GUI.enabled = !viewInjectorData.isInjected;
+                GUI.enabled = !viewInjectorData.isRegistered;
                 GUI.backgroundColor = Color.green;
                 var registerButton = GUILayout.Button("Register");
                 if (registerButton)

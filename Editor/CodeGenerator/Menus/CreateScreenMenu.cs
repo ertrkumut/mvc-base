@@ -101,22 +101,11 @@ namespace MVC.Editor.CodeGenerator.Menus
                 var rootType = currentAssembly.GetTypes().FirstOrDefault(x => x.Name == rootName);
 
                 var rootGameObject = new GameObject(rootName).AddComponent(rootType);
-                
-                var canvasGameObject = new GameObject("Canvas", typeof(Canvas));
-                canvasGameObject.GetComponent<Canvas>().renderMode = RenderMode.ScreenSpaceOverlay;
-                canvasGameObject.transform.SetParent(rootGameObject.transform);
-                
-                var canvasScaler = canvasGameObject.AddComponent<CanvasScaler>();
-                canvasScaler.referenceResolution = new Vector2(1080, 1920);
-                canvasScaler.uiScaleMode = CanvasScaler.ScaleMode.ScaleWithScreenSize;
-                canvasScaler.screenMatchMode = CanvasScaler.ScreenMatchMode.Expand;
-
-                canvasGameObject.AddComponent<GraphicRaycaster>();
 
                 var screenManagerPrefab =
                     AssetDatabase.LoadAssetAtPath<ScreenManager>(CodeGeneratorStrings.GetPath(CodeGeneratorStrings.ScreenManagerPrefabPath));
                 var screenManager =
-                    (ScreenManager) PrefabUtility.InstantiatePrefab(screenManagerPrefab, canvasGameObject.transform);
+                    (ScreenManager) PrefabUtility.InstantiatePrefab(screenManagerPrefab, rootGameObject.transform);
 
                 var screenGameObject = new GameObject(prefabName, typeof(RectTransform));
                 screenGameObject.transform.SetParent(screenManager.ScreenLayerList[0].transform);

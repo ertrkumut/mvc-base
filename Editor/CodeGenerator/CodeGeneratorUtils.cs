@@ -208,7 +208,7 @@ namespace MVC.Editor.CodeGenerator
             var contextLines = File.ReadAllLines(contextPath);
             var newRootContent = new List<string>();
             
-            newRootContent.Add("using Runtime.Contexts.Global.Enums;");
+            newRootContent.Add("using Runtime.Contexts.Screen.Enums;");
             for (var ii = 0; ii < contextLines.Length; ii++)
             {
                 var content = contextLines[ii];

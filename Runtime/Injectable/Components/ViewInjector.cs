@@ -37,7 +37,7 @@ namespace MVC.Runtime.Injectable.Components
             for (var ii = 0; ii < viewDataList.Count; ii++)
             {
                 var viewInjectorData = viewDataList[ii];
-                if(!viewInjectorData.isInjected)
+                if(!viewInjectorData.isRegistered)
                     continue;
                 var view = viewInjectorData.view as IView;
                 view.RemoveRegistration();
@@ -61,7 +61,7 @@ namespace MVC.Runtime.Injectable.Components
         {
             foreach (var viewInjectorData in viewDataList)
             {
-                if (viewInjectorData.autoInject)
+                if (viewInjectorData.autoRegister)
                     TryToInject(viewInjectorData.view as IView);
             }
         }
@@ -69,11 +69,11 @@ namespace MVC.Runtime.Injectable.Components
         private bool TryToInject(IView viewComponent)
         {
             var injectorData = GetViewInjectorData(viewComponent);
-            if (injectorData.isInjected)
+            if (injectorData.isRegistered)
                 return false;
 
             var injectResult = viewComponent.InjectView();
-            injectorData.isInjected = injectResult;
+            injectorData.isRegistered = injectResult;
             return injectResult;
         }
 
@@ -89,7 +89,7 @@ namespace MVC.Runtime.Injectable.Components
             if(injectorData == null)
                 return;
             
-            injectorData.isInjected = true;
+            injectorData.isRegistered = true;
         }
 
         #endregion
@@ -105,8 +105,8 @@ namespace MVC.Runtime.Injectable.Components
                 var viewInjectorData = new ViewInjectorData
                 {
                     view = viewComponent as Object,
-                    autoInject = true,
-                    isInjected = false
+                    autoRegister = true,
+                    isRegistered = false
                 };
                 
                 viewDataList.Add(viewInjectorData);

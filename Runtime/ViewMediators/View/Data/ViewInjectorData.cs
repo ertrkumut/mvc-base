@@ -7,7 +7,7 @@ namespace MVC.Runtime.ViewMediators.View.Data
     public class ViewInjectorData
     {
         public Object view;
-        public bool autoInject;
-        public bool isInjected;
+        public bool autoRegister;
+        public bool isRegistered;
     }
 }
