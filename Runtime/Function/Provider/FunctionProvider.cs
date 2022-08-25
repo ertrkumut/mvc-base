@@ -52,7 +52,7 @@ namespace MVC.Runtime.Function.Provider
             
             Context.TryToInjectFunction(function);
             executeMethodInfo.Invoke(function, functionDataContainer.ExecuteParameters);
-
+            MVCConsole.LogWarning(ConsoleLogType.Function, "Function Executed! " + function.GetType().Name);
             ReturnFunctionToPool(function);
             functionDataContainer.Dispose();
             _functionDataContainerPool.Add(functionDataContainer);
@@ -65,6 +65,7 @@ namespace MVC.Runtime.Function.Provider
             
             Context.TryToInjectFunction(function);
             var result = executeMethodInfo.Invoke(function, functionDataContainer.ExecuteParameters);
+            MVCConsole.LogWarning(ConsoleLogType.Function, "Function Executed! " + function.GetType().Name);
             
             functionDataContainer.Dispose();
             _functionDataContainerPool.Add(functionDataContainer);
@@ -80,6 +81,8 @@ namespace MVC.Runtime.Function.Provider
             
             functionBody.Dispose();
             _functionPool[functionType].Add(functionBody);
+            
+            MVCConsole.LogWarning(ConsoleLogType.Function, "Function Returned to Pool! " + functionType.Name);
         }
         
         private IFunctionBody GetFunction(FunctionDataContainer functionDataContainer)

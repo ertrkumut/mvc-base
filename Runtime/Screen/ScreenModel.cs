@@ -1,5 +1,7 @@
 using System;
 using System.Collections.Generic;
+using MVC.Editor.Console;
+using MVC.Runtime.Console;
 using MVC.Runtime.Injectable.Attributes;
 using MVC.Runtime.Screen.Enum;
 using MVC.Runtime.Screen.Pool;
@@ -26,13 +28,19 @@ namespace MVC.Runtime.Screen
         public void RegisterScreenManager(ScreenManager screenManager)
         {
             if(!_screenManagerDict.ContainsKey(screenManager.ManagerIndex))
+            {
                 _screenManagerDict.Add(screenManager.ManagerIndex, screenManager);
+                MVCConsole.Log(ConsoleLogType.Screen, "New Screen Registered! id: " + screenManager.ManagerIndex);
+            }
         }
 
         public void UnRegisterScreenManager(ScreenManager screenManager)
         {
             if(_screenManagerDict.ContainsKey(screenManager.ManagerIndex))
+            {
                 _screenManagerDict.Remove(screenManager.ManagerIndex);
+                MVCConsole.Log(ConsoleLogType.Screen, "Screen UnRegistered! id: " + screenManager.ManagerIndex);
+            }
         }
 
         public IScreenDataContainer NewScreen(System.Enum screenType)
@@ -50,7 +58,7 @@ namespace MVC.Runtime.Screen
             screenManager.HideScreen(screenBody);
             _screenPoolController.SendScreenToPool(screenBody);
             (screenBody as ScreenBody).Close();
-            
+            MVCConsole.LogWarning(ConsoleLogType.Screen, "Hide Screen! type: " + screenBody.GetType().Name);
             screenBody.RemoveRegistration();
         }
         

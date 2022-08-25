@@ -1,3 +1,5 @@
+using MVC.Editor.Console;
+using MVC.Runtime.Console;
 using MVC.Runtime.Screen.Enum;
 using MVC.Runtime.Screen.View;
 using UnityEngine;
@@ -45,12 +47,14 @@ namespace MVC.Runtime.Screen
             where TScreenType : MonoBehaviour, IScreenBody
         {
             var screen = _screenModel.CreateOrGetScreen<TScreenType>(this);
+            MVCConsole.Log(ConsoleLogType.Screen, "Show Screen! type: " + screen.GetType().Name);
             return screen;
         }
 
         public IScreenBody Show()
         {
             var screen = _screenModel.CreateOrGetScreen<IScreenBody>(this);
+            MVCConsole.Log(ConsoleLogType.Screen, "Show Screen! type: " + screen.GetType().Name);
             return screen;
         }
         

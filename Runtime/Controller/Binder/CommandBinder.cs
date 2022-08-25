@@ -152,6 +152,8 @@ namespace MVC.Runtime.Controller.Binder
                 _commandPool.Add(commandType, new List<ICommandBody>());
 
             _commandPool[commandType].Add(commandBody);
+            
+            MVCConsole.LogWarning(ConsoleLogType.Command, "Command Returned to Pool! - " + commandType.Name);
         }
 
         #endregion

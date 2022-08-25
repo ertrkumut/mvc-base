@@ -43,6 +43,7 @@ namespace MVC.Runtime.Pool
                 return;
             }
             
+            MVCConsole.LogWarning(ConsoleLogType.Pool, "MVC Pool Model Initialized!");
             var poolVOCount = _data.list.Count;
 
             for (var ii = 0; ii < poolVOCount; ii++)
@@ -132,7 +133,7 @@ namespace MVC.Runtime.Pool
             _enabledObjects[key].Add(availableItem);
 
             availableItem.OnGetFromPool();
-            
+            MVCConsole.Log(ConsoleLogType.Pool, "Object Taken From Pool key: " + key);
             return availableItem;
         }
 
@@ -148,6 +149,7 @@ namespace MVC.Runtime.Pool
             }
             
             var key = configVO.key;
+            MVCConsole.Log(ConsoleLogType.Pool, "Object Released To Pool key: " + key);
             
             if(!_disabledObjects.ContainsKey(key))
                 _disabledObjects.Add(key, new List<IPoolable>());
