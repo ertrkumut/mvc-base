@@ -57,15 +57,15 @@ namespace MVC.Runtime.Pool
 
         internal void RegisterPoolObject(ObjectPoolVO objectPoolVO)
         {
-            if(_poolConfigVODict.ContainsKey(objectPoolVO.key))
+            if(_poolConfigVODict.ContainsKey(objectPoolVO.Key))
                 return;
             
-            _poolConfigVODict.Add(objectPoolVO.key, objectPoolVO);
+            _poolConfigVODict.Add(objectPoolVO.Key, objectPoolVO);
             
-            if(!_disabledObjects.ContainsKey(objectPoolVO.key))
-                _disabledObjects.Add(objectPoolVO.key, new List<IPoolable>());
-            if(!_enabledObjects.ContainsKey(objectPoolVO.key))
-                _enabledObjects.Add(objectPoolVO.key, new List<IPoolable>());
+            if(!_disabledObjects.ContainsKey(objectPoolVO.Key))
+                _disabledObjects.Add(objectPoolVO.Key, new List<IPoolable>());
+            if(!_enabledObjects.ContainsKey(objectPoolVO.Key))
+                _enabledObjects.Add(objectPoolVO.Key, new List<IPoolable>());
         }
         
         public void RegisterPoolObject(string key, GameObject prefab, int count = 0)
@@ -79,9 +79,9 @@ namespace MVC.Runtime.Pool
             
             var objectPoolVO = new ObjectPoolVO
             {
-                key = key,
-                count = count,
-                prefab = prefab
+                Key = key,
+                Count = count,
+                Prefab = prefab
             };
             
             _poolConfigVODict.Add(key, objectPoolVO);
@@ -101,17 +101,17 @@ namespace MVC.Runtime.Pool
 
         protected void AutoInstantiateAtStart(ObjectPoolVO poolVO, Transform parent = null)
         {
-            var key = poolVO.key;
-            if(poolVO.prefab.GetComponent<IPoolable>() == null)
+            var key = poolVO.Key;
+            if(poolVO.Prefab.GetComponent<IPoolable>() == null)
             {
                 MVCConsole.LogError(ConsoleLogType.Pool,
                     "Pool Object prefab must be inherited from IPoolable interface! \n pool-key: " + key);
                 return;
             }
             
-            for(var ii = 0; ii < poolVO.count; ii++)
+            for(var ii = 0; ii < poolVO.Count; ii++)
             {
-                var poolableObject = Object.Instantiate(poolVO.prefab, parent).GetComponent<IPoolable>();
+                var poolableObject = Object.Instantiate(poolVO.Prefab, parent).GetComponent<IPoolable>();
                 _disabledObjects[key].Add(poolableObject);
                 poolableObject.transform.gameObject.SetActive(false);
             }
@@ -148,7 +148,7 @@ namespace MVC.Runtime.Pool
                 return;
             }
             
-            var key = configVO.key;
+            var key = configVO.Key;
             MVCConsole.Log(ConsoleLogType.Pool, "Object Released To Pool key: " + key);
             
             if(!_disabledObjects.ContainsKey(key))
@@ -182,7 +182,7 @@ namespace MVC.Runtime.Pool
             }
             else
             {
-                availableItem = Object.Instantiate(configVO.prefab, itemParent).GetComponent<IPoolable>();
+                availableItem = Object.Instantiate(configVO.Prefab, itemParent).GetComponent<IPoolable>();
             }
             
             if(!_enabledObjects.ContainsKey(key))
@@ -195,7 +195,7 @@ namespace MVC.Runtime.Pool
         {
             foreach (var objectPool in _poolConfigVODict)
             {
-                var poolableType = objectPool.Value.prefab.GetComponent<IPoolable>().GetType();
+                var poolableType = objectPool.Value.Prefab.GetComponent<IPoolable>().GetType();
                 if (poolableType == poolType)
                     return objectPool.Value;
             }
@@ -207,7 +207,7 @@ namespace MVC.Runtime.Pool
         {
             foreach (var objectPool in _poolConfigVODict)
             {
-                var poolableType = objectPool.Value.prefab.GetComponent<IPoolable>();
+                var poolableType = objectPool.Value.Prefab.GetComponent<IPoolable>();
                 if (poolableType == poolable)
                     return objectPool.Value;
             }

@@ -6,8 +6,8 @@ namespace MVC.Runtime.Pool
     [Serializable]
     public class ObjectPoolVO
     {
-        public GameObject prefab;
-        public string key;
-        public int count;
+        public GameObject Prefab;
+        public string Key;
+        public int Count;
     }
 }
