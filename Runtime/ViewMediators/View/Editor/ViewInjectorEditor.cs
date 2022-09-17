@@ -46,13 +46,13 @@ namespace MVC.Runtime.ViewMediators.View.Editor
 
             foreach (var mvcView in _viewList)
             {
-                var injectorData = _target.viewDataList.FirstOrDefault(x => x.view == (Object) mvcView);
+                var injectorData = _target.viewDataList.FirstOrDefault(x => x.View == (Object) mvcView);
                 if(injectorData == null)
                 {
                     injectorData = new ViewInjectorData
                     {
-                        view = mvcView as Object,
-                        autoRegister = true
+                        View = mvcView as Object,
+                        AutoRegister = true
                     };
                     _target.viewDataList.Add(injectorData);
                 }
@@ -122,9 +122,9 @@ namespace MVC.Runtime.ViewMediators.View.Editor
 
             GUI.enabled = false;
             EditorGUILayout.BeginHorizontal();
-            EditorGUILayout.LabelField(viewInjectorData.view.GetType().Name, EditorStyles.boldLabel);
+            EditorGUILayout.LabelField(viewInjectorData.View.GetType().Name, EditorStyles.boldLabel);
             EditorGUILayout.Space(3);
-            EditorGUILayout.ObjectField(viewInjectorData.view, typeof(Object), false);
+            EditorGUILayout.ObjectField(viewInjectorData.View, typeof(Object), false);
 
             EditorGUILayout.EndHorizontal();
             EditorGUILayout.Space(5);
@@ -133,10 +133,10 @@ namespace MVC.Runtime.ViewMediators.View.Editor
             EditorGUILayout.BeginHorizontal();
 
             EditorGUILayout.BeginVertical();
-            viewInjectorData.autoRegister = EditorGUILayout.Toggle(new GUIContent("Auto Register"), viewInjectorData.autoRegister);
+            viewInjectorData.AutoRegister = EditorGUILayout.Toggle(new GUIContent("Auto Register"), viewInjectorData.AutoRegister);
                 
             GUI.enabled = false;
-            EditorGUILayout.Toggle(new GUIContent("Is Registered"), viewInjectorData.isRegistered);
+            EditorGUILayout.Toggle(new GUIContent("Is Registered"), viewInjectorData.IsRegistered);
             GUI.enabled = true;
             
             EditorGUILayout.EndVertical();
@@ -145,21 +145,21 @@ namespace MVC.Runtime.ViewMediators.View.Editor
             {
                 EditorGUILayout.BeginVertical();
                 GUI.backgroundColor = Color.red;
-                GUI.enabled = viewInjectorData.isRegistered;
+                GUI.enabled = viewInjectorData.IsRegistered;
                 var removeButton = GUILayout.Button("Remove Registration");
                 GUI.backgroundColor = Color.white;
             
                 if (removeButton)
                 {
-                    (viewInjectorData.view as IView).RemoveRegistration();
+                    (viewInjectorData.View as IView).RemoveRegistration();
                 }
 
-                GUI.enabled = !viewInjectorData.isRegistered;
+                GUI.enabled = !viewInjectorData.IsRegistered;
                 GUI.backgroundColor = Color.green;
                 var registerButton = GUILayout.Button("Register");
                 if (registerButton)
                 {
-                    (viewInjectorData.view as IView).InjectView();
+                    (viewInjectorData.View as IView).InjectView();
                 }
                 
                 GUI.backgroundColor = Color.white;

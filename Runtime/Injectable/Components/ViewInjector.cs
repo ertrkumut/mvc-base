@@ -19,7 +19,7 @@ namespace MVC.Runtime.Injectable.Components
 
         private void Start()
         {
-            _context = (viewDataList[0].view as IView).FindViewContext();
+            _context = (viewDataList[0].View as IView).FindViewContext();
             if (_context == null)
                 return;
             
@@ -37,9 +37,9 @@ namespace MVC.Runtime.Injectable.Components
             for (var ii = 0; ii < viewDataList.Count; ii++)
             {
                 var viewInjectorData = viewDataList[ii];
-                if(!viewInjectorData.isRegistered)
+                if(!viewInjectorData.IsRegistered)
                     continue;
-                var view = viewInjectorData.view as IView;
+                var view = viewInjectorData.View as IView;
                 view.RemoveRegistration();
             }
         }
@@ -61,25 +61,25 @@ namespace MVC.Runtime.Injectable.Components
         {
             foreach (var viewInjectorData in viewDataList)
             {
-                if (viewInjectorData.autoRegister)
-                    TryToInject(viewInjectorData.view as IView);
+                if (viewInjectorData.AutoRegister)
+                    TryToInject(viewInjectorData.View as IView);
             }
         }
         
         private bool TryToInject(IView viewComponent)
         {
             var injectorData = GetViewInjectorData(viewComponent);
-            if (injectorData.isRegistered)
+            if (injectorData.IsRegistered)
                 return false;
 
             var injectResult = viewComponent.InjectView();
-            injectorData.isRegistered = injectResult;
+            injectorData.IsRegistered = injectResult;
             return injectResult;
         }
 
         public ViewInjectorData GetViewInjectorData(IView view)
         {
-            var data = viewDataList.FirstOrDefault(x => Equals(x.view, view));
+            var data = viewDataList.FirstOrDefault(x => Equals(x.View, view));
             return data;
         }
 
@@ -89,7 +89,7 @@ namespace MVC.Runtime.Injectable.Components
             if(injectorData == null)
                 return;
             
-            injectorData.isRegistered = true;
+            injectorData.IsRegistered = true;
         }
 
         #endregion
@@ -104,9 +104,9 @@ namespace MVC.Runtime.Injectable.Components
             {
                 var viewInjectorData = new ViewInjectorData
                 {
-                    view = viewComponent as Object,
-                    autoRegister = true,
-                    isRegistered = false
+                    View = viewComponent as Object,
+                    AutoRegister = true,
+                    IsRegistered = false
                 };
                 
                 viewDataList.Add(viewInjectorData);
