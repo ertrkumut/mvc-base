@@ -6,8 +6,8 @@ namespace MVC.Runtime.ViewMediators.View.Data
     [Serializable]
     public class ViewInjectorData
     {
-        public Object view;
-        public bool autoRegister;
-        public bool isRegistered;
+        public Object View;
+        public bool AutoRegister;
+        public bool IsRegistered;
     }
 }

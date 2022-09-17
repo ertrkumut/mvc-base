@@ -75,14 +75,14 @@ namespace MVC.Runtime.ViewMediators.Utils
             var viewInjectorComponent = injectedMediatorData.viewInjector;
 
             var viewInjectorData = viewInjectorComponent.GetViewInjectorData(view);
-            if (!viewInjectorData.isRegistered)
+            if (!viewInjectorData.IsRegistered)
                 return;
 
             var mediator = injectedMediatorData.mediator;
             mediator.OnRemove();
 
             injectedMediatorData.mediator = null;
-            viewInjectorData.isRegistered = false;
+            viewInjectorData.IsRegistered = false;
 
             if (mediator is Object mediatorObject)
                 Object.Destroy(mediatorObject as Component);
