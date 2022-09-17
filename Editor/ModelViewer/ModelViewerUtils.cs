@@ -119,7 +119,14 @@ namespace MVC.Editor.ModelViewer
                 InitializePropertyDrawerTypes();
 
             if (propertyType.IsSubclassOf(typeof(Object)))
-                propertyType = typeof(Object);
+            {
+                var objectPropertyDrawer = typeof(MemberInfoDrawerBase)
+                    .Assembly
+                    .GetTypes()
+                    .FirstOrDefault(x => x.Name.Contains("ObjectPropertyDrawer"))
+                    .MakeGenericType(propertyType);
+                return objectPropertyDrawer;
+            }
 
             Type propertyDrawerType;
                 
