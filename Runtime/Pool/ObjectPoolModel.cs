@@ -50,8 +50,11 @@ namespace MVC.Runtime.Pool
             {
                 var objectPoolVO = _data.list[ii];
                 RegisterPoolObject(objectPoolVO);
+            }
 
-                AutoInstantiateAtStart(objectPoolVO, _container.transform);
+            foreach (var objectPool in _poolConfigVODict)
+            {
+                AutoInstantiateAtStart(objectPool.Value, _container.transform);
             }
         }
 
@@ -84,7 +87,7 @@ namespace MVC.Runtime.Pool
                 Prefab = prefab
             };
             
-            _poolConfigVODict.Add(key, objectPoolVO);
+            RegisterPoolObject(objectPoolVO);
         }
 
         public void UnRegisterPoolObject(string key)
@@ -102,6 +105,14 @@ namespace MVC.Runtime.Pool
         protected void AutoInstantiateAtStart(ObjectPoolVO poolVO, Transform parent = null)
         {
             var key = poolVO.Key;
+
+            if (poolVO.Prefab == null)
+            {
+                MVCConsole.LogError(ConsoleLogType.Pool,
+                    "Pool Object prefab can not be null! \n pool-key: " + key);
+                return;
+            }
+            
             if(poolVO.Prefab.GetComponent<IPoolable>() == null)
             {
                 MVCConsole.LogError(ConsoleLogType.Pool,
