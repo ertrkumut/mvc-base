@@ -11,8 +11,8 @@ using Object = UnityEngine.Object;
 
 namespace MVC.Runtime.ViewMediators.View.Editor
 {
-    [UnityEditor.CustomEditor(typeof(ViewInjector))]
-    [UnityEditor.CanEditMultipleObjects]
+    [CustomEditor(typeof(ViewInjector))]
+    [CanEditMultipleObjects]
     public class ViewInjectorEditor : UnityEditor.Editor
     {
         private Vector2 _guiScrollValue;
@@ -30,10 +30,7 @@ namespace MVC.Runtime.ViewMediators.View.Editor
         public override void OnInspectorGUI()
         {
             base.OnInspectorGUI();
-            
-            if(Application.isPlaying)
-                return;
-            
+
             FindViews();
             CreateOrDeleteViewInjectorData();
             DrawViewInjectorDataList();
