@@ -720,9 +720,9 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   viewDataList:
-  - view: {fileID: 9035146313615948279}
-    autoRegister: 1
-    isRegistered: 0
+  - View: {fileID: 9035146313615948279}
+    AutoRegister: 1
+    IsRegistered: 0
 --- !u!114 &9035146313615948279
 MonoBehaviour:
   m_ObjectHideFlags: 0

@@ -29,6 +29,11 @@ namespace MVC.Runtime.ViewMediators.View.Editor
 
         public override void OnInspectorGUI()
         {
+            base.OnInspectorGUI();
+            
+            if(Application.isPlaying)
+                return;
+            
             FindViews();
             CreateOrDeleteViewInjectorData();
             DrawViewInjectorDataList();
