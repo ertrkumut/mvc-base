@@ -30,6 +30,7 @@ namespace MVC.Runtime.Screen.View
         protected virtual void ScreenClosed()
         {
             ScreenState = ScreenState.InPool;
+            gameObject.SetActive(false);
             OnScreenClosed?.Invoke();
             OnReturnToPool();
         }
