@@ -50,8 +50,11 @@ namespace MVC.Runtime.Pool
             {
                 var objectPool = _data.List[ii];
                 RegisterPoolObject(objectPool);
+            }
 
-                AutoInstantiateAtStart(objectPool, _container.transform);
+            foreach (var pool in _poolMap)
+            {
+                AutoInstantiateAtStart(pool.Value, _container.transform);
             }
         }
 
@@ -102,6 +105,14 @@ namespace MVC.Runtime.Pool
         protected void AutoInstantiateAtStart(ObjectPoolVO pool, Transform parent = null)
         {
             var key = pool.Key;
+
+            if (pool.Prefab == null)
+            {
+                MVCConsole.LogError(ConsoleLogType.Pool,
+                    "Pool Object prefab can not be null! \n pool-key: " + key);
+                return;
+            }
+            
             if(pool.Prefab.GetComponent<IPoolable>() == null)
             {
                 MVCConsole.LogError(ConsoleLogType.Pool,
@@ -193,11 +204,11 @@ namespace MVC.Runtime.Pool
 
         protected ObjectPoolVO GetConfigVoByPoolType(Type poolType)
         {
-            foreach (var objectPool in _poolMap)
+            foreach (var pool in _poolMap)
             {
-                var poolableType = objectPool.Value.Prefab.GetComponent<IPoolable>().GetType();
+                var poolableType = pool.Value.Prefab.GetComponent<IPoolable>().GetType();
                 if (poolableType == poolType)
-                    return objectPool.Value;
+                    return pool.Value;
             }
             
             return null;
@@ -205,11 +216,11 @@ namespace MVC.Runtime.Pool
 
         protected ObjectPoolVO GetConfigVoByPrefab(IPoolable poolable)
         {
-            foreach (var objectPool in _poolMap)
+            foreach (var pool in _poolMap)
             {
-                var poolableType = objectPool.Value.Prefab.GetComponent<IPoolable>();
+                var poolableType = pool.Value.Prefab.GetComponent<IPoolable>();
                 if (poolableType == poolable)
-                    return objectPool.Value;
+                    return pool.Value;
             }
             
             return null;

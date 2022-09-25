@@ -19,7 +19,7 @@ namespace MVC.Runtime.Injectable.Components
 
         private void Start()
         {
-            _context = (viewDataList[0].View as IView).FindViewContext();
+            _context = (transform.GetComponent<IView>()).FindViewContext();
             if (_context == null)
                 return;
             

@@ -664,6 +664,7 @@ GameObject:
   - component: {fileID: 4683528887234299738}
   - component: {fileID: 8411389823382638816}
   - component: {fileID: 8882868568519656952}
+  - component: {fileID: 3380282522654816953}
   m_Layer: 5
   m_Name: ScreenManager
   m_TagString: Untagged
@@ -720,9 +721,9 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   viewDataList:
-  - view: {fileID: 9035146313615948279}
-    autoRegister: 1
-    isRegistered: 0
+  - View: {fileID: 9035146313615948279}
+    AutoRegister: 1
+    IsRegistered: 0
 --- !u!114 &9035146313615948279
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -805,6 +806,23 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 7882366787111618334}
   m_CullTransparentMesh: 1
+--- !u!114 &3380282522654816953
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7882366787111618334}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: dc42784cf147c0c48a680349fa168899, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_IgnoreReversedGraphics: 1
+  m_BlockingObjects: 0
+  m_BlockingMask:
+    serializedVersion: 2
+    m_Bits: 8183
 --- !u!1 &8012679185755884760
 GameObject:
   m_ObjectHideFlags: 0
