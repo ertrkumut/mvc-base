@@ -13,7 +13,7 @@ namespace MVC.Runtime.Pool
     {
         protected CD_PoolData _data;
 
-        private Dictionary<string, ObjectPoolVO> _poolConfigVODict;
+        private Dictionary<string, ObjectPoolVO> _poolMap;
 
         private Dictionary<string, List<IPoolable>> _enabledObjects;
         private Dictionary<string, List<IPoolable>> _disabledObjects;
@@ -24,7 +24,7 @@ namespace MVC.Runtime.Pool
         [PostConstruct]
         protected virtual void PostConstruct()
         {
-            _poolConfigVODict = new Dictionary<string, ObjectPoolVO>();
+            _poolMap = new Dictionary<string, ObjectPoolVO>();
             _enabledObjects = new Dictionary<string, List<IPoolable>>();
             _disabledObjects = new Dictionary<string, List<IPoolable>>();
             
@@ -44,23 +44,23 @@ namespace MVC.Runtime.Pool
             }
             
             MVCConsole.LogWarning(ConsoleLogType.Pool, "MVC Pool Model Initialized!");
-            var poolVOCount = _data.list.Count;
+            var poolCount = _data.List.Count;
 
-            for (var ii = 0; ii < poolVOCount; ii++)
+            for (var ii = 0; ii < poolCount; ii++)
             {
-                var objectPoolVO = _data.list[ii];
-                RegisterPoolObject(objectPoolVO);
+                var objectPool = _data.List[ii];
+                RegisterPoolObject(objectPool);
 
-                AutoInstantiateAtStart(objectPoolVO, _container.transform);
+                AutoInstantiateAtStart(objectPool, _container.transform);
             }
         }
 
         internal void RegisterPoolObject(ObjectPoolVO objectPoolVO)
         {
-            if(_poolConfigVODict.ContainsKey(objectPoolVO.Key))
+            if(_poolMap.ContainsKey(objectPoolVO.Key))
                 return;
             
-            _poolConfigVODict.Add(objectPoolVO.Key, objectPoolVO);
+            _poolMap.Add(objectPoolVO.Key, objectPoolVO);
             
             if(!_disabledObjects.ContainsKey(objectPoolVO.Key))
                 _disabledObjects.Add(objectPoolVO.Key, new List<IPoolable>());
@@ -70,48 +70,48 @@ namespace MVC.Runtime.Pool
         
         public void RegisterPoolObject(string key, GameObject prefab, int count = 0)
         {
-            if (_poolConfigVODict.ContainsKey(key))
+            if (_poolMap.ContainsKey(key))
             {
-                Debug.LogError("There is already pool config data for key: " + key);
-                MVCConsole.LogError(ConsoleLogType.Pool, "There is already pool config data for key: " + key);
+                Debug.LogError("There is already pool data for key: " + key);
+                MVCConsole.LogError(ConsoleLogType.Pool, "There is already pool data for key: " + key);
                 return;
             }
             
-            var objectPoolVO = new ObjectPoolVO
+            var objectPool = new ObjectPoolVO
             {
                 Key = key,
                 Count = count,
                 Prefab = prefab
             };
             
-            _poolConfigVODict.Add(key, objectPoolVO);
+            _poolMap.Add(key, objectPool);
         }
 
         public void UnRegisterPoolObject(string key)
         {
-            if (!_poolConfigVODict.ContainsKey(key))
+            if (!_poolMap.ContainsKey(key))
             {
                 Debug.LogError("There is no pool data for: " + key);
                 MVCConsole.LogError(ConsoleLogType.Pool, "There is no pool data for: " + key);
                 return;
             }
 
-            _poolConfigVODict.Remove(key);
+            _poolMap.Remove(key);
         }
 
-        protected void AutoInstantiateAtStart(ObjectPoolVO poolVO, Transform parent = null)
+        protected void AutoInstantiateAtStart(ObjectPoolVO pool, Transform parent = null)
         {
-            var key = poolVO.Key;
-            if(poolVO.Prefab.GetComponent<IPoolable>() == null)
+            var key = pool.Key;
+            if(pool.Prefab.GetComponent<IPoolable>() == null)
             {
                 MVCConsole.LogError(ConsoleLogType.Pool,
                     "Pool Object prefab must be inherited from IPoolable interface! \n pool-key: " + key);
                 return;
             }
             
-            for(var ii = 0; ii < poolVO.Count; ii++)
+            for(var ii = 0; ii < pool.Count; ii++)
             {
-                var poolableObject = Object.Instantiate(poolVO.Prefab, parent).GetComponent<IPoolable>();
+                var poolableObject = Object.Instantiate(pool.Prefab, parent).GetComponent<IPoolable>();
                 _disabledObjects[key].Add(poolableObject);
                 poolableObject.transform.gameObject.SetActive(false);
             }
@@ -120,7 +120,7 @@ namespace MVC.Runtime.Pool
         public virtual PoolType Get<PoolType>(string key, Transform parent = null)
             where PoolType : IPoolable
         {
-            if (!_poolConfigVODict.ContainsKey(key))
+            if (!_poolMap.ContainsKey(key))
             {
                 Debug.LogError("Pool Config Data not found for: " + key + " PoolType: " + typeof(PoolType).Name);
                 MVCConsole.LogError(ConsoleLogType.Pool, "Pool Config Data not found for: " + key + " PoolType: " + typeof(PoolType).Name);
@@ -140,15 +140,15 @@ namespace MVC.Runtime.Pool
         public virtual void Release(IPoolable poolItem)
         {
             var poolType = poolItem.GetType();
-            var configVO = GetConfigVOByPoolType(poolType);
-            if (configVO == null)
+            var pool = GetConfigVoByPoolType(poolType);
+            if (pool == null)
             {
                 Debug.LogError("Pool Config Data couldn't found. PoolType: " + poolType, poolItem.transform.gameObject);
                 MVCConsole.LogError(ConsoleLogType.Pool, "Pool Config Data couldn't found. PoolType: " + poolType);
                 return;
             }
             
-            var key = configVO.Key;
+            var key = pool.Key;
             MVCConsole.Log(ConsoleLogType.Pool, "Object Released To Pool key: " + key);
             
             if(!_disabledObjects.ContainsKey(key))
@@ -166,7 +166,7 @@ namespace MVC.Runtime.Pool
 
         protected IPoolable GetAvailablePoolItem(string key, Transform parent = null)
         {
-            var configVO = _poolConfigVODict[key];
+            var pool = _poolMap[key];
             
             if(!_disabledObjects.ContainsKey(key))
                 _disabledObjects.Add(key, new List<IPoolable>());
@@ -182,7 +182,7 @@ namespace MVC.Runtime.Pool
             }
             else
             {
-                availableItem = Object.Instantiate(configVO.Prefab, itemParent).GetComponent<IPoolable>();
+                availableItem = Object.Instantiate(pool.Prefab, itemParent).GetComponent<IPoolable>();
             }
             
             if(!_enabledObjects.ContainsKey(key))
@@ -191,9 +191,9 @@ namespace MVC.Runtime.Pool
             return availableItem;
         }
 
-        protected ObjectPoolVO GetConfigVOByPoolType(Type poolType)
+        protected ObjectPoolVO GetConfigVoByPoolType(Type poolType)
         {
-            foreach (var objectPool in _poolConfigVODict)
+            foreach (var objectPool in _poolMap)
             {
                 var poolableType = objectPool.Value.Prefab.GetComponent<IPoolable>().GetType();
                 if (poolableType == poolType)
@@ -203,9 +203,9 @@ namespace MVC.Runtime.Pool
             return null;
         }
 
-        protected ObjectPoolVO GetConfigVOByPrefab(IPoolable poolable)
+        protected ObjectPoolVO GetConfigVoByPrefab(IPoolable poolable)
         {
-            foreach (var objectPool in _poolConfigVODict)
+            foreach (var objectPool in _poolMap)
             {
                 var poolableType = objectPool.Value.Prefab.GetComponent<IPoolable>();
                 if (poolableType == poolable)
