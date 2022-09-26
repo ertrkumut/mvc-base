@@ -12,6 +12,8 @@ namespace MVC.Runtime.Pool
         PoolType Get<PoolType>(string key, Transform parent = null)
             where PoolType : IPoolable;
 
+        ObjectPoolVO GetConfigVoByPoolKey(string key);
+        
         void Release(IPoolable poolItem);
     }
 }

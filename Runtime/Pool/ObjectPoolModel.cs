@@ -218,6 +218,11 @@ namespace MVC.Runtime.Pool
             
             return null;
         }
+        
+        public ObjectPoolVO GetConfigVoByPoolKey(string key)
+        {
+            return _poolMap.ContainsKey(key) ? _poolMap[key] : null;
+        }
 
         protected ObjectPoolVO GetConfigVoByPrefab(IPoolable poolable)
         {
