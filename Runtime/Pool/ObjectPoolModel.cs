@@ -87,6 +87,11 @@ namespace MVC.Runtime.Pool
                 Prefab = prefab
             };
             
+            if(!_disabledObjects.ContainsKey(key))
+                _disabledObjects.Add(key, new List<IPoolable>());
+            if(!_enabledObjects.ContainsKey(key))
+                _enabledObjects.Add(key, new List<IPoolable>());
+            
             _poolMap.Add(key, objectPool);
         }
 
