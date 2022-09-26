@@ -19,12 +19,6 @@ namespace MVC.Runtime.Controller
 
         public virtual void Release(params object[] sequenceData)
         {
-            if (!IsRetain)
-            {
-                Debug.LogError("Command must be retain, if you want to call manual RELEASE!");
-                MVCConsole.LogError(ConsoleLogType.Command, "Command must be retain, if you want to call manual RELEASE!");
-                return;
-            }
             CommandBinder.ReleaseCommand(this, sequenceData);
         }
         

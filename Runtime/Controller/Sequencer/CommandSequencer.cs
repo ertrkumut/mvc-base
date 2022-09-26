@@ -70,7 +70,7 @@ namespace MVC.Runtime.Controller.Sequencer
         
         void ICommandSequencer.AutoReleaseCommand(ICommandBody command)
         {
-            if(command.IsRetain)
+            if(_commandBinding.ExecutionType == CommandExecutionType.Sequence && command.IsRetain)
                 return;
             
             _commandBinder.ReturnCommandToPool(command);
@@ -82,6 +82,20 @@ namespace MVC.Runtime.Controller.Sequencer
 
         public virtual void ReleaseCommand(ICommandBody command, params object[] commandParameters)
         {
+            if (_commandBinding.ExecutionType == CommandExecutionType.Parallel)
+            {
+                Debug.LogWarning("Command Execute Mode must be InSequence, if you want to call manual RELEASE! \n Command: " + command.GetType().Name);
+                MVCConsole.LogWarning(ConsoleLogType.Command, "Command Execute Mode must be InSequence, if you want to call manual RELEASE! \n Command: " + command.GetType().Name);
+                return;
+            }
+            
+            if (!command.IsRetain)
+            {
+                Debug.LogError("Command must be retain, if you want to call manual RELEASE! \n Command: " + command.GetType().Name);
+                MVCConsole.LogError(ConsoleLogType.Command, "Command must be retain, if you want to call manual RELEASE! \n Command: " + command.GetType().Name);
+                return;
+            }
+            
             _commandBinder.ReturnCommandToPool(command);
             (this as ICommandSequencer).NextCommand(commandParameters);
         }
@@ -89,6 +103,13 @@ namespace MVC.Runtime.Controller.Sequencer
         public virtual void JumpCommand<TCommandType>(ICommandBody command, params object[] commandParameters)
             where TCommandType : ICommandBody
         {
+            if (_commandBinding.ExecutionType == CommandExecutionType.Parallel)
+            {
+                Debug.LogWarning("Command Execute Mode must be InSequence, if you want to call JUMP! \n Command: " + command.GetType().Name);
+                MVCConsole.LogWarning(ConsoleLogType.Command, "Command Execute Mode must be InSequence, if you want to call JUMP! \n Command: " + command.GetType().Name);
+                return;
+            }
+            
             _commandBinder.ReturnCommandToPool(command);
             var nextCommandType = FindCommand<TCommandType>();
             if (nextCommandType == null)

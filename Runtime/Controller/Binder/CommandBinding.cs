@@ -11,6 +11,11 @@ namespace MVC.Runtime.Controller.Binder
         public CommandExecutionType ExecutionType { get; protected set; }
         public IContext Context { get; protected set; }
 
+        public CommandBinding()
+        {
+            ExecutionType = CommandExecutionType.Parallel;
+        }
+        
         public new virtual CommandBinding To<TValueType>()
             where TValueType : ICommandBody
         {
