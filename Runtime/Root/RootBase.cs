@@ -9,18 +9,13 @@ namespace MVC.Runtime.Root
     {
         public int initializeOrder;
         
-        internal bool signalsBound;
         internal bool injectionsBound;
         internal bool mediationsBound;
-        internal bool commandsBound;
         internal bool hasInitialized;
         internal bool hasLaunched;
         
-        public bool autoBindSignals = true;
         public bool autoBindInjections = true;
         public bool autoBindMediations = true;
-        public bool autoBindCommands = true;
-
         public bool autoInitialize = true;
         public bool autoLaunch = true;
         
@@ -35,14 +30,14 @@ namespace MVC.Runtime.Root
             if(!hasInitialized)
                 return;
             
-            if(!autoBindSignals && !forceToBind)
+            if(!autoBindInjections && !forceToBind)
                 return;
             
-            if(signalsBound)
+            if(injectionsBound)
                 return;
             
             Context.SignalBindings();
-            signalsBound = true;
+            injectionsBound = true;
             
             MVCConsole.Log(ConsoleLogType.Context, "Context Bind Signals! Context: " + GetType().Name);
         }
@@ -86,14 +81,14 @@ namespace MVC.Runtime.Root
             if(!hasInitialized)
                 return;
             
-            if (!autoBindCommands && !forceToBind)
+            if (!autoBindInjections && !forceToBind)
                 return;
 
-            if (commandsBound)
+            if (autoBindInjections)
                 return;
             
             Context.CommandBindings();
-            commandsBound = true;
+            autoBindInjections = true;
             
             MVCConsole.Log(ConsoleLogType.Context, "Context Bind Commands! Context: " + GetType().Name);
         }

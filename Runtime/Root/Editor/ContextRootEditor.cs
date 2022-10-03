@@ -74,29 +74,6 @@ namespace MVC.Root.Editor
             EditorGUILayout.EndHorizontal();
 
             #endregion
-            
-            #region Signal
-            
-            EditorGUILayout.BeginHorizontal();
-            
-            var signalBinding = EditorGUILayout.ToggleLeft("Bind Signals", _root.autoBindSignals, GUILayout.Width(125));
-            GUI.enabled = (Application.isPlaying && !_root.signalsBound);
-
-            if (GUI.enabled && !_root.signalsBound)
-                GUI.backgroundColor = Color.green;
-            else
-                GUI.backgroundColor = Color.red;
-
-            var signalButton = GUILayout.Button("Bind Signals");
-            if(signalButton)
-                _root.BindSignals(true);
-            
-            GUI.backgroundColor = Color.white;
-            
-            GUI.enabled = true;
-            EditorGUILayout.EndHorizontal();
-
-            #endregion
 
             #region Mediation
 
@@ -120,38 +97,13 @@ namespace MVC.Root.Editor
             EditorGUILayout.EndHorizontal();
 
             #endregion
-            
-            #region Commands
-
-            EditorGUILayout.BeginHorizontal();
-            
-            var commandBinding = EditorGUILayout.ToggleLeft("Bind Commands", _root.autoBindCommands, GUILayout.Width(125));
-            GUI.enabled = (Application.isPlaying && !_root.commandsBound);
-
-            if (GUI.enabled && !_root.commandsBound)
-                GUI.backgroundColor = Color.green;
-            else
-                GUI.backgroundColor = Color.red;
-
-            var commandButton = GUILayout.Button("Bind Commands");
-            if(commandButton)
-                _root.BindCommands(true);
-            
-            GUI.backgroundColor = Color.white;
-            
-            GUI.enabled = true;
-            EditorGUILayout.EndHorizontal();
-
-            #endregion
 
             if (EditorGUI.EndChangeCheck())
             {
                 Undo.RecordObject(_root, "binding-flags");
-                _root.autoBindSignals = signalBinding;
                 _root.autoBindInjections = injectionBinding;
                 _root.autoBindMediations = mediationBinding;
-                _root.autoBindCommands = commandBinding;
-                
+
                 if(!Application.isPlaying)
                     EditorSceneManager.MarkSceneDirty(SceneManager.GetActiveScene());
             }            
@@ -240,17 +192,11 @@ namespace MVC.Root.Editor
             
             EditorGUILayout.LabelField("Context Status:");
             
-            guiStyle.normal.textColor = _root.signalsBound ? Color.green : Color.red;            
-            EditorGUILayout.LabelField("Signals Bound: " + _root.signalsBound, guiStyle);
-
             guiStyle.normal.textColor = _root.injectionsBound ? Color.green : Color.red;            
             EditorGUILayout.LabelField("Injections Bound: " + _root.injectionsBound, guiStyle);
 
             guiStyle.normal.textColor = _root.mediationsBound ? Color.green : Color.red;            
             EditorGUILayout.LabelField("Mediations Bound: " + _root.mediationsBound, guiStyle);
-            
-            guiStyle.normal.textColor = _root.commandsBound ? Color.green : Color.red;            
-            EditorGUILayout.LabelField("Commands Bound: " + _root.commandsBound, guiStyle);
 
             EditorGUILayout.Separator();
             

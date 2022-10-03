@@ -84,11 +84,9 @@ namespace MVC.Runtime.Root
             _rootsManager.UnRegisterContext(this);
             
             _context.DestroyContext();
-
-            signalsBound = false;
+            
             injectionsBound = false;
             mediationsBound = false;
-            commandsBound = false;
         }
 
         protected virtual void BeforeCreateContext(){}
