@@ -236,7 +236,7 @@ namespace MVC.Runtime.Injectable.Utils
                 (injectedMemberInfo as PropertyInfo).SetValue(objectInstance, injectionValue);
         }
         
-        private static object GetInjectedObject(this IContext context, MemberInfo memberInfo)
+        private static object GetInjectedObject(this IContext mainContext, MemberInfo memberInfo)
         {
             Type injectionType = null;
             if (memberInfo.MemberType == MemberTypes.Field)
@@ -245,13 +245,19 @@ namespace MVC.Runtime.Injectable.Utils
                 injectionType = (memberInfo as PropertyInfo).PropertyType;
             
             var injectAttribute = memberInfo.GetCustomAttributes(typeof(InjectAttribute)).ToList()[0] as InjectAttribute;
+            var crossContextInjectionBinder = mainContext.InjectionBinderCrossContext;
+
+            var allContexts = mainContext.AllContexts;
             
-            var injectionBinder = context.InjectionBinder;
-            var crossContextInjectionBinder = context.InjectionBinderCrossContext;
+            object injectionValue = null;
+            foreach (var context in allContexts)
+            {
+                injectionValue = context.InjectionBinder.GetInstance(injectionType, injectAttribute.Name);
+                if (injectionValue != null)
+                    return injectionValue;
+            }
             
-            var injectionValue = injectionBinder.GetInstance(injectionType, injectAttribute.Name);
-            if (injectionValue == null)
-                injectionValue = crossContextInjectionBinder.GetInstance(injectionType, injectAttribute.Name);
+            injectionValue = crossContextInjectionBinder.GetInstance(injectionType, injectAttribute.Name);
 
             return injectionValue;
         }

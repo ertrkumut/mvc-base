@@ -1,6 +1,8 @@
-﻿using System.Linq;
+﻿using System.Collections.Generic;
+using System.Linq;
 using System.Reflection;
 using MVC.Editor.Console;
+using MVC.Runtime.Bind.Bindings;
 using MVC.Runtime.Console;
 using MVC.Runtime.Controller.Binder;
 using MVC.Runtime.Function.Provider;
@@ -27,13 +29,20 @@ namespace MVC.Runtime.Contexts
         public InjectionBinderCrossContext InjectionBinderCrossContext { get; set; }
         public ICommandBinder CommandBinder { get; set; }
 
+        public List<IContext> SubContexts { get; set; }
+        public List<IContext> AllContexts { get; set; }
+        
         public int InitializeOrder { get; set; }
 
-        public void Initialize(GameObject contextGameObject, int initializeOrder, InjectionBinderCrossContext injectionBinderCrossContext)
+        public void Initialize(GameObject contextGameObject, int initializeOrder, InjectionBinderCrossContext injectionBinderCrossContext, List<IContext> subContexts)
         {
             _gameObject = contextGameObject;
             InitializeOrder = initializeOrder;
             InjectionBinderCrossContext = injectionBinderCrossContext;
+            SubContexts = subContexts;
+
+            AllContexts = subContexts;
+            AllContexts.Add(this);
         }
 
         public void Start()

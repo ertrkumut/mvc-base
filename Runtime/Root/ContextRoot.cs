@@ -1,4 +1,6 @@
-﻿using MVC.Editor.Console;
+﻿using System.Collections.Generic;
+using System.Linq;
+using MVC.Editor.Console;
 using MVC.Runtime.Console;
 using MVC.Runtime.Contexts;
 using UnityEngine;
@@ -50,7 +52,10 @@ namespace MVC.Runtime.Root
             
             _context = new TContextType();
             Context = _context;
-            _context.Initialize(gameObject, initializeOrder, _rootsManager.injectionBinderCrossContext);
+
+            if (_subContexts == null)
+                _subContexts = new Dictionary<IContext, SubContextData>();
+            _context.Initialize(gameObject, initializeOrder, _rootsManager.injectionBinderCrossContext, _subContexts.Keys.ToList());
         }
         
         public override void StartContext(bool forceToStart = false)
@@ -58,11 +63,16 @@ namespace MVC.Runtime.Root
             if(!autoInitialize && !forceToStart)
                 return;
 
-            MVCConsole.Log(ConsoleLogType.Context, "Context Started! Context: " + GetType().Name);
-            
             hasInitialized = true;
             AfterCreateBeforeStartContext();
 
+            foreach (var subContextData in _subContexts)
+            {
+                subContextData.Key.Start();
+                MVCConsole.Log(ConsoleLogType.Context, "Sub Context Started! Context: " + subContextData.Key.GetType().Name);
+            }
+            
+            MVCConsole.Log(ConsoleLogType.Context, "Context Started! Context: " + GetType().Name);
             _context.Start();
             _rootsManager.injectionBinderCrossContext.BindInstance<GameObject>(gameObject, gameObject.name);
             
@@ -88,11 +98,5 @@ namespace MVC.Runtime.Root
             injectionsBound = false;
             mediationsBound = false;
         }
-
-        protected virtual void BeforeCreateContext(){}
-
-        protected virtual void AfterCreateBeforeStartContext(){}
-
-        protected virtual void AfterStarBeforeLaunchContext(){}
     }
 }

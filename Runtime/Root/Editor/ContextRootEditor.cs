@@ -1,4 +1,8 @@
 #if UNITY_EDITOR
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using MVC.Runtime.Contexts;
 using MVC.Runtime.Root;
 using UnityEditor;
 using UnityEditor.SceneManagement;
@@ -25,6 +29,8 @@ namespace MVC.Root.Editor
             GUI_LaunchOptions();
 
             GUI_RootStatus();
+
+            GUI_SubContexts();
         }
 
         private void GUI_InitializeOrder()
@@ -207,6 +213,83 @@ namespace MVC.Root.Editor
             EditorGUILayout.LabelField("Has Launched: " + _root.hasLaunched, guiStyle);
             
             EditorGUILayout.EndVertical();
+        }
+        
+        private void GUI_SubContexts()
+        {
+            if (_root.SubContextTypes == null)
+                _root.SubContextTypes = new List<SubContextData>();
+            
+            if (_root.SubContextTypes.Count != 0)
+            {
+                EditorGUILayout.BeginVertical("box");
+
+                for (var ii = 0; ii < _root.SubContextTypes.Count; ii++)
+                {
+                    EditorGUILayout.BeginVertical("box");
+                    EditorGUILayout.BeginHorizontal();
+
+                    var contextData = _root.SubContextTypes[ii];
+                    EditorGUILayout.LabelField(contextData.ContextName);
+
+                    if (GUILayout.Button("-"))
+                    {
+                        _root.SubContextTypes.RemoveAt(ii);
+                        MarkDirty();
+                        return;
+                    }
+                    
+                    EditorGUILayout.EndHorizontal();
+                    contextData.autoLaunch =
+                        EditorGUILayout.Toggle(new GUIContent("Auto Launch"), contextData.autoLaunch);
+                    EditorGUILayout.EndVertical();
+                    EditorGUILayout.Space(5);
+                }
+                
+                EditorGUILayout.EndVertical();
+            }
+
+            if (GUILayout.Button("Add Sub Context"))
+            {
+                var assembly = AppDomain.CurrentDomain.GetAssemblies().FirstOrDefault(x => x.FullName.StartsWith("Assembly-CSharp,"));
+                var contextTypeList = assembly
+                    .GetTypes()
+                    .Where(x => typeof(IContext).IsAssignableFrom(x))
+                    .Where(x => _root.SubContextTypes.FirstOrDefault(a => a.ContextName == x.FullName) == null)
+                    .ToList();
+
+                var genericMenu = new GenericMenu();
+
+                foreach (var type in contextTypeList)
+                {
+                    genericMenu.AddItem(new GUIContent(type.Name), false, data =>
+                    {
+                        _root.SubContextTypes.Add(new SubContextData
+                        {
+                            ContextName = type.FullName
+                        });
+
+                        MarkDirty();
+                    }, type);
+                }
+                
+                genericMenu.ShowAsContext();
+            }
+        }
+
+        private void MarkDirty()
+        {
+            var prefabScene = PrefabStageUtility.GetCurrentPrefabStage();
+            if (prefabScene != null)
+            {
+                EditorSceneManager.MarkSceneDirty(prefabScene.scene);
+            }
+            else if (PrefabUtility.IsOutermostPrefabInstanceRoot(_root.gameObject))
+            {
+                PrefabUtility.RecordPrefabInstancePropertyModifications(_root);
+            }
+            else
+                EditorSceneManager.MarkSceneDirty(EditorSceneManager.GetActiveScene());
         }
     }
 }

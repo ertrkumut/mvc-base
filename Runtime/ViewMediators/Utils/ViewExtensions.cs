@@ -1,5 +1,6 @@
 ﻿using System;
 using MVC.Editor.Console;
+using MVC.Runtime.Bind.Bindings;
 using MVC.Runtime.Console;
 using MVC.Runtime.Contexts;
 using MVC.Runtime.Injectable.Utils;
@@ -15,24 +16,24 @@ namespace MVC.Runtime.ViewMediators.Utils
     {
         public static bool InjectView(this IView view)
         {
-            var viewContext = view.FindViewContext();
-            if (viewContext == null)
+            var context = view.FindViewContext();
+            if (context == null)
             {
                 Debug.LogError("There is no Context \nviewType: " + view.GetType().Name);
                 MVCConsole.LogError(ConsoleLogType.Injection, "There is no Context \nviewType: " + view.GetType().Name);
                 return false;
             }
 
-            var mediationBinder = viewContext.MediationBinder;
-            var binding = mediationBinder.GetBinding(view.GetType());
-            if (binding == null)
+            var viewBindingData = context.GetBindingData(view);
+            if (viewBindingData.Equals(default))
             {
                 Debug.LogError("There is no view binding! " + view.GetType());
                 MVCConsole.LogError(ConsoleLogType.Injection, "There is no view binding! " + view.GetType());
                 return false;
             }
-            
-            var mediatorType = binding.Value as Type;
+
+            var mediationBinder = viewBindingData.Context.MediationBinder;
+            var mediatorType = viewBindingData.Binding.Value as Type;
             var mediatorIsMono = mediatorType.IsSubclassOf(typeof(Object));
 
             IMediator mediator;
@@ -42,7 +43,7 @@ namespace MVC.Runtime.ViewMediators.Utils
             else
                 mediator = mediationBinder.GetMediatorFromPool(mediatorType);
 
-            var injectionResult = viewContext.TryToInjectMediator(mediator, view);
+            var injectionResult = context.TryToInjectMediator(mediator, view);
             if (injectionResult)
             {
                 var injectedMediatorData = mediationBinder.GetOrCreateInjectedMediatorData(view);
@@ -92,6 +93,12 @@ namespace MVC.Runtime.ViewMediators.Utils
         
         internal static IContext FindViewContext(this IView view)
         {
+            var contextRoot = view.FindRoot();
+            return contextRoot == null ? null : contextRoot.GetContext();
+        }
+
+        internal static IContextRoot FindRoot(this IView view)
+        {
             var parent = view.transform.parent;
             if (parent == null)
                 return null;
@@ -106,12 +113,35 @@ namespace MVC.Runtime.ViewMediators.Utils
                 parent = parent.parent;
             }
             
-            return contextRoot == null ? null : contextRoot.GetContext();
+            return contextRoot;
         }
 
         internal static bool IsMediatorMono(this IMediator mediator)
         {
             return mediator is Object;
+        }
+
+        internal static ViewBindingData GetBindingData(this IContext mainContext, IView view)
+        {
+            var viewType = view.GetType();
+
+            var allContexts = mainContext.AllContexts;
+
+            foreach (var context in allContexts)
+            {
+                var viewBindingData = new ViewBindingData();
+                
+                var mediationBinder = context.MediationBinder;
+                var binding = mediationBinder.GetBinding(viewType);
+                if (binding != null)
+                {
+                    viewBindingData.Binding = binding;
+                    viewBindingData.Context = context;
+                    return viewBindingData;
+                }
+            }
+
+            return default;
         }
     }
 }

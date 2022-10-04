@@ -41,7 +41,7 @@ namespace MVC.Runtime.Bind.Binders
         {
             if(IsBindingExist(key))
             {
-                MVCConsole.LogWarning(ConsoleLogType.Injection, "Binding already exist! keyType: " + key);
+                MVCConsole.LogWarning(ConsoleLogType.Injection, "Binding already exist! keyType: " + key.GetType());
                 return default;
             }
 
