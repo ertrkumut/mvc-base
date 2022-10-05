@@ -137,11 +137,11 @@ namespace MVC.Editor.CodeGenerator.Menus
             CreateScene();
 
             CodeGeneratorUtils.CreateContext(_contextName, "TempContext", contextPath,
-                CodeGeneratorStrings.GetPath(CodeGeneratorStrings.TempContextPath), namespaceText);
+                CodeGeneratorStrings.GetPath(CodeGeneratorStrings.TempContextPath), namespaceText, _isTest);
             
             if(_createRoot)
                 CodeGeneratorUtils.CreateRoot(_rootName, _contextName, "TempContext", "TempRoot", contextPath,
-                    CodeGeneratorStrings.GetPath(CodeGeneratorStrings.TempRootPath), namespaceText);
+                    CodeGeneratorStrings.GetPath(CodeGeneratorStrings.TempRootPath), namespaceText, _isTest);
 
             _rootPath = "*Name*";
         }

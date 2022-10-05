@@ -16,7 +16,9 @@ namespace MVC.Editor.CodeGenerator
             var tempViewContent = File.ReadAllLines(tempClassPath);
             var newViewContent = new List<string>();
 
-            newViewContent.Add("#if UNITY_EDITOR");
+            if(isTest)
+                newViewContent.Add("#if UNITY_EDITOR");
+            
             for (var ii = 0; ii < tempViewContent.Length; ii++)
             {
                 var content = tempViewContent[ii];
@@ -42,7 +44,8 @@ namespace MVC.Editor.CodeGenerator
                 newViewContent.Add(content);
             }
             
-            newViewContent.Add("#endif");
+            if(isTest)
+                newViewContent.Add("#endif");
             
             if (!Directory.Exists(viewPath)) Directory.CreateDirectory(viewPath);
 
@@ -58,7 +61,8 @@ namespace MVC.Editor.CodeGenerator
             var tempMediatorContent = File.ReadAllLines(tempClassPath);
             var newMediatorContent = new List<string>();
 
-            newMediatorContent.Add("#if UNITY_EDITOR");
+            if(isTest)
+                newMediatorContent.Add("#if UNITY_EDITOR");
             
             for (var ii = 0; ii < tempMediatorContent.Length; ii++)
             {
@@ -114,7 +118,9 @@ namespace MVC.Editor.CodeGenerator
                 newMediatorContent.Add(content);
             }
 
-            newMediatorContent.Add("#endif");
+            if(isTest)
+                newMediatorContent.Add("#endif");
+            
             if (!Directory.Exists(mediatorPath)) Directory.CreateDirectory(mediatorPath);
 
             File.WriteAllLines(newMediatorPath, newMediatorContent.ToArray());
@@ -122,7 +128,7 @@ namespace MVC.Editor.CodeGenerator
         }
 
         public static void CreateContext(string contextName, string tempClassName, string contextPath,
-            string tempClassPath, string namespaceName)
+            string tempClassPath, string namespaceName, bool isTest)
         {
             var directoryPath = contextPath;
             var path = directoryPath + "/" + contextName + ".cs";
@@ -130,6 +136,9 @@ namespace MVC.Editor.CodeGenerator
             var tempContextContent = File.ReadAllLines(tempClassPath);
             var newContextContent = new List<string>();
 
+            if(isTest)
+                newContextContent.Add("#if UNITY_EDITOR");
+            
             for (var ii = 0; ii < tempContextContent.Length; ii++)
             {
                 var content = tempContextContent[ii];
@@ -146,6 +155,9 @@ namespace MVC.Editor.CodeGenerator
                 newContextContent.Add(content);
             }
             
+            if(isTest)
+                newContextContent.Add("#endif");
+            
             if (!Directory.Exists(directoryPath))
                 Directory.CreateDirectory(directoryPath);
             
@@ -154,13 +166,16 @@ namespace MVC.Editor.CodeGenerator
         }
 
         public static void CreateRoot(string rootName, string contextName, string tempContextName, string tempRootName,
-            string rootPath, string tempClassPath, string namespaceName)
+            string rootPath, string tempClassPath, string namespaceName, bool isTest)
         {
             var directoryPath = rootPath;
             var path = directoryPath + "/" + rootName + ".cs";
             
             var tempRootContent = File.ReadAllLines(tempClassPath);
             var newRootContent = new List<string>();
+            
+            if(isTest)
+                newRootContent.Add("#if UNITY_EDITOR");
             
             for (var ii = 0; ii < tempRootContent.Length; ii++)
             {
@@ -178,6 +193,9 @@ namespace MVC.Editor.CodeGenerator
             
                 newRootContent.Add(content);
             }
+            
+            if(isTest)
+                newRootContent.Add("#endif");
             
             if (!Directory.Exists(directoryPath))
                 Directory.CreateDirectory(directoryPath);
