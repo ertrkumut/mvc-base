@@ -47,10 +47,10 @@ namespace MVC.Editor.CodeGenerator.Menus
             var rootPath = Application.dataPath + CodeGeneratorStrings.GetPath(CodeGeneratorStrings.TestScreenRootPath) + _viewPath;
 
             CodeGeneratorUtils.CreateContext(contextName, "TempScreenContext", rootPath, CodeGeneratorStrings.GetPath(CodeGeneratorStrings.TempScreenContextPath),
-                rootNamespace);
+                rootNamespace, false);
 
             CodeGeneratorUtils.CreateRoot(rootName, contextName, "TempScreenContext", "TempScreenRoot", rootPath,
-                CodeGeneratorStrings.GetPath(CodeGeneratorStrings.TempScreenRootPath), rootNamespace);
+                CodeGeneratorStrings.GetPath(CodeGeneratorStrings.TempScreenRootPath), rootNamespace, false);
             
             CodeGeneratorUtils.BindMediationInContext(rootPath + "/" + contextName + ".cs", _viewName, _mediatorName, "TempScreenView", "TempScreenMediator", _viewNamespace);
             CodeGeneratorUtils.ShowScreenInLaunch(rootPath + "/" + contextName + ".cs", _viewName, "TempScreenView", "GameScreens." + _fileName.Replace("View", ""));
