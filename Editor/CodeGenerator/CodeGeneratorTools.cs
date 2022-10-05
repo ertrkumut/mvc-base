@@ -18,10 +18,10 @@ namespace MVC.Editor.CodeGenerator
             EditorWindow.GetWindow<CreateScreenMenu>("Create Screen");
         }
 
-        [MenuItem("Tools/MVC/Create Root")]
+        [MenuItem("Tools/MVC/Create Context")]
         private static void CreateRoot()
         {
-            EditorWindow.GetWindow<CreateRootMenu>("Create Root");
+            EditorWindow.GetWindow<CreateRootAndContextMenu>("Create Root");
         }
     }
 }

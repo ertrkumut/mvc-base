@@ -1,6 +1,5 @@
 ﻿#if UNITY_EDITOR
 using System;
-using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using UnityEditor;
@@ -9,16 +8,19 @@ using UnityEngine;
 
 namespace MVC.Editor.CodeGenerator.Menus
 {
-    internal class CreateRootMenu : EditorWindow
+    internal class CreateRootAndContextMenu : EditorWindow
     {
         private static string _rootPath;
 
-        private static string _baseInput => _rootPath.Split('/')[_rootPath.Split('/').Length - 1]; 
+        private string _baseInput => !_isTest ? _rootPath.Split('/')[_rootPath.Split('/').Length - 1] : "TEST_" + _rootPath.Split('/')[_rootPath.Split('/').Length - 1]; 
         
-        private static string _rootName => _baseInput + "Root";
+        private string _rootName => _baseInput + "Root";
         private string _contextName => _baseInput + "Context";
 
         private bool _createScene = true;
+        private bool _createRoot = true;
+        private bool _isTest;
+        
         private bool _customScenePath;
         private string _scenePath;
         
@@ -39,7 +41,7 @@ namespace MVC.Editor.CodeGenerator.Menus
             EditorGUILayout.BeginVertical("box");
 
             EditorGUILayout.BeginHorizontal();
-
+            
             EditorGUILayout.LabelField("Root Name: ", GUILayout.Width(75));
             _rootPath = EditorGUILayout.TextField(_rootPath);
             
@@ -48,14 +50,26 @@ namespace MVC.Editor.CodeGenerator.Menus
             EditorGUILayout.BeginHorizontal();
             
             GUILayout.Space(80);
+
             EditorGUILayout.LabelField(_rootName + "<" + _contextName + ">", EditorStyles.boldLabel);
             EditorGUILayout.EndHorizontal();
 
             EditorGUILayout.BeginVertical("box");
             
-            _createScene = EditorGUILayout.ToggleLeft(new GUIContent("Create Scene"), _createScene);
-            _customScenePath = EditorGUILayout.ToggleLeft(new GUIContent("Custom Scene Path"), _customScenePath);
+            _isTest = EditorGUILayout.ToggleLeft(new GUIContent("Is Test"), _isTest);
+            _createRoot = EditorGUILayout.ToggleLeft(new GUIContent("Create Root"), _createRoot);
 
+            if (!_createRoot)
+            {
+                _createScene = false;
+                _customScenePath = false;
+            }
+            else
+            {
+                _createScene = EditorGUILayout.ToggleLeft(new GUIContent("Create Scene"), _createScene);
+                _customScenePath = EditorGUILayout.ToggleLeft(new GUIContent("Custom Scene Path"), _customScenePath);
+            }
+            
             if (!_customScenePath)
                 _scenePath = String.Empty;
             
@@ -125,8 +139,11 @@ namespace MVC.Editor.CodeGenerator.Menus
             CodeGeneratorUtils.CreateContext(_contextName, "TempContext", contextPath,
                 CodeGeneratorStrings.GetPath(CodeGeneratorStrings.TempContextPath), namespaceText);
             
-            CodeGeneratorUtils.CreateRoot(_rootName, _contextName, "TempContext", "TempRoot", contextPath,
-                CodeGeneratorStrings.GetPath(CodeGeneratorStrings.TempRootPath), namespaceText);
+            if(_createRoot)
+                CodeGeneratorUtils.CreateRoot(_rootName, _contextName, "TempContext", "TempRoot", contextPath,
+                    CodeGeneratorStrings.GetPath(CodeGeneratorStrings.TempRootPath), namespaceText);
+
+            _rootPath = "*Name*";
         }
 
         private void CreateScene()

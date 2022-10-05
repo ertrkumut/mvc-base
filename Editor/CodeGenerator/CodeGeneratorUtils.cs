@@ -9,13 +9,14 @@ namespace MVC.Editor.CodeGenerator
     internal static class CodeGeneratorUtils
     {
         public static void CreateView(string viewName, string tempClassName, string viewPath, string tempClassPath,
-            string namespaceName, List<string> actionsList)
+            string namespaceName, List<string> actionsList, bool isTest)
         {
             var newViewPath = viewPath + "/" + viewName + ".cs";
 
             var tempViewContent = File.ReadAllLines(tempClassPath);
             var newViewContent = new List<string>();
 
+            newViewContent.Add("#if UNITY_EDITOR");
             for (var ii = 0; ii < tempViewContent.Length; ii++)
             {
                 var content = tempViewContent[ii];
@@ -40,7 +41,9 @@ namespace MVC.Editor.CodeGenerator
 
                 newViewContent.Add(content);
             }
-
+            
+            newViewContent.Add("#endif");
+            
             if (!Directory.Exists(viewPath)) Directory.CreateDirectory(viewPath);
 
             File.WriteAllLines(newViewPath, newViewContent.ToArray());
@@ -48,13 +51,15 @@ namespace MVC.Editor.CodeGenerator
         }
 
         public static void CreateMediator(string mediatorName, string viewName, string tempClassName,
-            string mediatorPath, string tempClassPath, string namespaceName, List<string> actionsList)
+            string mediatorPath, string tempClassPath, string namespaceName, List<string> actionsList, bool isTest)
         {
             var newMediatorPath = mediatorPath + "/" + mediatorName + ".cs";
 
             var tempMediatorContent = File.ReadAllLines(tempClassPath);
             var newMediatorContent = new List<string>();
 
+            newMediatorContent.Add("#if UNITY_EDITOR");
+            
             for (var ii = 0; ii < tempMediatorContent.Length; ii++)
             {
                 var content = tempMediatorContent[ii];
@@ -109,6 +114,7 @@ namespace MVC.Editor.CodeGenerator
                 newMediatorContent.Add(content);
             }
 
+            newMediatorContent.Add("#endif");
             if (!Directory.Exists(mediatorPath)) Directory.CreateDirectory(mediatorPath);
 
             File.WriteAllLines(newMediatorPath, newMediatorContent.ToArray());

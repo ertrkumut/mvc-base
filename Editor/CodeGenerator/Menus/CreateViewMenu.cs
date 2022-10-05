@@ -34,6 +34,8 @@ namespace MVC.Editor.CodeGenerator.Menus
         protected string _selectedContextName;
         private Dictionary<string, bool> _contextGUI;
 
+        protected bool _isTestView;
+        
         protected virtual void OnEnable()
         {
             _actionNames = new List<string>();
@@ -56,9 +58,19 @@ namespace MVC.Editor.CodeGenerator.Menus
             EditorGUILayout.EndHorizontal();
             
             EditorGUILayout.BeginHorizontal();
+
+            var fullName = _viewPath + _classViewName;
             
-            GUILayout.Space(80);
-            EditorGUILayout.LabelField(_viewPath + _classViewName, EditorStyles.boldLabel);
+            if(GetType() == typeof(CreateViewMenu))
+            {
+                EditorGUILayout.LabelField("Is Test", GUILayout.Width(40));
+                _isTestView = EditorGUILayout.Toggle(_isTestView, GUILayout.Width(30));
+                
+                if (_isTestView)
+                    fullName = "TEST_" + fullName;
+            }
+                
+            EditorGUILayout.LabelField(fullName, EditorStyles.boldLabel);
             EditorGUILayout.EndHorizontal();
             EditorGUILayout.EndVertical();
 
@@ -126,16 +138,26 @@ namespace MVC.Editor.CodeGenerator.Menus
 
         protected virtual void CreateViewMediator()
         {
-            var path = Application.dataPath + string.Format(_targetViewPath, _selectedContextName.Replace("Context", "")) + _viewPath;
-            _viewNamespace = path.Replace(Application.dataPath + "/Scripts/", "").Replace("/", ".").TrimEnd('.');
-            
             _viewName = _viewPath.Split('/')[_viewPath.Split('/').Length - 1] + _classViewName;
             _mediatorName = _viewPath.Split('/')[_viewPath.Split('/').Length - 1] + _classMediatorName;
 
-            CodeGeneratorUtils.CreateView(_viewName, _tempViewName, path, _tempViewPath, _viewNamespace, _actionNames);
-            CodeGeneratorUtils.CreateMediator(_mediatorName, _viewName, _tempMediatorName, path, _tempMediatorPath, _viewNamespace, _actionNames);
+            if (_isTestView)
+            {
+                _viewName = "TEST_" + _viewName;
+                _mediatorName = "TEST_" + _mediatorName;
+
+                _viewPath = "TEST/" + _viewPath;
+            }
+         
+            var path = Application.dataPath + string.Format(_targetViewPath, _selectedContextName.Replace("Context", "")) + _viewPath;
+            _viewNamespace = path.Replace(Application.dataPath + "/Scripts/", "").Replace("/", ".").TrimEnd('.');
+            
+            CodeGeneratorUtils.CreateView(_viewName, _tempViewName, path, _tempViewPath, _viewNamespace, _actionNames, _isTestView);
+            CodeGeneratorUtils.CreateMediator(_mediatorName, _viewName, _tempMediatorName, path, _tempMediatorPath, _viewNamespace, _actionNames, _isTestView);
 
             _fileName = _viewName;
+            _viewPath = "*Name*";
+            _fileName = "";
         }
 
         private void DrawAllContexts()
