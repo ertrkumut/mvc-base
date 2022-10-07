@@ -5,6 +5,7 @@ using System.Linq;
 using UnityEditor;
 using UnityEditor.SceneManagement;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 
 namespace MVC.Editor.CodeGenerator.Menus
 {
@@ -19,6 +20,7 @@ namespace MVC.Editor.CodeGenerator.Menus
 
         private bool _createScene = true;
         private bool _createRoot = true;
+        private bool _isScreenContext = false;
         private bool _isTest;
         
         private bool _customScenePath;
@@ -56,7 +58,12 @@ namespace MVC.Editor.CodeGenerator.Menus
 
             EditorGUILayout.BeginVertical("box");
             
-            _isTest = EditorGUILayout.ToggleLeft(new GUIContent("Is Test"), _isTest);
+            _isScreenContext = EditorGUILayout.ToggleLeft(new GUIContent("Is Screen"), _isScreenContext);
+            if (_isScreenContext)
+                _isTest = false;
+            else
+                _isTest = EditorGUILayout.ToggleLeft(new GUIContent("Is Test"), _isTest);
+            
             _createRoot = EditorGUILayout.ToggleLeft(new GUIContent("Create Root"), _createRoot);
 
             if (!_createRoot)
@@ -84,11 +91,11 @@ namespace MVC.Editor.CodeGenerator.Menus
                 
                 if (GUILayout.Button("Choose Path"))
                 {
-                    if (!Directory.Exists(CodeGeneratorStrings.GetPath(CodeGeneratorStrings.RootScenePath)))
-                        Directory.CreateDirectory(CodeGeneratorStrings.GetPath(CodeGeneratorStrings.RootScenePath));
+                    if (!Directory.Exists(CodeGeneratorStrings.GetPath(CodeGeneratorStrings.ContextScenePath)))
+                        Directory.CreateDirectory(CodeGeneratorStrings.GetPath(CodeGeneratorStrings.ContextScenePath));
 
                     _scenePath =
-                        EditorUtility.OpenFolderPanel("Choose Scene Path", CodeGeneratorStrings.GetPath(CodeGeneratorStrings.RootScenePath), "") + "/";
+                        EditorUtility.OpenFolderPanel("Choose Scene Path", CodeGeneratorStrings.GetPath(CodeGeneratorStrings.ContextScenePath), "") + "/";
                 }
             }
 
@@ -132,16 +139,41 @@ namespace MVC.Editor.CodeGenerator.Menus
 
         private void CreateRootAndContext()
         {
-            var contextPath = Application.dataPath + string.Format(CodeGeneratorStrings.GetPath(CodeGeneratorStrings.RootPath), _rootPath);;
+            var contextPath = Application.dataPath + string.Format(CodeGeneratorStrings.GetPath(CodeGeneratorStrings.ContextPath), _rootPath);;
+            if(_isTest)
+                contextPath = Application.dataPath + string.Format(CodeGeneratorStrings.GetPath(CodeGeneratorStrings.TestContextPath), _rootPath);;
+            
             var namespaceText = contextPath.Replace(Application.dataPath + "/Scripts/", "").Replace("/", ".").TrimEnd('.');
+            
+            if(_isTest)
+            {
+                namespaceText = contextPath
+                    .Replace(Application.dataPath + "/Test/Scripts/", "")
+                    .Replace("/", ".")
+                    .TrimEnd('.');
+
+                namespaceText = "Test." + namespaceText;
+            }
+
             CreateScene();
 
-            CodeGeneratorUtils.CreateContext(_contextName, "TempContext", contextPath,
-                CodeGeneratorStrings.GetPath(CodeGeneratorStrings.TempContextPath), namespaceText, _isTest);
+            if(_isScreenContext)
+                CodeGeneratorUtils.CreateContext(_contextName, "TempScreenContext", contextPath,
+                    CodeGeneratorStrings.GetPath(CodeGeneratorStrings.TempScreenContextPath), namespaceText, true, false);
+            else
+                CodeGeneratorUtils.CreateContext(_contextName, "TempContext", contextPath,
+                    CodeGeneratorStrings.GetPath(CodeGeneratorStrings.TempContextPath), namespaceText, _isScreenContext, _isTest);
             
             if(_createRoot)
-                CodeGeneratorUtils.CreateRoot(_rootName, _contextName, "TempContext", "TempRoot", contextPath,
-                    CodeGeneratorStrings.GetPath(CodeGeneratorStrings.TempRootPath), namespaceText, _isTest);
+            {
+                if(_isScreenContext)
+                    CodeGeneratorUtils.CreateRoot(_rootName, _contextName, "TempScreenContext", "TempScreenRoot", contextPath,
+                        CodeGeneratorStrings.GetPath(CodeGeneratorStrings.TempScreenRootPath), namespaceText, false);
+                else
+                    CodeGeneratorUtils.CreateRoot(_rootName, _contextName, "TempContext", "TempRoot", contextPath,
+                        CodeGeneratorStrings.GetPath(CodeGeneratorStrings.TempRootPath), namespaceText, _isTest);
+            }
+
 
             _rootPath = "*Name*";
         }
@@ -150,8 +182,10 @@ namespace MVC.Editor.CodeGenerator.Menus
         {
             if(!_createScene)
                 return;
-            
-            var scenePath = _customScenePath ? _scenePath : CodeGeneratorStrings.GetPath(CodeGeneratorStrings.RootScenePath);
+
+            var scenePath = _customScenePath ? _scenePath :
+                _isTest ? CodeGeneratorStrings.GetPath(CodeGeneratorStrings.TestContextScenePath) :
+                CodeGeneratorStrings.GetPath(CodeGeneratorStrings.ContextScenePath);
             
             PlayerPrefs.SetString("create-root-menu-clicked", _rootName);
             PlayerPrefs.SetString("create-root-scene-path", scenePath);
@@ -184,12 +218,10 @@ namespace MVC.Editor.CodeGenerator.Menus
             
                 rootGameObject.AddComponent(rootType);
 
-                EditorSceneManager.SaveScene(EditorSceneManager.GetActiveScene(), path);
+                EditorSceneManager.SaveScene(SceneManager.GetActiveScene(), path);
                 AssetDatabase.Refresh();
             }
-#pragma warning disable CS0168
             catch (Exception e)
-#pragma warning restore CS0168
             {
                 PlayerPrefs.DeleteKey("create-root-menu-clicked");
                 PlayerPrefs.DeleteKey("create-root-scene-path");

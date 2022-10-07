@@ -17,8 +17,6 @@ namespace MVC.Editor.CodeGenerator.Menus
         protected override string _classLabelName => "Screen Name: ";
         protected override string _classViewName => "ScreenView";
         protected override string _classMediatorName => "ScreenMediator";
-        
-        protected string _testContextNamespace => "Runtime.Test.Roots.Screens.";
 
         protected override string _tempViewName => "TempScreenView";
         protected override string _tempMediatorName => "TempScreenMediator";
@@ -26,6 +24,11 @@ namespace MVC.Editor.CodeGenerator.Menus
         protected override string _targetViewPath => CodeGeneratorStrings.GetPath(CodeGeneratorStrings.ScreenPath);
         protected override string _tempViewPath => CodeGeneratorStrings.GetPath(CodeGeneratorStrings.TempScreenViewPath);
         protected override string _tempMediatorPath => CodeGeneratorStrings.GetPath(CodeGeneratorStrings.TempScreenMediatorPath);
+
+        protected override void GUI_ContextList()
+        {
+            DrawAllContexts(true);
+        }
 
         protected override void CreateViewMediator()
         {
@@ -37,23 +40,27 @@ namespace MVC.Editor.CodeGenerator.Menus
             
             base.CreateViewMediator();
 
-            var rootNamespace = _testContextNamespace + _viewPath.Replace("/", ".");
             var contextName = (_fileName + "TestContext").Replace("View", "");
             var rootName = (_fileName + "TestRoot").Replace("View", "");
+            var contextPath = Application.dataPath + string.Format(CodeGeneratorStrings.GetPath(CodeGeneratorStrings.TestScreenRootPath), contextName) + _viewNameInputField;
+            
+            var contexNamespace = contextPath
+                .Replace(Application.dataPath + "/Test/Scripts/", "")
+                .Replace("/", ".")
+                .TrimEnd('.');
+            contexNamespace = "Test." + contexNamespace;
 
             PlayerPrefs.SetString("create-screen-menu-clicked", _fileName);
             PlayerPrefs.SetString("create-screen-root-name", rootName);
 
-            var rootPath = Application.dataPath + CodeGeneratorStrings.GetPath(CodeGeneratorStrings.TestScreenRootPath) + _viewPath;
+            CodeGeneratorUtils.CreateContext(contextName, "TempScreenTestContext", contextPath, CodeGeneratorStrings.GetPath(CodeGeneratorStrings.TempScreenTestContextPath),
+                contexNamespace, true,true);
 
-            CodeGeneratorUtils.CreateContext(contextName, "TempScreenContext", rootPath, CodeGeneratorStrings.GetPath(CodeGeneratorStrings.TempScreenContextPath),
-                rootNamespace, false);
-
-            CodeGeneratorUtils.CreateRoot(rootName, contextName, "TempScreenContext", "TempScreenRoot", rootPath,
-                CodeGeneratorStrings.GetPath(CodeGeneratorStrings.TempScreenRootPath), rootNamespace, false);
+            CodeGeneratorUtils.CreateRoot(rootName, contextName, "TempScreenTestContext", "TempScreenTestRoot", contextPath,
+                CodeGeneratorStrings.GetPath(CodeGeneratorStrings.TempScreenTestRootPath), contexNamespace, true);
             
-            CodeGeneratorUtils.BindMediationInContext(rootPath + "/" + contextName + ".cs", _viewName, _mediatorName, "TempScreenView", "TempScreenMediator", _viewNamespace);
-            CodeGeneratorUtils.ShowScreenInLaunch(rootPath + "/" + contextName + ".cs", _viewName, "TempScreenView", "GameScreens." + _fileName.Replace("View", ""));
+            CodeGeneratorUtils.BindMediationInContext(contextPath + "/" + contextName + ".cs", _viewName, _mediatorName, "TempScreenView", "TempScreenMediator", _viewNamespace);
+            CodeGeneratorUtils.ShowScreenInLaunch(contextPath + "/" + contextName + ".cs", _viewName, "TempScreenView", "GameScreens." + _fileName.Replace("View", ""));
             
             CreateScene();
         }

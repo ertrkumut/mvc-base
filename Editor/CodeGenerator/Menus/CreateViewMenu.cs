@@ -3,6 +3,7 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Reflection;
 using MVC.Runtime.Contexts;
 using UnityEditor;
 using UnityEngine;
@@ -23,7 +24,7 @@ namespace MVC.Editor.CodeGenerator.Menus
         protected virtual string _tempMediatorPath => CodeGeneratorStrings.GetPath(CodeGeneratorStrings.TempMediatorPath);
 
         protected string _fileName;
-        protected string _viewPath = "*Name*";
+        protected string _viewNameInputField = "*Name*";
 
         protected List<string> _actionNames;
 
@@ -53,13 +54,13 @@ namespace MVC.Editor.CodeGenerator.Menus
             EditorGUILayout.BeginHorizontal();
 
             EditorGUILayout.LabelField(_classLabelName, GUILayout.Width(75));
-            _viewPath = EditorGUILayout.TextField(_viewPath);
+            _viewNameInputField = EditorGUILayout.TextField(_viewNameInputField);
             
             EditorGUILayout.EndHorizontal();
             
             EditorGUILayout.BeginHorizontal();
 
-            var fullName = _viewPath + _classViewName;
+            var fullName = _viewNameInputField + _classViewName;
             
             if(GetType() == typeof(CreateViewMenu))
             {
@@ -112,7 +113,7 @@ namespace MVC.Editor.CodeGenerator.Menus
 
             #region SelectContext
 
-            DrawAllContexts();
+            GUI_ContextList();
 
             #endregion
             
@@ -138,44 +139,67 @@ namespace MVC.Editor.CodeGenerator.Menus
 
         protected virtual void CreateViewMediator()
         {
-            _viewName = _viewPath.Split('/')[_viewPath.Split('/').Length - 1] + _classViewName;
-            _mediatorName = _viewPath.Split('/')[_viewPath.Split('/').Length - 1] + _classMediatorName;
+            _viewName = _viewNameInputField.Split('/')[_viewNameInputField.Split('/').Length - 1] + _classViewName;
+            _mediatorName = _viewNameInputField.Split('/')[_viewNameInputField.Split('/').Length - 1] + _classMediatorName;
 
             if (_isTestView)
             {
                 _viewName = "TEST_" + _viewName;
                 _mediatorName = "TEST_" + _mediatorName;
 
-                _viewPath = "TEST/" + _viewPath;
+                _viewNameInputField = "TEST/" + _viewNameInputField;
             }
          
-            var path = Application.dataPath + string.Format(_targetViewPath, _selectedContextName.Replace("Context", "")) + _viewPath;
+            var path = Application.dataPath + string.Format(_targetViewPath, _selectedContextName.Replace("Context", "")) + _viewNameInputField;
             _viewNamespace = path.Replace(Application.dataPath + "/Scripts/", "").Replace("/", ".").TrimEnd('.');
             
             CodeGeneratorUtils.CreateView(_viewName, _tempViewName, path, _tempViewPath, _viewNamespace, _actionNames, _isTestView);
             CodeGeneratorUtils.CreateMediator(_mediatorName, _viewName, _tempMediatorName, path, _tempMediatorPath, _viewNamespace, _actionNames, _isTestView);
 
             _fileName = _viewName;
-            _viewPath = "*Name*";
-            _fileName = "";
         }
 
-        private void DrawAllContexts()
+        protected virtual void GUI_ContextList()
+        {
+            DrawAllContexts();
+        }
+        
+        protected void DrawAllContexts(bool isScreen = false)
         {
             var assemblyList = AppDomain.CurrentDomain.GetAssemblies();
             var currentAssembly = assemblyList.FirstOrDefault(x => x.FullName.StartsWith("Assembly-CSharp,"));
             var contextTypes = currentAssembly
                 .GetTypes()
                 .Where(x => x.IsSubclassOf(typeof(Context)))
-                .ToList()
+                .ToList();
+
+            if (_isTestView)
+                contextTypes = contextTypes
+                    .Where(x => x.GetField(CodeGeneratorStrings.ContextTestFlag, BindingFlags.Instance | BindingFlags.Static | BindingFlags.NonPublic) != null)
+                    .ToList();
+            else
+                contextTypes = contextTypes
+                    .Where(x => x.GetField(CodeGeneratorStrings.ContextTestFlag, BindingFlags.Instance | BindingFlags.Static | BindingFlags.NonPublic) == null)
+                    .ToList();
+            
+            if (isScreen)
+                contextTypes = contextTypes
+                    .Where(x => x.GetField(CodeGeneratorStrings.ContextScreenFlag, BindingFlags.Instance | BindingFlags.Static | BindingFlags.NonPublic) != null)
+                    .ToList();
+            else
+                contextTypes = contextTypes
+                    .Where(x => x.GetField(CodeGeneratorStrings.ContextScreenFlag, BindingFlags.Instance | BindingFlags.Static | BindingFlags.NonPublic) == null)
+                    .ToList();
+            
+            var contextNames = contextTypes
                 .Select(x => x.Name)
                 .ToList();
 
             EditorGUILayout.BeginVertical("box");
-            for (var ii = 0; ii < contextTypes.Count; ii++)
+            for (var ii = 0; ii < contextNames.Count; ii++)
             {
                 EditorGUILayout.BeginHorizontal();
-                var contextName = contextTypes[ii];
+                var contextName = contextNames[ii];
                 
                 if(!_contextGUI.ContainsKey(contextName))
                     _contextGUI.Add(contextName, false);

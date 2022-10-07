@@ -128,7 +128,7 @@ namespace MVC.Editor.CodeGenerator
         }
 
         public static void CreateContext(string contextName, string tempClassName, string contextPath,
-            string tempClassPath, string namespaceName, bool isTest)
+            string tempClassPath, string namespaceName, bool isScreen, bool isTest)
         {
             var directoryPath = contextPath;
             var path = directoryPath + "/" + contextName + ".cs";
@@ -150,6 +150,26 @@ namespace MVC.Editor.CodeGenerator
                 {
                     content = content.Replace("internal class", "public class");
                     content = content.Replace(tempClassName, contextName);
+                }
+                else if (content.Contains("//SCREEN_FLAG"))
+                {
+                    if(isScreen)
+                    {
+                        newContextContent.Add("#if UNITY_EDITOR");
+                        newContextContent.Add("private static byte " + CodeGeneratorStrings.ContextScreenFlag + ";");
+                        newContextContent.Add("#endif");
+                    }
+                    continue;
+                }
+                else if (content.Contains("//TEST_FLAG"))
+                {
+                    if(isTest)
+                    {
+                        newContextContent.Add("#if UNITY_EDITOR");
+                        newContextContent.Add("private static byte " + CodeGeneratorStrings.ContextTestFlag + ";");
+                        newContextContent.Add("#endif");
+                    }
+                    continue;
                 }
 
                 newContextContent.Add(content);

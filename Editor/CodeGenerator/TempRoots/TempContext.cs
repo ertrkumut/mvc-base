@@ -4,6 +4,9 @@ namespace MVC.Editor.CodeGenerator.TempRoots
 {
     internal class TempContext : Context
     {
+        //SCREEN_FLAG
+        //TEST_FLAG
+
         public override void SignalBindings()
         {
             base.SignalBindings();

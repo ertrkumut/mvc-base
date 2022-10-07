@@ -2,7 +2,7 @@ using MVC.Runtime.Screen.Context;
 
 namespace MVC.Editor.CodeGenerator.TempScreens
 {
-    internal class TempScreenContext : BaseUIContext
+    internal class TempScreenTestContext : BaseUIContext
     {
         //SCREEN_FLAG
         //TEST_FLAG
@@ -20,6 +20,8 @@ namespace MVC.Editor.CodeGenerator.TempScreens
         public override void MediationBindings()
         {
             base.MediationBindings();
+            
+            MediationBinder.Bind<TempScreenView>().To<TempScreenMediator>();
         }
 
         public override void CommandBindings()
@@ -30,6 +32,8 @@ namespace MVC.Editor.CodeGenerator.TempScreens
         public override void Launch()
         {
             base.Launch();
+            
+            _screenModel.NewScreen(default).Show<TempScreenView>();
         }
     }
 }

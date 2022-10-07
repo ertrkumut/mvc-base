@@ -21,7 +21,7 @@ namespace MVC.Editor.CodeGenerator
         [MenuItem("Tools/MVC/Create Context")]
         private static void CreateRoot()
         {
-            EditorWindow.GetWindow<CreateRootAndContextMenu>("Create Root");
+            EditorWindow.GetWindow<CreateRootAndContextMenu>("Create Context");
         }
     }
 }
