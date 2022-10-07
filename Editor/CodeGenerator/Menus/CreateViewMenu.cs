@@ -173,24 +173,27 @@ namespace MVC.Editor.CodeGenerator.Menus
                 .Where(x => x.IsSubclassOf(typeof(Context)))
                 .ToList();
 
-            if (_isTestView)
-                contextTypes = contextTypes
-                    .Where(x => x.GetField(CodeGeneratorStrings.ContextTestFlag, BindingFlags.Instance | BindingFlags.Static | BindingFlags.NonPublic) != null)
-                    .ToList();
-            else
-                contextTypes = contextTypes
-                    .Where(x => x.GetField(CodeGeneratorStrings.ContextTestFlag, BindingFlags.Instance | BindingFlags.Static | BindingFlags.NonPublic) == null)
-                    .ToList();
+            
             
             if (isScreen)
                 contextTypes = contextTypes
                     .Where(x => x.GetField(CodeGeneratorStrings.ContextScreenFlag, BindingFlags.Instance | BindingFlags.Static | BindingFlags.NonPublic) != null)
                     .ToList();
             else
-                contextTypes = contextTypes
-                    .Where(x => x.GetField(CodeGeneratorStrings.ContextScreenFlag, BindingFlags.Instance | BindingFlags.Static | BindingFlags.NonPublic) == null)
-                    .ToList();
-            
+            {
+                // contextTypes = contextTypes
+                //     .Where(x => x.GetField(CodeGeneratorStrings.ContextScreenFlag, BindingFlags.Instance | BindingFlags.Static | BindingFlags.NonPublic) == null)
+                //     .ToList();
+                if (_isTestView)
+                    contextTypes = contextTypes
+                        .Where(x => x.GetField(CodeGeneratorStrings.ContextTestFlag, BindingFlags.Instance | BindingFlags.Static | BindingFlags.NonPublic) != null)
+                        .ToList();
+                else
+                    contextTypes = contextTypes
+                        .Where(x => x.GetField(CodeGeneratorStrings.ContextTestFlag, BindingFlags.Instance | BindingFlags.Static | BindingFlags.NonPublic) == null)
+                        .ToList();
+            }
+                
             var contextNames = contextTypes
                 .Select(x => x.Name)
                 .ToList();
