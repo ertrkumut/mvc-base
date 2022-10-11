@@ -1,8 +1,9 @@
-﻿using MVC.Runtime.Signals;
+﻿using MVC.Runtime.Bind.Binders;
+using MVC.Runtime.Signals;
 
 namespace MVC.Runtime.Controller.Binder
 {
-    public interface ICommandBinder
+    public interface ICommandBinder : IBinder<CommandBinding>
     {
         public CommandBinding Bind<TSignal>(TSignal key)
             where TSignal : ISignalBody;

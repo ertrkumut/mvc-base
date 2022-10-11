@@ -7,6 +7,10 @@ namespace MVC.Runtime.Bind.Binders
     {
         TBindingType Bind<TKeyType>();
         TBindingType Bind(object key);
+
+        void UnBind(object key);
+        void UnBindAll();
+
         TBindingType GetBinding(object key);
         TBindingType GetBinding<TKeyType>();
     }
