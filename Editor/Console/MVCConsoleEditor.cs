@@ -104,7 +104,7 @@ namespace MVC.Editor.Console
 
             if (_logType != ConsoleLogType.All)
             {
-                logs = logs.Where(x => x.consoleLogType == _logType).ToList();
+                logs = logs.Where(x => x.ConsoleLogType == _logType).ToList();
             }
             
             _logsPanelScroll = EditorGUILayout.BeginScrollView(_logsPanelScroll);
@@ -121,17 +121,17 @@ namespace MVC.Editor.Console
         {
             var logs = MVCConsole.Logs;
             if (_logType != ConsoleLogType.All)
-                logs = logs.Where(x => x.consoleLogType == _logType).ToList();
+                logs = logs.Where(x => x.ConsoleLogType == _logType).ToList();
             
             EditorGUILayout.BeginHorizontal();
 
-            _logFilter[LogType.Log] = EditorGUILayout.ToggleLeft("Log(" + logs.Count(x => x.logType == LogType.Log) + ")", _logFilter[LogType.Log], GUILayout.Width(75));
+            _logFilter[LogType.Log] = EditorGUILayout.ToggleLeft("Log(" + logs.Count(x => x.LogType == LogType.Log) + ")", _logFilter[LogType.Log], GUILayout.Width(75));
             
             GUI.backgroundColor = Color.yellow;
-            _logFilter[LogType.Warning] = EditorGUILayout.ToggleLeft("War(" + logs.Count(x => x.logType == LogType.Warning) + ")", _logFilter[LogType.Warning], GUILayout.Width(75));
+            _logFilter[LogType.Warning] = EditorGUILayout.ToggleLeft("War(" + logs.Count(x => x.LogType == LogType.Warning) + ")", _logFilter[LogType.Warning], GUILayout.Width(75));
             
             GUI.backgroundColor = Color.red;
-            _logFilter[LogType.Error] = EditorGUILayout.ToggleLeft("Err(" + logs.Count(x => x.logType == LogType.Error) + ")", _logFilter[LogType.Error], GUILayout.Width(75));
+            _logFilter[LogType.Error] = EditorGUILayout.ToggleLeft("Err(" + logs.Count(x => x.LogType == LogType.Error) + ")", _logFilter[LogType.Error], GUILayout.Width(75));
             GUI.backgroundColor = Color.white;
             
             EditorGUILayout.EndHorizontal();
@@ -139,21 +139,19 @@ namespace MVC.Editor.Console
         
         private void LogGUI(ConsoleLog consoleLog)
         {
-            if(_logFilter[consoleLog.logType] == false)
+            if(_logFilter[consoleLog.LogType] == false)
                 return;
             
-            var bgColor = consoleLog.logType == LogType.Log ? Color.white :
-                consoleLog.logType == LogType.Warning ? Color.yellow : Color.red;
+            var bgColor = consoleLog.LogType == LogType.Log ? Color.white :
+                consoleLog.LogType == LogType.Warning ? Color.yellow : Color.red;
 
             GUI.backgroundColor = bgColor;
             
             EditorGUILayout.BeginHorizontal("box");
 
-            var rect = GUILayoutUtility.GetRect(
-                new GUIContent(consoleLog.hour.ToString("00") + ":" + consoleLog.minute.ToString("00") + " | " +
-                               consoleLog.message), "label");
-            GUI.TextField(rect, consoleLog.hour.ToString("00") + ":" + consoleLog.minute.ToString("00") + " | " +
-                            consoleLog.message);
+            var date = consoleLog.Hour.ToString("00") + ":" + consoleLog.Minute.ToString("00") + ":" + consoleLog.Second.ToString("00") + ":" + consoleLog.Millisecond.ToString("0000") + " | ";
+            var rect = GUILayoutUtility.GetRect(new GUIContent(date + " | " + consoleLog.Message), "label");
+            GUI.TextField(rect, date + " | " + consoleLog.Message);
 
             EditorGUILayout.EndHorizontal();
             

@@ -29,14 +29,14 @@ namespace MVC.Runtime.Injectable
         public TBindingType Bind<TBindingType>(string name = "")
             where TBindingType : new()
         {
-            MVCConsole.LogWarning(ConsoleLogType.Injection, "Binding: " + typeof(TBindingType).Name + (name != "" ? (" Name: " + name) : ""));
+            MVCConsole.Log(ConsoleLogType.Injection, "Binding: " + typeof(TBindingType).Name + (name != "" ? (" Name: " + name) : ""));
             return GetOrCreateInstance<TBindingType>(name);
         }
 
         public TAbstract Bind<TAbstract, TConcrete>(string name = "")
             where TConcrete : TAbstract, new()
         {
-            MVCConsole.LogWarning(ConsoleLogType.Injection, "Binding: " + typeof(TAbstract).Name + (name != "" ? (" Name: " + name) : ""));
+            MVCConsole.Log(ConsoleLogType.Injection, "Binding: " + typeof(TAbstract).Name + (name != "" ? (" Name: " + name) : ""));
             return GetOrCreateInstance<TAbstract, TConcrete>(name);
         }
 
@@ -44,7 +44,10 @@ namespace MVC.Runtime.Injectable
         {
             var hasInstanceExist = GetInstance(instance.GetType(), name);
             if (hasInstanceExist != null)
+            {
+                MVCConsole.LogWarning(ConsoleLogType.Injection, "There is a same injection! \nType: " + instance.GetType().Name + "name: " + name);
                 return;
+            }
             
             var injectionType = instance.GetType();
             
@@ -56,7 +59,7 @@ namespace MVC.Runtime.Injectable
             injectionBinding.SetValue(instance);
             injectionBinding.SetKey(injectionType);
             
-            MVCConsole.LogWarning(ConsoleLogType.Injection, "Binding: " + injectionType.Name + (name != "" ? (" Name: " + name) : ""));
+            MVCConsole.Log(ConsoleLogType.Injection, "Binding: " + injectionType.Name + (name != "" ? (" Name: " + name) : ""));
             _container[injectionType].Add(injectionBinding);    
         }
 
@@ -65,7 +68,10 @@ namespace MVC.Runtime.Injectable
             var injectionType = typeof(TAbstract);
             var hasInstanceExist = GetInstance(injectionType, name);
             if (hasInstanceExist != null)
+            {
+                MVCConsole.LogWarning(ConsoleLogType.Injection, "There is a same injection! \nType: " + typeof(TAbstract).Name + "name: " + name);
                 return;
+            }
 
             if(!_container.ContainsKey(injectionType))
                 _container.Add(injectionType, new List<InjectionBinding>());
@@ -75,7 +81,7 @@ namespace MVC.Runtime.Injectable
             injectionBinding.SetValue(instance);
             injectionBinding.SetKey(injectionType);
             
-            MVCConsole.LogWarning(ConsoleLogType.Injection, "Binding: " + typeof(TAbstract).Name + (name != "" ? (" Name: " + name) : ""));
+            MVCConsole.Log(ConsoleLogType.Injection, "Binding: " + typeof(TAbstract).Name + (name != "" ? (" Name: " + name) : ""));
             _container[injectionType].Add(injectionBinding);    
         }
         
@@ -87,6 +93,7 @@ namespace MVC.Runtime.Injectable
             if(hasInstanceExist)
             {
                 instance = GetInstance<TAbstract>(name);
+                MVCConsole.LogWarning(ConsoleLogType.Injection, "There is a same injection! \nType: " + typeof(TAbstract).Name + "name: " + name);
                 return instance;
             }
 
@@ -145,7 +152,7 @@ namespace MVC.Runtime.Injectable
             _container[key].Remove(injectionBinding);
             _bindingPoolController.ReturnBindingToPool(injectionBinding);
             
-            MVCConsole.LogWarning(ConsoleLogType.Injection, "Unbinding: " + key.Name + (name != "" ? (" Name: " + name) : ""));
+            MVCConsole.Log(ConsoleLogType.Injection, "Unbinding: " + key.Name + (name != "" ? (" Name: " + name) : ""));
         }
 
         #endregion
@@ -192,7 +199,10 @@ namespace MVC.Runtime.Injectable
             if (!hasInstanceExist)
                 instance = CreateInstance<TBindingType>(name);
             else
+            {
                 instance = (TBindingType) GetInstance(bindingType, name);
+                MVCConsole.LogWarning(ConsoleLogType.Injection, "There is a same injection! \nType: " + typeof(TBindingType) + "name: " + name);
+            }
             
             return instance;
         }
@@ -208,7 +218,10 @@ namespace MVC.Runtime.Injectable
             if (!hasInstanceExist)
                 instance = CreateInstance<TAbstract, TConcrete>(name);
             else
+            {
                 instance = (TAbstract) GetInstance(bindingType, name);
+                MVCConsole.LogWarning(ConsoleLogType.Injection, "There is a same injection! \nType: " + typeof(TAbstract) + "name: " + name);
+            }
             
             return instance;
         }

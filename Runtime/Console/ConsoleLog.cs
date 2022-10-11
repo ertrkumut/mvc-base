@@ -5,11 +5,13 @@ namespace MVC.Runtime.Console
 {
     internal class ConsoleLog
     {
-        public int hour;
-        public int minute;
+        public int Hour;
+        public int Minute;
+        public int Second;
+        public int Millisecond;
 
-        public ConsoleLogType consoleLogType;
-        public LogType logType;
-        public string message;
+        public ConsoleLogType ConsoleLogType;
+        public LogType LogType;
+        public string Message;
     }
 }

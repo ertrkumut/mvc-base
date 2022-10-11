@@ -13,11 +13,13 @@ namespace MVC.Runtime.Console
         {
             var log = new ConsoleLog
             {
-                hour = DateTime.Now.Hour,
-                minute = DateTime.Now.Minute,
-                message = message,
-                logType = LogType.Log,
-                consoleLogType = consoleLogType
+                Hour = DateTime.Now.Hour,
+                Minute = DateTime.Now.Minute,
+                Second = DateTime.Now.Second,
+                Millisecond = DateTime.Now.Millisecond,
+                Message = message,
+                LogType = LogType.Log,
+                ConsoleLogType = consoleLogType
             };
             
             Logs.Add(log);
@@ -27,11 +29,13 @@ namespace MVC.Runtime.Console
         {
             var log = new ConsoleLog
             {
-                hour = DateTime.Now.Hour,
-                minute = DateTime.Now.Minute,
-                message = message,
-                logType = LogType.Warning,
-                consoleLogType = consoleLogType
+                Hour = DateTime.Now.Hour,
+                Minute = DateTime.Now.Minute,
+                Second = DateTime.Now.Second,
+                Millisecond = DateTime.Now.Millisecond,
+                Message = message,
+                LogType = LogType.Warning,
+                ConsoleLogType = consoleLogType
             };
             
             Logs.Add(log);
@@ -41,11 +45,13 @@ namespace MVC.Runtime.Console
         {
             var log = new ConsoleLog
             {
-                hour = DateTime.Now.Hour,
-                minute = DateTime.Now.Minute,
-                message = message,
-                logType = LogType.Error,
-                consoleLogType = consoleLogType
+                Hour = DateTime.Now.Hour,
+                Minute = DateTime.Now.Minute,
+                Second = DateTime.Now.Second,
+                Millisecond = DateTime.Now.Millisecond,
+                Message = message,
+                LogType = LogType.Error,
+                ConsoleLogType = consoleLogType
             };
             
             Logs.Add(log);
