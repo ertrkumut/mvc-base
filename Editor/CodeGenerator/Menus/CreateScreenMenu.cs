@@ -76,6 +76,8 @@ namespace MVC.Editor.CodeGenerator.Menus
             className = className.Replace("View", "");
             var sceneName = className + "TestScene";
             
+            PlayerPrefs.SetString("screen-scene-name", sceneName);
+            
             CodeGeneratorUtils.CreateScreenEnum(className);
             
             var scene = EditorSceneManager.NewScene(NewSceneSetup.DefaultGameObjects, NewSceneMode.Single);
@@ -96,8 +98,9 @@ namespace MVC.Editor.CodeGenerator.Menus
                 var rootName = PlayerPrefs.GetString("create-screen-root-name");
 
                 var prefabName = screenName.Replace("View", "");
-                var path = PlayerPrefs.GetString("create-screen-scene-path") + screenName + ".unity";
-
+                var sceneName = PlayerPrefs.GetString("screen-scene-name");
+                var path = PlayerPrefs.GetString("create-screen-scene-path") + sceneName + ".unity";
+                
                 PlayerPrefs.DeleteKey("create-screen-menu-clicked");
                 PlayerPrefs.DeleteKey("create-screen-scene-path");
                 PlayerPrefs.DeleteKey("create-screen-root-name");
