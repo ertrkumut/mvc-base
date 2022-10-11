@@ -46,17 +46,17 @@ namespace MVC.Runtime.Root
             
             foreach (var subContextData in SubContextTypes)
             {
-                var contextType = assemblyTypes.FirstOrDefault(x => x.FullName == subContextData.ContextName);
+                var contextType = assemblyTypes.FirstOrDefault(x => x.FullName == subContextData.ContextFullName);
                 if (contextType == null)
                 {
-                    MVCConsole.LogError(ConsoleLogType.Context, "Context Type couldn't find! \n" + subContextData.ContextName);
+                    MVCConsole.LogError(ConsoleLogType.Context, "Context Type couldn't find! \n" + subContextData.ContextFullName);
                     continue;
                 }
 
                 var context = (IContext) Activator.CreateInstance(contextType);
                 context.Initialize(gameObject, initializeOrder, _rootsManager.injectionBinderCrossContext, new List<IContext>());
                 _subContexts.Add(context, subContextData);
-                MVCConsole.Log(ConsoleLogType.Context, "Sub Context Initialized \n" + subContextData.ContextName);
+                MVCConsole.Log(ConsoleLogType.Context, "Sub Context Initialized \n" + subContextData.ContextFullName);
             }
         }
 
@@ -192,7 +192,7 @@ namespace MVC.Runtime.Root
                 if(subContext.Value.autoLaunch)
                 {
                     subContext.Key.Launch();
-                    MVCConsole.Log(ConsoleLogType.Context, "Sub Context Launched \n" + subContext.Value.ContextName);
+                    MVCConsole.Log(ConsoleLogType.Context, "Sub Context Launched \n" + subContext.Value.ContextFullName);
                 }
             }
             

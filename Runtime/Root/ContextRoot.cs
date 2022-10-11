@@ -74,7 +74,6 @@ namespace MVC.Runtime.Root
             
             MVCConsole.Log(ConsoleLogType.Context, "Context Started! Context: " + GetType().Name);
             _context.Start();
-            _rootsManager.injectionBinderCrossContext.BindInstance<GameObject>(gameObject, gameObject.name);
             
             BindInjections();
             BindSignals();

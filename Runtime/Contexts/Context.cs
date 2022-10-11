@@ -42,7 +42,7 @@ namespace MVC.Runtime.Contexts
             SubContexts = subContexts;
 
             AllContexts = subContexts;
-            AllContexts.Add(this);
+            AllContexts.Insert(0, this);
         }
 
         public void Start()
@@ -100,6 +100,9 @@ namespace MVC.Runtime.Contexts
 
             var functionProvider = (FunctionProvider) InjectionBinder.Bind<IFunctionProvider, FunctionProvider>();
             functionProvider.Context = this;
+            
+            InjectionBinderCrossContext.BindInstance<GameObject>(_gameObject, GetType().Name);
+            InjectionBinder.BindInstance<GameObject>(_gameObject, nameof(IContext));
             
             InjectionBinderCrossContext.BindMonoBehaviorInstance<IUpdateProvider, UpdateProvider>();
             InjectionBinderCrossContext.BindMonoBehaviorInstance<ICoroutineProvider, CoroutineProvider>();

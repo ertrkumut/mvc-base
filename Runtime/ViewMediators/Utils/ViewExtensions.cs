@@ -31,7 +31,13 @@ namespace MVC.Runtime.ViewMediators.Utils
                 MVCConsole.LogError(ConsoleLogType.Injection, "There is no view binding! " + view.GetType());
                 return false;
             }
-
+            else if (viewBindingData.Context == null)
+            {
+                Debug.LogError("There is no Context \nviewType: " + view.GetType().Name);
+                MVCConsole.LogError(ConsoleLogType.Injection, "There is no Context \nviewType: " + view.GetType().Name);
+                return false;
+            }
+            
             var mediationBinder = viewBindingData.Context.MediationBinder;
             var mediatorType = viewBindingData.Binding.Value as Type;
             var mediatorIsMono = mediatorType.IsSubclassOf(typeof(Object));

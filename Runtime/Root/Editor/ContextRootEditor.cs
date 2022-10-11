@@ -255,7 +255,7 @@ namespace MVC.Root.Editor
                 var contextTypeList = assembly
                     .GetTypes()
                     .Where(x => typeof(IContext).IsAssignableFrom(x))
-                    .Where(x => _root.SubContextTypes.FirstOrDefault(a => a.ContextName == x.FullName) == null)
+                    .Where(x => _root.SubContextTypes.FirstOrDefault(a => a.ContextFullName == x.FullName) == null)
                     .ToList();
 
                 var genericMenu = new GenericMenu();
@@ -266,7 +266,8 @@ namespace MVC.Root.Editor
                     {
                         _root.SubContextTypes.Add(new SubContextData
                         {
-                            ContextName = type.FullName
+                            ContextFullName = type.FullName,
+                            ContextName = type.Name
                         });
 
                         MarkDirty();
