@@ -38,6 +38,14 @@ namespace MVC.Editor.ModelViewer
             DisplayObjectFields(_inspectedObject);
         }
 
+        private void Update()
+        {
+            if(!Application.isPlaying)
+                return;
+
+            Repaint();
+        }
+
         private void DisplayObjectFields(object rootObject)
         {
             var memberInfoList = ModelViewerUtils.GetTypeMembersList(rootObject);

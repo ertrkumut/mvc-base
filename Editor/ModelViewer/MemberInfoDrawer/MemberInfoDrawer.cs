@@ -36,6 +36,12 @@ namespace MVC.Editor.ModelViewer.MemberInfoDrawer
         {
             _memberInfo.SetValue(_targetObject, newValue);
         }
+
+        public override void OnDrawGUI()
+        {
+            ((PropertyDrawer<TPropertyType>) _propertyDrawer).SetValue(GetPropertyValue());
+            base.OnDrawGUI();
+        }
     }
 }
 #endif
