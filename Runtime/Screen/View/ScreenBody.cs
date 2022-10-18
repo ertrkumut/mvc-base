@@ -69,7 +69,9 @@ namespace MVC.Runtime.Screen.View
         internal virtual void InitializeScreenParams(params object[] screenParams)
         {
         }
-        
+
+        public string PoolKey { get; set; }
+
         public virtual void OnGetFromPool()
         {
         }

@@ -144,6 +144,7 @@ namespace MVC.Runtime.Pool
             }
 
             var availableItem = (PoolType) GetAvailablePoolItem(key, parent);
+            availableItem.PoolKey = key;
             
             _disabledObjects[key].Remove(availableItem);
             _enabledObjects[key].Add(availableItem);
@@ -153,10 +154,10 @@ namespace MVC.Runtime.Pool
             return availableItem;
         }
 
-        public virtual void Release(IPoolable poolItem)
+        public virtual void Return(IPoolable poolItem)
         {
-            var poolType = poolItem.GetType();
-            var pool = GetConfigVoByPoolType(poolType);
+            var poolType = poolItem.PoolKey;
+            var pool = GetConfigVoByPoolKey(poolType);
             if (pool == null)
             {
                 Debug.LogError("Pool Config Data couldn't found. PoolType: " + poolType, poolItem.transform.gameObject);
@@ -207,18 +208,6 @@ namespace MVC.Runtime.Pool
             return availableItem;
         }
 
-        protected ObjectPoolVO GetConfigVoByPoolType(Type poolType)
-        {
-            foreach (var pool in _poolMap)
-            {
-                var poolableType = pool.Value.Prefab.GetComponent<IPoolable>().GetType();
-                if (poolableType == poolType)
-                    return pool.Value;
-            }
-            
-            return null;
-        }
-        
         public ObjectPoolVO GetConfigVoByPoolKey(string key)
         {
             return _poolMap.ContainsKey(key) ? _poolMap[key] : null;

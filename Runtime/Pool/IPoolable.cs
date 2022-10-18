@@ -6,6 +6,8 @@ namespace MVC.Runtime.Pool
     {
         Transform transform { get;  }
         
+        string PoolKey { get; set; }
+        
         void OnGetFromPool();
         void OnReturnToPool();
     }

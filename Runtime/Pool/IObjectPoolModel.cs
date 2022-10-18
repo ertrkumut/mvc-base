@@ -14,6 +14,6 @@ namespace MVC.Runtime.Pool
 
         ObjectPoolVO GetConfigVoByPoolKey(string key);
         
-        void Release(IPoolable poolItem);
+        void Return(IPoolable poolItem);
     }
 }
