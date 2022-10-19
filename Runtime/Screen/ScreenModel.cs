@@ -92,6 +92,7 @@ namespace MVC.Runtime.Screen
             screenManager.ShowScreen(availableScreen);
 
             availableScreen.InjectView();
+            ((ScreenBody) availableScreen).InitializeScreenParams(screenDataContainer.ScreenParameters);
             ((ScreenBody) availableScreen).Open();
             
             _screenDataContainerPool.Add(screenDataContainer);
