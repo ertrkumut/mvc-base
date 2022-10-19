@@ -7,6 +7,7 @@ using MVC.Runtime.Screen;
 using UnityEditor;
 using UnityEditor.SceneManagement;
 using UnityEngine;
+using UnityEngine.EventSystems;
 using UnityEngine.SceneManagement;
 using UnityEngine.UI;
 
@@ -120,6 +121,10 @@ namespace MVC.Editor.CodeGenerator.Menus
                 var screenGameObject = new GameObject(prefabName, typeof(RectTransform));
                 screenGameObject.transform.SetParent(screenManager.ScreenLayerList[0].transform);
 
+                var eventSystem = new GameObject("EventSystem");
+                eventSystem.AddComponent<EventSystem>();
+                eventSystem.AddComponent<StandaloneInputModule>();
+                
                 var viewInjector = screenGameObject.AddComponent<ViewInjector>();
                 screenGameObject.AddComponent(screenType);
                 var rectTransform = screenGameObject.transform as RectTransform;
