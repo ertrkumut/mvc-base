@@ -47,7 +47,7 @@ namespace MVC.Runtime.Screen.Layer
             CreateDictionaryKeyIfIsNotExist(screenType);
 
             var screens = ScreensDict[screenType];
-            if(!screens.Contains(screenBody))
+            if(screens.Contains(screenBody))
             {
                 ScreensDict[screenType].Remove(screenBody);
                 return true;
