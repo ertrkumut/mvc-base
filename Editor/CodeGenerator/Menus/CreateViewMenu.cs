@@ -5,6 +5,7 @@ using System.IO;
 using System.Linq;
 using System.Reflection;
 using MVC.Runtime.Contexts;
+using MVC.Runtime.Root.Utils;
 using UnityEditor;
 using UnityEngine;
 
@@ -166,24 +167,14 @@ namespace MVC.Editor.CodeGenerator.Menus
         
         protected void DrawAllContexts(bool isScreen = false)
         {
-            var assemblyList = AppDomain.CurrentDomain.GetAssemblies();
-            var currentAssembly = assemblyList.FirstOrDefault(x => x.FullName.StartsWith("Assembly-CSharp,"));
-            var contextTypes = currentAssembly
-                .GetTypes()
-                .Where(x => x.IsSubclassOf(typeof(Context)))
-                .ToList();
+            var contextTypes = AssemblyExtensions.GetAllContextTypes();
 
-            
-            
             if (isScreen)
                 contextTypes = contextTypes
                     .Where(x => x.GetField(CodeGeneratorStrings.ContextScreenFlag, BindingFlags.Instance | BindingFlags.Static | BindingFlags.NonPublic) != null)
                     .ToList();
             else
             {
-                // contextTypes = contextTypes
-                //     .Where(x => x.GetField(CodeGeneratorStrings.ContextScreenFlag, BindingFlags.Instance | BindingFlags.Static | BindingFlags.NonPublic) == null)
-                //     .ToList();
                 if (_isTestView)
                     contextTypes = contextTypes
                         .Where(x => x.GetField(CodeGeneratorStrings.ContextTestFlag, BindingFlags.Instance | BindingFlags.Static | BindingFlags.NonPublic) != null)

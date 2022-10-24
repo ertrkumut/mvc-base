@@ -2,6 +2,7 @@
 using System;
 using System.IO;
 using System.Linq;
+using MVC.Runtime.Root.Utils;
 using UnityEditor;
 using UnityEditor.SceneManagement;
 using UnityEngine;
@@ -212,9 +213,9 @@ namespace MVC.Editor.CodeGenerator.Menus
                 PlayerPrefs.DeleteKey("create-root-scene-path");
             
                 var rootGameObject = new GameObject(rootName);
-                var assemblyList = AppDomain.CurrentDomain.GetAssemblies();
-                var currentAssembly = assemblyList.FirstOrDefault(x => x.FullName.StartsWith("Assembly-CSharp,"));
-                var rootType = currentAssembly.GetTypes().FirstOrDefault(x => x.Name == rootName);
+                var rootType = AssemblyExtensions
+                    .GetAllRootTypes()
+                    .FirstOrDefault(x => x.Name == rootName);
             
                 rootGameObject.AddComponent(rootType);
 

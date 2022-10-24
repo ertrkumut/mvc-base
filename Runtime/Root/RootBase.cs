@@ -4,6 +4,7 @@ using System.Linq;
 using MVC.Editor.Console;
 using MVC.Runtime.Console;
 using MVC.Runtime.Contexts;
+using MVC.Runtime.Root.Utils;
 using UnityEngine;
 
 namespace MVC.Runtime.Root
@@ -40,9 +41,8 @@ namespace MVC.Runtime.Root
                 return;
 
             _subContexts = new Dictionary<IContext, SubContextData>();
-            
-            var assembly = AppDomain.CurrentDomain.GetAssemblies().FirstOrDefault(x => x.FullName.StartsWith("Assembly-CSharp,"));
-            var assemblyTypes = assembly.GetTypes();
+
+            var assemblyTypes = AssemblyExtensions.GetAllContextTypes();
             
             foreach (var subContextData in SubContextTypes)
             {
