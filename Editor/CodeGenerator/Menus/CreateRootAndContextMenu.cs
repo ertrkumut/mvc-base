@@ -219,10 +219,14 @@ namespace MVC.Editor.CodeGenerator.Menus
             
                 rootGameObject.AddComponent(rootType);
 
-                EditorSceneManager.SaveScene(SceneManager.GetActiveScene(), path);
+                var relativeScenePath = path.Replace(Application.dataPath, "");
+                relativeScenePath = "Assets/" + relativeScenePath;
+
+                EditorSceneManager.SaveScene(SceneManager.GetActiveScene(), relativeScenePath);
+
                 AssetDatabase.Refresh();
             }
-            catch (Exception e)
+            catch (Exception)
             {
                 PlayerPrefs.DeleteKey("create-root-menu-clicked");
                 PlayerPrefs.DeleteKey("create-root-scene-path");

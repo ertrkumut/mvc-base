@@ -142,7 +142,10 @@ namespace MVC.Editor.CodeGenerator.Menus
                 PrefabUtility.SaveAsPrefabAssetAndConnect(screenGameObject, CodeGeneratorStrings.GetPath(CodeGeneratorStrings.ScreenPrefabPath) + prefabName + ".prefab",
                     InteractionMode.UserAction);
 
-                EditorSceneManager.SaveScene(EditorSceneManager.GetActiveScene(), path);
+                var relativeScenePath = path.Replace(Application.dataPath, "");
+                relativeScenePath = "Assets/" + relativeScenePath;
+                
+                EditorSceneManager.SaveScene(EditorSceneManager.GetActiveScene(), relativeScenePath);
                 AssetDatabase.Refresh();
 
                 Selection.activeGameObject = screenGameObject;
