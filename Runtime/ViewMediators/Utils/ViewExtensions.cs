@@ -7,6 +7,7 @@ using MVC.Runtime.Injectable.Utils;
 using MVC.Runtime.Root;
 using MVC.Runtime.ViewMediators.Mediator;
 using MVC.Runtime.ViewMediators.View;
+using MVC.Runtime.ViewMediators.View.Data;
 using UnityEngine;
 using Object = UnityEngine.Object;
 
@@ -24,6 +25,27 @@ namespace MVC.Runtime.ViewMediators.Utils
                 return false;
             }
 
+            return view.InjectView(context);
+        }
+        
+        internal static bool InjectView(this IView view, ViewInjectorData injectorData)
+        {
+            if (injectorData.SelectedRoot == null)
+                return view.InjectView();
+
+            var context = injectorData.SelectedRoot.GetContext();
+            if (context == null)
+            {
+                Debug.LogError("There is no Context \nviewType: " + view.GetType().Name);
+                MVCConsole.LogError(ConsoleLogType.Injection, "There is no Context \nviewType: " + view.GetType().Name);
+                return false;
+            }
+            
+            return view.InjectView(context);
+        }
+
+        private static bool InjectView(this IView view, IContext context)
+        {
             var viewBindingData = context.GetBindingData(view);
             if (viewBindingData.Equals(default))
             {
@@ -64,7 +86,7 @@ namespace MVC.Runtime.ViewMediators.Utils
             }
             return injectionResult;
         }
-
+        
         public static void RemoveRegistration(this IView view)
         {
             var viewContext = view.FindViewContext();

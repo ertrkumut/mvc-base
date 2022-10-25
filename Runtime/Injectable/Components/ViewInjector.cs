@@ -72,7 +72,7 @@ namespace MVC.Runtime.Injectable.Components
             if (injectorData.IsRegistered)
                 return false;
 
-            var injectResult = viewComponent.InjectView();
+            var injectResult = viewComponent.InjectView(injectorData);
             injectorData.IsRegistered = injectResult;
             return injectResult;
         }

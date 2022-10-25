@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using MVC.Runtime.Injectable.Components;
+using MVC.Runtime.Root;
 using MVC.Runtime.ViewMediators.Utils;
 using MVC.Runtime.ViewMediators.View.Data;
 using UnityEditor;
@@ -29,7 +30,7 @@ namespace MVC.Runtime.ViewMediators.View.Editor
 
         public override void OnInspectorGUI()
         {
-            base.OnInspectorGUI();
+            // base.OnInspectorGUI();
 
             FindViews();
             CreateOrDeleteViewInjectorData();
@@ -136,7 +137,34 @@ namespace MVC.Runtime.ViewMediators.View.Editor
 
             EditorGUILayout.BeginVertical();
             viewInjectorData.AutoRegister = EditorGUILayout.Toggle(new GUIContent("Auto Register"), viewInjectorData.AutoRegister);
-                
+            
+            viewInjectorData.UseBubbleUp = EditorGUILayout.Toggle(new GUIContent("Use Bubble-up"), viewInjectorData.UseBubbleUp);
+
+            if (!viewInjectorData.UseBubbleUp)
+            {
+                GUI.enabled = false;
+                EditorGUILayout.ObjectField(viewInjectorData.SelectedRoot, typeof(RootBase), false);
+                GUI.enabled = true;
+
+                if (GUILayout.Button("Select Context"))
+                {
+                    var genericMenu = new GenericMenu();
+
+                    var contexts = FindObjectsOfType<RootBase>().ToList();
+                    foreach (var context in contexts)
+                    {
+                        genericMenu.AddItem(new GUIContent(context.gameObject.name), false, root =>
+                        {
+                            viewInjectorData.SelectedRoot = root as RootBase;
+                        }, context);
+                    }
+                    
+                    genericMenu.ShowAsContext();
+                }
+            }
+            else
+                viewInjectorData.SelectedRoot = null;
+            
             GUI.enabled = false;
             EditorGUILayout.Toggle(new GUIContent("Is Registered"), viewInjectorData.IsRegistered);
             GUI.enabled = true;

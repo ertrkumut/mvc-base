@@ -1,4 +1,5 @@
 ﻿using System;
+using MVC.Runtime.Root;
 using Object = UnityEngine.Object;
 
 namespace MVC.Runtime.ViewMediators.View.Data
@@ -8,6 +9,8 @@ namespace MVC.Runtime.ViewMediators.View.Data
     {
         public Object View;
         public bool AutoRegister;
+        public bool UseBubbleUp = true;
+        public RootBase SelectedRoot;
         public bool IsRegistered;
     }
 }
