@@ -102,7 +102,7 @@ namespace MVC.Editor.CodeGenerator.Menus
             GUI.backgroundColor = Color.white;
             
             if(addActionButton)
-                _actionNames.Add("OnActionName");
+                _actionNames.Add("ActionName");
 
             for (var ii = 0; ii < _actionNames.Count; ii++)
             {

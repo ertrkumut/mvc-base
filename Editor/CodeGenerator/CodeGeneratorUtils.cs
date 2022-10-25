@@ -84,7 +84,7 @@ namespace MVC.Editor.CodeGenerator
                 {
                     foreach (var actionName in actionsList)
                     {
-                        var line = "\t\t\t_view." + actionName + " += " + actionName + "Listener;";
+                        var line = "\t\t\t_view." + actionName + " += On" + actionName + ";";
                         newMediatorContent.Add(line);
                     }
 
@@ -94,7 +94,7 @@ namespace MVC.Editor.CodeGenerator
                 {
                     foreach (var actionName in actionsList)
                     {
-                        var line = "\t\t\t_view." + actionName + " -= " + actionName + "Listener;";
+                        var line = "\t\t\t_view." + actionName + " -= On" + actionName + ";";
                         newMediatorContent.Add(line);
                     }
 
@@ -104,7 +104,7 @@ namespace MVC.Editor.CodeGenerator
                 {
                     foreach (var actionName in actionsList)
                     {
-                        var line = "\t\tprivate void " + actionName + "Listener()";
+                        var line = "\t\tprivate void On" + actionName + "()";
                         newMediatorContent.Add(line);
                         newMediatorContent.Add("\t\t{");
                         newMediatorContent.Add("\t\t}");
