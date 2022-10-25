@@ -38,12 +38,16 @@ namespace MVC.Editor.CodeGenerator.Menus
 
         protected bool _isTestView;
         
+        protected List<Type> _contextTypes;
+        
         protected virtual void OnEnable()
         {
             _actionNames = new List<string>();
             _contextGUI = new Dictionary<string, bool>();
 
             _selectedContextName = "";
+
+            _contextTypes = AssemblyExtensions.GetAllContextTypes();
         }
 
         protected virtual void OnGUI()
@@ -66,7 +70,15 @@ namespace MVC.Editor.CodeGenerator.Menus
             if(GetType() == typeof(CreateViewMenu))
             {
                 EditorGUILayout.LabelField("Is Test", GUILayout.Width(40));
-                _isTestView = EditorGUILayout.Toggle(_isTestView, GUILayout.Width(30));
+                var tempTestStatus = EditorGUILayout.Toggle(_isTestView, GUILayout.Width(30));
+
+                if ((_isTestView && !tempTestStatus) || (!_isTestView && tempTestStatus))
+                {
+                    _selectedContextName = "";
+                    _contextGUI = new Dictionary<string, bool>();
+                }
+
+                _isTestView = tempTestStatus;
                 
                 if (_isTestView)
                     fullName = "TEST_" + fullName;
@@ -164,28 +176,28 @@ namespace MVC.Editor.CodeGenerator.Menus
         {
             DrawAllContexts();
         }
-        
+
         protected void DrawAllContexts(bool isScreen = false)
         {
-            var contextTypes = AssemblyExtensions.GetAllContextTypes();
-
+            var contextResultList = new List<Type>();
+            
             if (isScreen)
-                contextTypes = contextTypes
+                contextResultList = _contextTypes
                     .Where(x => x.GetField(CodeGeneratorStrings.ContextScreenFlag, BindingFlags.Instance | BindingFlags.Static | BindingFlags.NonPublic) != null)
                     .ToList();
             else
             {
                 if (_isTestView)
-                    contextTypes = contextTypes
+                    contextResultList = _contextTypes
                         .Where(x => x.GetField(CodeGeneratorStrings.ContextTestFlag, BindingFlags.Instance | BindingFlags.Static | BindingFlags.NonPublic) != null)
                         .ToList();
                 else
-                    contextTypes = contextTypes
+                    contextResultList = _contextTypes
                         .Where(x => x.GetField(CodeGeneratorStrings.ContextTestFlag, BindingFlags.Instance | BindingFlags.Static | BindingFlags.NonPublic) == null)
                         .ToList();
             }
                 
-            var contextNames = contextTypes
+            var contextNames = contextResultList
                 .Select(x => x.Name)
                 .ToList();
 
