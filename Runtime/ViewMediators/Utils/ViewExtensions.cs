@@ -15,7 +15,7 @@ namespace MVC.Runtime.ViewMediators.Utils
 {
     public static class ViewExtensions
     {
-        public static bool InjectView(this IView view)
+        public static bool Register(this IView view)
         {
             var context = view.FindViewContext();
             if (context == null)
@@ -25,13 +25,13 @@ namespace MVC.Runtime.ViewMediators.Utils
                 return false;
             }
 
-            return view.InjectView(context);
+            return view.Register(context);
         }
         
-        internal static bool InjectView(this IView view, ViewInjectorData injectorData)
+        internal static bool Register(this IView view, ViewInjectorData injectorData)
         {
             if (injectorData.SelectedRoot == null)
-                return view.InjectView();
+                return view.Register();
 
             var context = injectorData.SelectedRoot.GetContext();
             if (context == null)
@@ -41,10 +41,10 @@ namespace MVC.Runtime.ViewMediators.Utils
                 return false;
             }
             
-            return view.InjectView(context);
+            return view.Register(context);
         }
 
-        private static bool InjectView(this IView view, IContext context)
+        private static bool Register(this IView view, IContext context)
         {
             var viewBindingData = context.GetBindingData(view);
             if (viewBindingData.Equals(default))
@@ -87,7 +87,7 @@ namespace MVC.Runtime.ViewMediators.Utils
             return injectionResult;
         }
         
-        public static void RemoveRegistration(this IView view)
+        public static void UnRegistration(this IView view)
         {
             var viewContext = view.FindViewContext();
             if (viewContext == null)

@@ -181,7 +181,7 @@ namespace MVC.Runtime.ViewMediators.View.Editor
             
                 if (removeButton)
                 {
-                    (viewInjectorData.View as IView).RemoveRegistration();
+                    (viewInjectorData.View as IView).UnRegistration();
                 }
 
                 GUI.enabled = !viewInjectorData.IsRegistered;
@@ -189,7 +189,7 @@ namespace MVC.Runtime.ViewMediators.View.Editor
                 var registerButton = GUILayout.Button("Register");
                 if (registerButton)
                 {
-                    (viewInjectorData.View as IView).InjectView();
+                    (viewInjectorData.View as IView).Register();
                 }
                 
                 GUI.backgroundColor = Color.white;

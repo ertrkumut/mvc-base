@@ -40,7 +40,7 @@ namespace MVC.Runtime.Injectable.Components
                 if(!viewInjectorData.IsRegistered)
                     continue;
                 var view = viewInjectorData.View as IView;
-                view.RemoveRegistration();
+                view.UnRegistration();
             }
         }
 
@@ -72,7 +72,7 @@ namespace MVC.Runtime.Injectable.Components
             if (injectorData.IsRegistered)
                 return false;
 
-            var injectResult = viewComponent.InjectView(injectorData);
+            var injectResult = viewComponent.Register(injectorData);
             injectorData.IsRegistered = injectResult;
             return injectResult;
         }

@@ -59,7 +59,7 @@ namespace MVC.Runtime.Screen
             _screenPoolController.SendScreenToPool(screenBody);
             (screenBody as ScreenBody).Close();
             MVCConsole.LogWarning(ConsoleLogType.Screen, "Hide Screen! type: " + screenBody.GetType().Name);
-            screenBody.RemoveRegistration();
+            screenBody.UnRegistration();
         }
         
         public void HideAllScreens(int screenManagerId = 0)
@@ -91,7 +91,7 @@ namespace MVC.Runtime.Screen
             availableScreen.LayerIndex = screenDataContainer.LayerIndex;
             screenManager.ShowScreen(availableScreen);
 
-            availableScreen.InjectView();
+            availableScreen.Register();
             ((ScreenBody) availableScreen).InitializeScreenParams(screenDataContainer.ScreenParameters);
             ((ScreenBody) availableScreen).Open();
             
