@@ -723,6 +723,8 @@ MonoBehaviour:
   viewDataList:
   - View: {fileID: 9035146313615948279}
     AutoRegister: 1
+    UseBubbleUp: 1
+    SelectedRoot: {fileID: 0}
     IsRegistered: 0
 --- !u!114 &9035146313615948279
 MonoBehaviour:
@@ -822,7 +824,7 @@ MonoBehaviour:
   m_BlockingObjects: 0
   m_BlockingMask:
     serializedVersion: 2
-    m_Bits: 8183
+    m_Bits: 55
 --- !u!1 &8012679185755884760
 GameObject:
   m_ObjectHideFlags: 0

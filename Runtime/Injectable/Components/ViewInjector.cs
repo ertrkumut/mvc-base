@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
+using System.Runtime.CompilerServices;
 using MVC.Runtime.Contexts;
 using MVC.Runtime.Root;
 using MVC.Runtime.ViewMediators.Utils;
@@ -13,21 +14,42 @@ namespace MVC.Runtime.Injectable.Components
     {
         public List<ViewInjectorData> viewDataList;
 
-        private IContext _context;
+        private Dictionary<IView, IContext> _viewRegistrationDataDict;
         
         #region Unity Methods
 
         private void Start()
         {
-            _context = (transform.GetComponent<IView>()).FindViewContext();
-            if (_context == null)
-                return;
+            _viewRegistrationDataDict = new Dictionary<IView, IContext>();
             
+            IContext bubbleUpContext = null;
             var rootsManager = RootsManager.Instance;
-            if (rootsManager.IsContextReady(_context))
-                RegisterViews();
-            else
-                rootsManager.OnContextReady += OnContextsReadyListener;
+            
+            foreach (var viewInjectorData in viewDataList)
+            {
+                if(viewInjectorData.SelectedRoot == null && bubbleUpContext == null)
+                    bubbleUpContext = (transform.GetComponent<IView>()).FindViewContext();
+                
+                if (!viewInjectorData.UseBubbleUp && viewInjectorData.SelectedRoot != null)
+                {
+                    var context = viewInjectorData.SelectedRoot.GetContext();
+                    _viewRegistrationDataDict.Add(viewInjectorData.View as IView, context);
+                    
+                    if (rootsManager.IsContextReady(context))
+                        RegisterView(viewInjectorData);
+                    else
+                        rootsManager.OnContextReady += OnContextsReadyListener;
+                }
+                else
+                {
+                    _viewRegistrationDataDict.Add(viewInjectorData.View as IView, bubbleUpContext);
+                    
+                    if (rootsManager.IsContextReady(bubbleUpContext))
+                        RegisterView(viewInjectorData);
+                    else
+                        rootsManager.OnContextReady += OnContextsReadyListener;
+                }
+            }
         }
 
         protected virtual void OnDestroy()
@@ -50,20 +72,20 @@ namespace MVC.Runtime.Injectable.Components
 
         private void OnContextsReadyListener(IContext context)
         {
-            if (!_context.Equals(context))
+            var view = _viewRegistrationDataDict.FirstOrDefault(x => x.Value == context).Key;
+            if(view == null)
                 return;
 
             RootsManager.Instance.OnContextReady -= OnContextsReadyListener;
-            RegisterViews();
+            
+            var viewInjectorData = viewDataList.FirstOrDefault(x => x.View == view);
+            RegisterView(viewInjectorData);
         }
 
-        private void RegisterViews()
+        private void RegisterView(ViewInjectorData viewInjectorData)
         {
-            foreach (var viewInjectorData in viewDataList)
-            {
-                if (viewInjectorData.AutoRegister)
-                    TryToInject(viewInjectorData.View as IView);
-            }
+            if (viewInjectorData.AutoRegister)
+                TryToInject(viewInjectorData.View as IView);
         }
         
         private bool TryToInject(IView viewComponent)
