@@ -87,7 +87,7 @@ namespace MVC.Runtime.ViewMediators.Utils
             return injectionResult;
         }
         
-        public static void UnRegistration(this IView view)
+        public static void UnRegister(this IView view)
         {
             var viewContext = view.FindViewContext();
             if (viewContext == null)

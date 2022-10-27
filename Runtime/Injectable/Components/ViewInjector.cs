@@ -62,7 +62,7 @@ namespace MVC.Runtime.Injectable.Components
                 if(!viewInjectorData.IsRegistered)
                     continue;
                 var view = viewInjectorData.View as IView;
-                view.UnRegistration();
+                view.UnRegister();
             }
         }
 

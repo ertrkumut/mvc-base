@@ -181,7 +181,7 @@ namespace MVC.Runtime.ViewMediators.View.Editor
             
                 if (removeButton)
                 {
-                    (viewInjectorData.View as IView).UnRegistration();
+                    (viewInjectorData.View as IView).UnRegister();
                 }
 
                 GUI.enabled = !viewInjectorData.IsRegistered;
