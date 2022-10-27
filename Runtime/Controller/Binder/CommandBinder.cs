@@ -105,6 +105,9 @@ namespace MVC.Runtime.Controller.Binder
             if (availableSequencer == null)
                 availableSequencer = new CommandSequencer();
 
+            if (_sequencePool.Contains(availableSequencer))
+                _sequencePool.Remove(availableSequencer);
+                
             availableSequencer.SequenceFinished = null;
             
             return availableSequencer;

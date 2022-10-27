@@ -172,6 +172,8 @@ namespace MVC.Runtime.Controller.Sequencer
             _commands = null;
             _signalParameters = null;
             _sequenceId = default;
+            
+            CurrentCommand = null;
         }
     }
 }
