@@ -47,15 +47,25 @@ namespace MVC.Runtime.Screen
 
         public List<IScreenBody> GetScreens(System.Enum screenType)
         {
-            var result = new List<IScreenBody>();
-            
-            for (var ii = 0; ii < _screenLayerList.Length; ii++)
-            {
-                var layer = _screenLayerList[ii];
-                var screens = layer.GetScreens(screenType);
-                result = result.Concat(screens).ToList();
-            }
+            var result = _screenLayerList
+                .SelectMany(layer => layer.GetScreens(screenType))
+                .ToList();
 
+            return result;
+        }
+        
+        public List<IScreenBody> GetScreensInLayer(ScreenLayerIndex layerIndex)
+        {
+            var layer = GetLayer(layerIndex);
+            return layer.GetAllScreens();
+        }
+
+        public List<IScreenBody> GetAllScreens()
+        {
+            var result = _screenLayerList
+                .SelectMany(layer => layer.GetAllScreens())
+                .ToList();
+            
             return result;
         }
 

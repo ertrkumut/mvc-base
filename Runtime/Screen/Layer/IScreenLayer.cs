@@ -12,7 +12,7 @@ namespace MVC.Runtime.Screen.Layer
         bool RemoveScreen(IScreenBody screenBody);
         
         List<IScreenBody> GetScreens(System.Enum screenType);
-        List<IScreenBody> GetScreens();
+        List<IScreenBody> GetAllScreens();
         
         bool IsScreenContains(System.Enum screenType);
         bool IsScreenContains(IScreenBody screenBody);

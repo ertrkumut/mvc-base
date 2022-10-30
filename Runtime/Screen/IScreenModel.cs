@@ -14,6 +14,7 @@ namespace MVC.Runtime.Screen
 
         void HideScreen(IScreenBody screenBody);
         void HideAllScreens(int screenManagerId = 0);
+        void HideAllScreensInAllManagers();
         
         ScreenState HasScreenOpen(System.Enum screenType, int screenManagerId = 0);
 

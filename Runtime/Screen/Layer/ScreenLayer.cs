@@ -64,7 +64,7 @@ namespace MVC.Runtime.Screen.Layer
             return screens;
         }
         
-        public List<IScreenBody> GetScreens()
+        public List<IScreenBody> GetAllScreens()
         {
             var result = new List<IScreenBody>();
 

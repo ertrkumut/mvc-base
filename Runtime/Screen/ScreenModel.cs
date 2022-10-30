@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using MVC.Editor.Console;
+using MVC.Runtime.Attributes;
 using MVC.Runtime.Console;
 using MVC.Runtime.Injectable.Attributes;
 using MVC.Runtime.Screen.Enum;
@@ -14,7 +15,7 @@ namespace MVC.Runtime.Screen
     {
         private Dictionary<int, IScreenManager> _screenManagerDict;
 
-        private List<ScreenDataContainer> _screenDataContainerPool;
+        [ShowInModelViewer] private List<ScreenDataContainer> _screenDataContainerPool;
 
         [Inject] protected IScreenPoolController _screenPoolController;
 
@@ -61,10 +62,35 @@ namespace MVC.Runtime.Screen
             MVCConsole.LogWarning(ConsoleLogType.Screen, "Hide Screen! type: " + screenBody.GetType().Name);
             screenBody.UnRegister();
         }
+
+        public void HideScreenInLayer(int screenManagerId, ScreenLayerIndex layerIndex)
+        {
+            var screenManager = GetScreenManager(screenManagerId);
+            var screens = screenManager.GetScreensInLayer(layerIndex);
+
+            foreach (var screenBody in screens)
+            {
+                HideScreen(screenBody);
+            }
+        }
         
         public void HideAllScreens(int screenManagerId = 0)
         {
-            
+            var screenManager = GetScreenManager(screenManagerId);
+
+            var allScreens = screenManager.GetAllScreens();
+            foreach (var screenBody in allScreens)
+            {
+                HideScreen(screenBody);
+            }
+        }
+
+        public void HideAllScreensInAllManagers()
+        {
+            foreach (var screenManager in _screenManagerDict)
+            {
+                HideAllScreens(screenManager.Key);
+            }
         }
         
         public ScreenState HasScreenOpen(System.Enum screenType, int screenManagerId = 0)

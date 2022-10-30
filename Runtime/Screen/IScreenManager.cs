@@ -16,6 +16,9 @@ namespace MVC.Runtime.Screen
         bool HideScreen(IScreenBody screenBody);
 
         List<IScreenBody> GetScreens(System.Enum screenType);
+        List<IScreenBody> GetScreensInLayer(ScreenLayerIndex layerIndex);
+        List<IScreenBody> GetAllScreens();
+        
         bool IsScreenContains(System.Enum screenType, ScreenLayerIndex layerIndex);
     }
 }
