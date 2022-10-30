@@ -1,6 +1,7 @@
-using System;
 using System.Collections.Generic;
+using System.Linq;
 using MVC.Editor.Console;
+using MVC.Runtime.Attributes;
 using MVC.Runtime.Console;
 using MVC.Runtime.Injectable.Attributes;
 using MVC.Runtime.Pool.UnityObject;
@@ -13,13 +14,12 @@ namespace MVC.Runtime.Pool
     {
         protected CD_PoolData _data;
 
-        private Dictionary<string, ObjectPoolVO> _poolMap;
+        [ShowInModelViewer] private Dictionary<string, ObjectPoolVO> _poolMap;
 
-        private Dictionary<string, List<IPoolable>> _enabledObjects;
-        private Dictionary<string, List<IPoolable>> _disabledObjects;
+        [ShowInModelViewer] private Dictionary<string, List<IPoolable>> _enabledObjects;
+        [ShowInModelViewer] private Dictionary<string, List<IPoolable>> _disabledObjects;
 
         private GameObject _container;
-        private GameObject _newObj;
 
         [PostConstruct]
         protected virtual void PostConstruct()
@@ -181,6 +181,18 @@ namespace MVC.Runtime.Pool
             poolItem.OnReturnToPool();
         }
 
+        public virtual void ReturnAllObjects()
+        {
+            var enabledObjectList = _enabledObjects
+                .SelectMany(x => x.Value)
+                .ToList();
+
+            foreach (var poolable in enabledObjectList)
+            {
+                Return(poolable);
+            }
+        }
+        
         protected IPoolable GetAvailablePoolItem(string key, Transform parent = null)
         {
             var pool = _poolMap[key];
