@@ -1,8 +1,10 @@
 ﻿#if UNITY_EDITOR
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Reflection;
 using MVC.Editor.ModelViewer.MemberInfoDrawer;
+using MVC.Runtime.Root;
 using UnityEditor;
 using UnityEngine;
 using Object = UnityEngine.Object;
@@ -16,12 +18,17 @@ namespace MVC.Editor.ModelViewer
         
         private Dictionary<MemberInfo, MemberInfoDrawerBase> _activePropertyDrawersDict;
         
-        public void Initialize(object inspectedObject, object inspectedObjectContext)
+        public void Initialize(object inspectedObject, object inspectedObjectContext, string bindingName = "")
         {
             _inspectedObject = inspectedObject;
             _inspectedObjectContext = inspectedObjectContext;
             
             _activePropertyDrawersDict = new Dictionary<MemberInfo, MemberInfoDrawerBase>();
+
+            if (inspectedObjectContext != null)
+            {
+                PlayerPrefs.SetString(titleContent.text, inspectedObjectContext.GetType().Name + "_" + inspectedObject.GetType().Name + "_" + bindingName);
+            }
         }
 
         public void OnGUI()
@@ -32,7 +39,12 @@ namespace MVC.Editor.ModelViewer
                 return;
             }
             
-            if(_inspectedObject == null)
+            if(_inspectedObject == null && _inspectedObjectContext == null)
+            {
+                FindContextAndLoadObjectReferenceFromContext();
+                return;
+            }
+            else if(_inspectedObject == null)
                 return;
             
             DisplayObjectFields(_inspectedObject);
@@ -43,6 +55,9 @@ namespace MVC.Editor.ModelViewer
             if(!Application.isPlaying)
                 return;
 
+            if(_inspectedObject == null)
+                return;
+            
             Repaint();
         }
 
@@ -110,6 +125,34 @@ namespace MVC.Editor.ModelViewer
             return memberInfoDrawer;
         }
 
+        private void FindContextAndLoadObjectReferenceFromContext()
+        {
+            // inspectedObjectContext.GetType().Name + "_" + bindingName
+            var titleString = PlayerPrefs.GetString(titleContent.text);
+            var contextName = titleString.Split('_')[0];
+            var objectTypeName = titleString.Split('_')[1];
+            var bindingName = titleString.Split('_')[2];
+
+            var context = FindObjectsOfType<RootBase>()
+                .Select(x => x.GetContext())
+                .ToList()
+                .FirstOrDefault(x => x.GetType().Name == contextName);
+
+            var binding = context.InjectionBinder
+                .GetInjectedInstances()
+                .FirstOrDefault(x => x.Value.GetType().Name == objectTypeName && x.Name == bindingName);
+            
+            if(binding == null)
+                binding = context.InjectionBinderCrossContext
+                    .GetInjectedInstances()
+                    .FirstOrDefault(x => x.Value.GetType().Name == objectTypeName && x.Name == bindingName);
+
+            if (binding != null)
+                _inspectedObject = binding.Value;
+            
+            _activePropertyDrawersDict = new Dictionary<MemberInfo, MemberInfoDrawerBase>();
+        }
+        
         private void OnDestroy()
         {
             _activePropertyDrawersDict = new Dictionary<MemberInfo, MemberInfoDrawerBase>();

@@ -84,7 +84,11 @@ namespace MVC.Editor.ModelViewer
                 
             if (!_memberInfoDrawerTypesDict.ContainsKey(memberInfoType))
             {
-                if (typeof(IList).IsAssignableFrom(memberInfoType))
+                if (typeof(Enum).IsAssignableFrom(memberInfoType))
+                {
+                    memberInfoDrawerType = _memberInfoDrawerTypesDict[typeof(Enum)];
+                }
+                else if (typeof(IList).IsAssignableFrom(memberInfoType))
                 {
                     var listMemberInfoDrawer = typeof(MemberInfoDrawerBase)
                         .Assembly
