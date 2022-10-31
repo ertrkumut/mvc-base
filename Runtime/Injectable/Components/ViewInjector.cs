@@ -78,7 +78,7 @@ namespace MVC.Runtime.Injectable.Components
 
             RootsManager.Instance.OnContextReady -= OnContextsReadyListener;
             
-            var viewInjectorData = viewDataList.FirstOrDefault(x => x.View == view);
+            var viewInjectorData = viewDataList.FirstOrDefault(x => x.View == (Object) view);
             RegisterView(viewInjectorData);
         }
 

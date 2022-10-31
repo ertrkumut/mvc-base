@@ -15,7 +15,8 @@ namespace MVC.Runtime.Screen
     {
         private Dictionary<int, IScreenManager> _screenManagerDict;
 
-        [ShowInModelViewer] private List<ScreenDataContainer> _screenDataContainerPool;
+        [ShowInModelViewer] private List<ScreenHistoryData> _historyDataList;
+        private List<ScreenDataContainer> _screenDataContainerPool;
 
         [Inject] protected IScreenPoolController _screenPoolController;
 
@@ -23,6 +24,7 @@ namespace MVC.Runtime.Screen
         protected void PostConstruct()
         {
             _screenManagerDict = new Dictionary<int, IScreenManager>();
+            _historyDataList = new List<ScreenHistoryData>();
             _screenDataContainerPool = new List<ScreenDataContainer>();
         }
 
@@ -108,6 +110,16 @@ namespace MVC.Runtime.Screen
             return screen.Count == 0 ? default : (TScreenType) screen[0];
         }
 
+        internal IScreenBody ShowScreen(ScreenDataContainer screenDataContainer)
+        {
+            if (!screenDataContainer.HidedFromHistory)
+                AddScreenToHistory(screenDataContainer);
+            
+            var screen = CreateOrGetScreen<IScreenBody>(screenDataContainer);
+            MVCConsole.Log(ConsoleLogType.Screen, $"Show Screen! \ntype: {screenDataContainer.ScreenType} \nManager; {screenDataContainer.ManagerIndex} \nLayer: {screenDataContainer.LayerIndex}");
+            return screen;
+        }
+
         internal TScreenType CreateOrGetScreen<TScreenType>(ScreenDataContainer screenDataContainer)
             where TScreenType : IScreenBody
         {
@@ -150,6 +162,14 @@ namespace MVC.Runtime.Screen
                 dataContainer = new ScreenDataContainer(this);
             
             return dataContainer;
+        }
+        
+        protected void AddScreenToHistory(ScreenDataContainer screenDataContainer)
+        {
+            _historyDataList.Add(new ScreenHistoryData(
+                screenDataContainer.ManagerIndex, 
+                screenDataContainer.ScreenType, 
+                screenDataContainer.LayerIndex));
         }
     }
 }

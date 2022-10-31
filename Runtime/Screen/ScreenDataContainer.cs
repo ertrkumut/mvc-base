@@ -1,5 +1,4 @@
-using MVC.Editor.Console;
-using MVC.Runtime.Console;
+using MVC.Runtime.Attributes;
 using MVC.Runtime.Screen.Enum;
 using MVC.Runtime.Screen.View;
 using UnityEngine;
@@ -10,19 +9,19 @@ namespace MVC.Runtime.Screen
     {
         private ScreenModel _screenModel;
     
-        public System.Enum ScreenType;
-        
         public int ManagerIndex;
-
+        public System.Enum ScreenType;
         public ScreenLayerIndex LayerIndex;
+        public bool HidedFromHistory;
 
-        public object[] ScreenParameters;
+        [HideInModelViewer] public object[] ScreenParameters;
         
         public ScreenDataContainer(ScreenModel screenModel)
         {
             _screenModel = screenModel;
             ManagerIndex = 0;
             LayerIndex = ScreenLayerIndex.Layer_1;
+            HidedFromHistory = false;
         }
 
         public IScreenDataContainer SetManagerIndex(int managerIndex = 0)
@@ -43,18 +42,22 @@ namespace MVC.Runtime.Screen
             return this;
         }
 
+        public IScreenDataContainer HideFromHistory()
+        {
+            HidedFromHistory = true;
+            return this;
+        }
+
         public TScreenType Show<TScreenType>()
             where TScreenType : MonoBehaviour, IScreenBody
         {
-            var screen = _screenModel.CreateOrGetScreen<TScreenType>(this);
-            MVCConsole.Log(ConsoleLogType.Screen, "Show Screen! type: " + screen.GetType().Name);
-            return screen;
+            var screen = _screenModel.ShowScreen(this);
+            return screen as TScreenType;
         }
 
         public IScreenBody Show()
         {
-            var screen = _screenModel.CreateOrGetScreen<IScreenBody>(this);
-            MVCConsole.Log(ConsoleLogType.Screen, "Show Screen! type: " + screen.GetType().Name);
+            var screen = _screenModel.ShowScreen(this);
             return screen;
         }
         
@@ -65,6 +68,7 @@ namespace MVC.Runtime.Screen
             
             ManagerIndex = 0;
             LayerIndex = ScreenLayerIndex.Layer_0;
+            HidedFromHistory = false;
         }
     }
 }
