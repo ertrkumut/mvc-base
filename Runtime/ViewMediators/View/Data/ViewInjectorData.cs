@@ -10,6 +10,7 @@ namespace MVC.Runtime.ViewMediators.View.Data
         public Object View;
         public bool AutoRegister;
         public bool UseBubbleUp = true;
+        public bool InjectableView;
         public RootBase SelectedRoot;
         public bool IsRegistered;
     }

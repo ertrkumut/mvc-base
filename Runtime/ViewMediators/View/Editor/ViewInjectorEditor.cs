@@ -137,6 +137,7 @@ namespace MVC.Runtime.ViewMediators.View.Editor
 
             EditorGUILayout.BeginVertical();
             viewInjectorData.AutoRegister = EditorGUILayout.Toggle(new GUIContent("Auto Register"), viewInjectorData.AutoRegister);
+            viewInjectorData.InjectableView = EditorGUILayout.Toggle(new GUIContent("Injectable View"), viewInjectorData.InjectableView);
             
             viewInjectorData.UseBubbleUp = EditorGUILayout.Toggle(new GUIContent("Use Bubble-up"), viewInjectorData.UseBubbleUp);
 

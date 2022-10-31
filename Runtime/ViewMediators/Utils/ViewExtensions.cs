@@ -3,6 +3,7 @@ using MVC.Editor.Console;
 using MVC.Runtime.Bind.Bindings;
 using MVC.Runtime.Console;
 using MVC.Runtime.Contexts;
+using MVC.Runtime.Injectable.Components;
 using MVC.Runtime.Injectable.Utils;
 using MVC.Runtime.Root;
 using MVC.Runtime.ViewMediators.Mediator;
@@ -31,7 +32,9 @@ namespace MVC.Runtime.ViewMediators.Utils
         internal static bool Register(this IView view, ViewInjectorData injectorData)
         {
             if (injectorData.SelectedRoot == null)
+            {
                 return view.Register();
+            }
 
             var context = injectorData.SelectedRoot.GetContext();
             if (context == null)
@@ -40,7 +43,7 @@ namespace MVC.Runtime.ViewMediators.Utils
                 MVCConsole.LogError(ConsoleLogType.Injection, "There is no Context \nviewType: " + view.GetType().Name);
                 return false;
             }
-            
+
             return view.Register(context);
         }
 
@@ -59,6 +62,12 @@ namespace MVC.Runtime.ViewMediators.Utils
                 MVCConsole.LogError(ConsoleLogType.Injection, "There is no Context \nviewType: " + view.GetType().Name);
                 return false;
             }
+
+            var viewInjector = view.transform.GetComponent<ViewInjector>();
+            var viewInjectionData = viewInjector.GetViewInjectorData(view);
+
+            if (viewInjectionData.InjectableView)
+                InjectionExtensions.TryToInjectObject(context, view);
             
             var mediationBinder = viewBindingData.Context.MediationBinder;
             var mediatorType = viewBindingData.Binding.Value as Type;
