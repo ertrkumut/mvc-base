@@ -73,7 +73,8 @@ namespace MVC.Runtime.Controller.Sequencer
             if(_commandBinding.ExecutionType == CommandExecutionType.Sequence && command.IsRetain)
                 return;
             
-            _commandBinder.ReturnCommandToPool(command);
+            if(!command.IsRetain)
+                _commandBinder.ReturnCommandToPool(command);
             
             var next = !(_sequenceCompleted || _commands.Last() == command.GetType());
             if(next)
@@ -82,12 +83,12 @@ namespace MVC.Runtime.Controller.Sequencer
 
         public virtual void ReleaseCommand(ICommandBody command, params object[] commandParameters)
         {
-            if (_commandBinding.ExecutionType == CommandExecutionType.Parallel)
-            {
-                Debug.LogWarning("Command Execute Mode must be InSequence, if you want to call manual RELEASE! \n Command: " + command.GetType().Name);
-                MVCConsole.LogWarning(ConsoleLogType.Command, "Command Execute Mode must be InSequence, if you want to call manual RELEASE! \n Command: " + command.GetType().Name);
-                return;
-            }
+            // if (_commandBinding.ExecutionType == CommandExecutionType.Parallel)
+            // {
+            //     Debug.LogWarning("Command Execute Mode must be InSequence, if you want to call manual RELEASE! \n Command: " + command.GetType().Name);
+            //     MVCConsole.LogWarning(ConsoleLogType.Command, "Command Execute Mode must be InSequence, if you want to call manual RELEASE! \n Command: " + command.GetType().Name);
+            //     return;
+            // }
             
             if (!command.IsRetain)
             {
@@ -97,18 +98,22 @@ namespace MVC.Runtime.Controller.Sequencer
             }
             
             _commandBinder.ReturnCommandToPool(command);
+            
+            if (_commandBinding.ExecutionType == CommandExecutionType.Parallel)
+                return;
+            
             (this as ICommandSequencer).NextCommand(commandParameters);
         }
 
         public virtual void JumpCommand<TCommandType>(ICommandBody command, params object[] commandParameters)
             where TCommandType : ICommandBody
         {
-            if (_commandBinding.ExecutionType == CommandExecutionType.Parallel)
-            {
-                Debug.LogWarning("Command Execute Mode must be InSequence, if you want to call JUMP! \n Command: " + command.GetType().Name);
-                MVCConsole.LogWarning(ConsoleLogType.Command, "Command Execute Mode must be InSequence, if you want to call JUMP! \n Command: " + command.GetType().Name);
-                return;
-            }
+            // if (_commandBinding.ExecutionType == CommandExecutionType.Parallel)
+            // {
+            //     Debug.LogWarning("Command Execute Mode must be InSequence, if you want to call JUMP! \n Command: " + command.GetType().Name);
+            //     MVCConsole.LogWarning(ConsoleLogType.Command, "Command Execute Mode must be InSequence, if you want to call JUMP! \n Command: " + command.GetType().Name);
+            //     return;
+            // }
             
             _commandBinder.ReturnCommandToPool(command);
             var nextCommandType = FindCommand<TCommandType>();
