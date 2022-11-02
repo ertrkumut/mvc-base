@@ -117,6 +117,7 @@ namespace MVC.Runtime.Screen
             
             var screen = CreateOrGetScreen<IScreenBody>(screenDataContainer);
             MVCConsole.Log(ConsoleLogType.Screen, $"Show Screen! \ntype: {screenDataContainer.ScreenType} \nManager; {screenDataContainer.ManagerIndex} \nLayer: {screenDataContainer.LayerIndex}");
+            screenDataContainer.Dispose();
             return screen;
         }
 
@@ -134,8 +135,7 @@ namespace MVC.Runtime.Screen
             ((ScreenBody) availableScreen).Open();
             
             _screenDataContainerPool.Add(screenDataContainer);
-            screenDataContainer.Dispose();
-            
+
             return (TScreenType) availableScreen;
         }
 
