@@ -47,7 +47,7 @@ namespace MVC.Editor.ModelViewer.PropertyDrawer.Properties
                 return;
             }
 
-            SendPropertyDrawersToPool();
+            CheckValueCountAndPropertyDrawerCount();
             
             for (var ii = 0; ii < value.Count; ii++)
             {
@@ -57,10 +57,25 @@ namespace MVC.Editor.ModelViewer.PropertyDrawer.Properties
             
             EditorGUILayout.EndVertical();
         }
-        
+
+        private void CheckValueCountAndPropertyDrawerCount()
+        {
+            var value = GetValue();
+            if(value.Count == _enabledProperties.Count)
+                return;
+
+            for (var ii = 0; ii < value.Count; ii++)
+            {
+                if (ii >= _enabledProperties.Count)
+                    GetAvailablePropertyDrawer();
+                else
+                    SendPropertyDrawerToPool(_enabledProperties[ii]);
+            }
+        }
+
         private void PieceGUI(T piece, int listIndex)
         {
-            var propertyDrawer = GetAvailablePropertyDrawer();
+            var propertyDrawer = _enabledProperties[listIndex];
             propertyDrawer.SetFieldName(listIndex.ToString());
             ((PropertyDrawer<T>) propertyDrawer).SetValue(piece);
 
@@ -91,19 +106,10 @@ namespace MVC.Editor.ModelViewer.PropertyDrawer.Properties
             EditorGUILayout.EndHorizontal();
         }
 
-        private void SendPropertyDrawersToPool()
-        {
-            for (var ii = 0; ii < _enabledProperties.Count; ii++)
-            {
-                var propDrawer = _enabledProperties[0];
-                SendPropertyDrawerToPool(propDrawer);
-            }
-        }
-
         private void SendPropertyDrawerToPool(PropertyDrawerBase propertyDrawerBase)
         {
             propertyDrawerBase.OnValueChanged = null;
-                
+
             _enabledProperties.Remove(propertyDrawerBase);
             _disabledProperties.Add(propertyDrawerBase);
         }
