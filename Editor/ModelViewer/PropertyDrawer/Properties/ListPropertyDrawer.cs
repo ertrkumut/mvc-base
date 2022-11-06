@@ -8,42 +8,50 @@ namespace MVC.Editor.ModelViewer.PropertyDrawer.Properties
 {
     internal class ListPropertyDrawer<T> : PropertyDrawer<List<T>>
     {
+        public bool UseFoldOut;
+        public bool CanDeleteItem;
+        
         private bool _foldOut;
         
         private List<PropertyDrawerBase> _enabledProperties;
         private List<PropertyDrawerBase> _disabledProperties;
 
         private Type _propertyDrawerType;
-        
+
+        public Action<int, T> ItemValueChanged;
+
         public ListPropertyDrawer(string fieldName, bool readOnly) : base(fieldName, readOnly)
         {
             _enabledProperties = new List<PropertyDrawerBase>();
             _disabledProperties = new List<PropertyDrawerBase>();
             
             _propertyDrawerType = ModelViewerUtils.GetPropertyDrawerType(typeof(T));
+            
+            UseFoldOut = true;
         }
 
         protected override void OnDrawGUI()
         {
             base.OnDrawGUI();
-            
-            EditorGUILayout.BeginVertical("box");
 
-            _foldOut = EditorGUILayout.Foldout(_foldOut, _fieldName);
-
-            if (!_foldOut)
+            if (_propertyDrawerType == null)
             {
-                EditorGUILayout.EndVertical();
+                EditorGUILayout.HelpBox(new GUIContent($"{_fieldName}: Type is not supported!"));
                 return;
             }
+            
+            if(UseFoldOut)
+                _foldOut = EditorGUILayout.Foldout(_foldOut, _fieldName);
+
+            if (!_foldOut && UseFoldOut)
+                return;
             
             var value = GetValue();
             if (value == null)
             {
                 if (GUILayout.Button("NULL")) 
                     SetValue(new List<T>());
-
-                EditorGUILayout.EndVertical();
+                
                 return;
             }
 
@@ -54,8 +62,6 @@ namespace MVC.Editor.ModelViewer.PropertyDrawer.Properties
                 var piece = value[ii];
                 PieceGUI(piece, ii);
             }
-            
-            EditorGUILayout.EndVertical();
         }
 
         private void CheckValueCountAndPropertyDrawerCount()
@@ -77,6 +83,8 @@ namespace MVC.Editor.ModelViewer.PropertyDrawer.Properties
         {
             var propertyDrawer = _enabledProperties[listIndex];
             propertyDrawer.SetFieldName(listIndex.ToString());
+            propertyDrawer.ShowFieldName = ShowFieldName;
+            
             ((PropertyDrawer<T>) propertyDrawer).SetValue(piece);
 
             propertyDrawer.OnValueChanged += () =>
@@ -84,23 +92,27 @@ namespace MVC.Editor.ModelViewer.PropertyDrawer.Properties
                 var value = GetValue();
                 value[listIndex] = ((PropertyDrawer<T>) propertyDrawer).GetValue();
                 SetValue(value);
+                ItemValueChanged?.Invoke(listIndex, value[listIndex]);
             };
 
             EditorGUILayout.BeginHorizontal();
             
             propertyDrawer.OnGUI();
 
-            GUI.backgroundColor = Color.red;
-            var removeButton = GUILayout.Button("-", GUILayout.Width(15));
-            GUI.backgroundColor = Color.white;
-
-            if (removeButton)
+            if(CanDeleteItem)
             {
-                SendPropertyDrawerToPool(propertyDrawer);
-                
-                var listValue = GetValue();
-                listValue.RemoveAt(listIndex);
-                SetValue(listValue);
+                GUI.backgroundColor = Color.red;
+                var removeButton = GUILayout.Button("-", GUILayout.Width(15));
+                GUI.backgroundColor = Color.white;
+
+                if (removeButton)
+                {
+                    SendPropertyDrawerToPool(propertyDrawer);
+
+                    var listValue = GetValue();
+                    listValue.RemoveAt(listIndex);
+                    SetValue(listValue);
+                }
             }
             
             EditorGUILayout.EndHorizontal();
@@ -127,7 +139,8 @@ namespace MVC.Editor.ModelViewer.PropertyDrawer.Properties
                 availablePropertyDrawer = _disabledProperties[0];
                 _disabledProperties.Remove(availablePropertyDrawer);
             }
-            
+
+            availablePropertyDrawer.ShowFieldName = ShowFieldName;
             _enabledProperties.Add(availablePropertyDrawer);
 
             return availablePropertyDrawer;

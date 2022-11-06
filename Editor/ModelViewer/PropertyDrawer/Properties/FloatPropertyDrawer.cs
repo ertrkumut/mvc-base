@@ -16,7 +16,12 @@ namespace MVC.Editor.ModelViewer.PropertyDrawer.Properties
             base.OnDrawGUI();
             
             var propertyValue = GetValue();
-            var newValue = EditorGUILayout.FloatField(new GUIContent(_fieldName), propertyValue);
+            float newValue;
+            if(ShowFieldName)
+                newValue = EditorGUILayout.FloatField(new GUIContent(_fieldName), propertyValue);
+            else
+                newValue = EditorGUILayout.FloatField(propertyValue);
+            
             if(Math.Abs(newValue - propertyValue) > 0.0001f)
                 SetValue(newValue); 
         }

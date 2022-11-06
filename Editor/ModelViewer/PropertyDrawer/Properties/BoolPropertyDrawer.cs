@@ -15,7 +15,12 @@ namespace MVC.Editor.ModelViewer.PropertyDrawer.Properties
             base.OnDrawGUI();
             
             var propertyValue = GetValue();
-            var newValue = EditorGUILayout.Toggle(new GUIContent(_fieldName), propertyValue);
+            bool newValue = false;
+            if (ShowFieldName)
+                newValue = EditorGUILayout.Toggle(new GUIContent(_fieldName), propertyValue);
+            else
+                newValue = EditorGUILayout.Toggle(propertyValue);
+            
             if(newValue != propertyValue)
                 SetValue(newValue);
         }

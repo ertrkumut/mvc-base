@@ -21,7 +21,13 @@ namespace MVC.Editor.ModelViewer.PropertyDrawer.Properties
                 EditorGUILayout.LabelField(new GUIContent(_fieldName + ": null"));
                 return;
             }
-            var newValue = EditorGUILayout.EnumPopup(new GUIContent(_fieldName), propertyValue);
+            Enum newValue;
+            
+            if (ShowFieldName)
+                newValue = EditorGUILayout.EnumPopup(new GUIContent(_fieldName), propertyValue);
+            else
+                newValue = EditorGUILayout.EnumPopup(propertyValue);
+            
             if(!Equals(newValue, propertyValue))
                 SetValue(newValue);
         }

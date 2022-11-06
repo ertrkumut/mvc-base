@@ -13,11 +13,11 @@ namespace MVC.Runtime.Pool
     public class ObjectPoolModel : IObjectPoolModel
     {
         protected CD_PoolData _data;
+        
+        [ShowInModelViewer] protected Dictionary<string, ObjectPoolVO> _poolMap;
 
-        [ShowInModelViewer] private Dictionary<string, ObjectPoolVO> _poolMap;
-
-        [ShowInModelViewer] private Dictionary<string, List<IPoolable>> _enabledObjects;
-        [ShowInModelViewer] private Dictionary<string, List<IPoolable>> _disabledObjects;
+        [ShowInModelViewer] protected Dictionary<string, List<IPoolable>> _enabledObjects;
+        [ShowInModelViewer] protected Dictionary<string, List<IPoolable>> _disabledObjects;
 
         private GameObject _container;
 

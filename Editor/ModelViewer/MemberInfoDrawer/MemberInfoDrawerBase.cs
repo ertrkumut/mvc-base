@@ -4,6 +4,7 @@ using System.Linq;
 using System.Reflection;
 using MVC.Editor.ModelViewer.PropertyDrawer;
 using MVC.Runtime.Attributes;
+using UnityEditor;
 using UnityEngine;
 
 namespace MVC.Editor.ModelViewer.MemberInfoDrawer
@@ -40,7 +41,12 @@ namespace MVC.Editor.ModelViewer.MemberInfoDrawer
         public void OnGUI()
         {
             OnBeforeDrawGUI();
-            OnDrawGUI();
+            
+            if(_propertyDrawerType != null)
+                OnDrawGUI();
+            else
+                EditorGUILayout.HelpBox(new GUIContent($"{_fieldName}: Type is not supported!"));
+            
             OnDrawCompletedGUI();
         }
 

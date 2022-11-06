@@ -17,7 +17,7 @@ namespace MVC.Editor.ModelViewer
         private object _inspectedObjectContext;
         
         private Dictionary<MemberInfo, MemberInfoDrawerBase> _activePropertyDrawersDict;
-        
+
         public void Initialize(object inspectedObject, object inspectedObjectContext, string bindingName = "")
         {
             _inspectedObject = inspectedObject;

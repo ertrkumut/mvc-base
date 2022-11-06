@@ -262,7 +262,7 @@ namespace MVC.Runtime.Injectable.Utils
             return injectionValue;
         }
 
-        private static List<Type> GetAllChildClasses(this Type type)
+        internal static List<Type> GetAllChildClasses(this Type type)
         {
             var childTypes = Assembly
                 .GetAssembly(type)

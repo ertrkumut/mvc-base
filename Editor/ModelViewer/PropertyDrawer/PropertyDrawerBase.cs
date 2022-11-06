@@ -10,6 +10,8 @@ namespace MVC.Editor.ModelViewer.PropertyDrawer
         
         protected bool _readOnly;
         protected string _fieldName;
+
+        public bool ShowFieldName = true;
         
         public PropertyDrawerBase(string fieldName, bool readOnly)
         {
