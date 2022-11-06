@@ -22,16 +22,16 @@ namespace MVC.Editor.Console
 
         private Action OnConsoleLogTypeChanged { get; set; }
 
-        private ConsoleLogType _logType;
-        private bool _isCollapsed;
+        private ConsoleLogType _selectedLogType;
 
         private Dictionary<LogType, bool> _logFilter;
         private Vector2 _logsPanelScroll;
-        
+
+        private Dictionary<ConsoleLogType, List<ConsoleLog>> _logDictionary;
+
         private void OnEnable()
         {
-            _logType = ConsoleLogType.All;
-            _isCollapsed = true;
+            _selectedLogType = ConsoleLogType.All;
 
             _logFilter = new Dictionary<LogType, bool>
             {
@@ -39,11 +39,15 @@ namespace MVC.Editor.Console
                 {LogType.Warning, true},
                 {LogType.Error, true}
             };
+
+            InitializeLogs();
+            
+            MVCConsole.OnLogAdded += OnLogAdded;
         }
 
         private void OnDisable()
         {
-            
+            MVCConsole.OnLogAdded -= OnLogAdded;
         }
 
         private void OnGUI()
@@ -60,6 +64,26 @@ namespace MVC.Editor.Console
             Repaint();
         }
 
+        private void InitializeLogs()
+        {
+            _logDictionary = new Dictionary<ConsoleLogType, List<ConsoleLog>>();
+
+            var logs = MVCConsole.Logs;
+
+            var consoleLogTypeArray = Enum.GetValues(typeof(ConsoleLogType));
+            for (var ii = 0; ii < consoleLogTypeArray.Length; ii++)
+            {
+                var consoleLogType = (ConsoleLogType) consoleLogTypeArray.GetValue(ii);
+                _logDictionary.Add(consoleLogType, new List<ConsoleLog>());
+            }
+
+            foreach (var consoleLog in logs)
+            {
+                _logDictionary[ConsoleLogType.All].Add(consoleLog);
+                _logDictionary[consoleLog.ConsoleLogType].Add(consoleLog);
+            }
+        }
+        
         private void TopPanelGUI()
         {
             EditorGUILayout.BeginVertical();
@@ -70,7 +94,7 @@ namespace MVC.Editor.Console
             {
                 var consoleLogType = (ConsoleLogType) consoleLogTypeArray.GetValue(ii);
 
-                GUI.backgroundColor = consoleLogType == _logType ? Color.green : Color.white;
+                GUI.backgroundColor = consoleLogType == _selectedLogType ? Color.green : Color.white;
                 var button = GUILayout.Button(consoleLogType.ToString());
                 GUI.backgroundColor = Color.white;
 
@@ -80,15 +104,6 @@ namespace MVC.Editor.Console
                 }
             }
 
-            var collapseButtonStyle = EditorStyles.miniButton;
-
-            GUI.backgroundColor = _isCollapsed ? Color.gray : Color.white;
-            if (GUILayout.Button("Collapse", collapseButtonStyle, GUILayout.Width(100)))
-            {
-                _isCollapsed = !_isCollapsed;
-            }
-
-            GUI.backgroundColor = Color.white;
             EditorGUILayout.EndHorizontal();
 
             TopPanelConsoleFilterGUI();
@@ -100,15 +115,9 @@ namespace MVC.Editor.Console
 
         private void LogsPanelGUI()
         {
-            var logs = MVCConsole.Logs;
-
-            if (_logType != ConsoleLogType.All)
-            {
-                logs = logs.Where(x => x.ConsoleLogType == _logType).ToList();
-            }
-            
             _logsPanelScroll = EditorGUILayout.BeginScrollView(_logsPanelScroll);
 
+            var logs = _logDictionary[_selectedLogType];
             for (var ii = 0; ii < logs.Count; ii++)
             {
                 LogGUI(logs[ii]);
@@ -119,10 +128,8 @@ namespace MVC.Editor.Console
 
         private void TopPanelConsoleFilterGUI()
         {
-            var logs = MVCConsole.Logs;
-            if (_logType != ConsoleLogType.All)
-                logs = logs.Where(x => x.ConsoleLogType == _logType).ToList();
-            
+            var logs = _logDictionary[_selectedLogType];;
+
             EditorGUILayout.BeginHorizontal();
 
             _logFilter[LogType.Log] = EditorGUILayout.ToggleLeft("Log(" + logs.Count(x => x.LogType == LogType.Log) + ")", _logFilter[LogType.Log], GUILayout.Width(75));
@@ -160,11 +167,18 @@ namespace MVC.Editor.Console
 
         private void ChangeConsoleLogType(ConsoleLogType consoleLogType)
         {
-            if(_logType.Equals(consoleLogType))
+            if(_selectedLogType.Equals(consoleLogType))
                 return;
             
-            _logType = consoleLogType;
+            _selectedLogType = consoleLogType;
             OnConsoleLogTypeChanged?.Invoke();
+        }
+        
+        private void OnLogAdded(ConsoleLog log)
+        {
+            _logDictionary[ConsoleLogType.All].Add(log);
+            
+            _logDictionary[log.ConsoleLogType].Add(log);
         }
     }
 }

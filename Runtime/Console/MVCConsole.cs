@@ -9,6 +9,8 @@ namespace MVC.Runtime.Console
     {
         public static List<ConsoleLog> Logs = new List<ConsoleLog>();
 
+        public static Action<ConsoleLog> OnLogAdded;
+
         public static void Log(ConsoleLogType consoleLogType, string message)
         {
             var log = new ConsoleLog
@@ -23,6 +25,7 @@ namespace MVC.Runtime.Console
             };
             
             Logs.Add(log);
+            OnLogAdded?.Invoke(log);
         }
         
         public static void LogWarning(ConsoleLogType consoleLogType, string message)
@@ -39,6 +42,7 @@ namespace MVC.Runtime.Console
             };
             
             Logs.Add(log);
+            OnLogAdded?.Invoke(log);
         }
         
         public static void LogError(ConsoleLogType consoleLogType, string message)
@@ -55,6 +59,7 @@ namespace MVC.Runtime.Console
             };
             
             Logs.Add(log);
+            OnLogAdded?.Invoke(log);
         }
     }
 }
