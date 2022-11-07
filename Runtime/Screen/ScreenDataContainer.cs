@@ -42,7 +42,7 @@ namespace MVC.Runtime.Screen
             return this;
         }
 
-        public IScreenDataContainer HideFromHistory()
+        public IScreenDataContainer IgnoreHistory()
         {
             HidedFromHistory = true;
             return this;
