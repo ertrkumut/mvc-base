@@ -21,7 +21,7 @@ namespace MVC.Runtime.Screen
             _screenModel = screenModel;
             ManagerIndex = 0;
             LayerIndex = ScreenLayerIndex.Layer_1;
-            HidedFromHistory = false;
+            HidedFromHistory = true;
         }
 
         public IScreenDataContainer SetManagerIndex(int managerIndex = 0)
@@ -42,9 +42,9 @@ namespace MVC.Runtime.Screen
             return this;
         }
 
-        public IScreenDataContainer IgnoreHistory()
+        public IScreenDataContainer AddToHistory()
         {
-            HidedFromHistory = true;
+            HidedFromHistory = false;
             return this;
         }
 
@@ -68,7 +68,7 @@ namespace MVC.Runtime.Screen
             
             ManagerIndex = 0;
             LayerIndex = ScreenLayerIndex.Layer_0;
-            HidedFromHistory = false;
+            HidedFromHistory = true;
         }
     }
 }
