@@ -6,6 +6,7 @@ using System.Linq;
 using System.Reflection;
 using MVC.Editor.ModelViewer.MemberInfoDrawer;
 using MVC.Editor.ModelViewer.PropertyDrawer;
+using MVC.Editor.ModelViewer.PropertyDrawer.Properties;
 using MVC.Runtime.Attributes;
 using MVC.Runtime.Injectable.Utils;
 using Object = UnityEngine.Object;
@@ -155,6 +156,10 @@ namespace MVC.Editor.ModelViewer
                         .FirstOrDefault(x => x.Name.Contains("ClassPropertyDrawer"))
                         .MakeGenericType(propertyType);
                     return classPropertyDrawer;
+                }
+                else if (propertyType.IsEnum)
+                {
+                    return typeof(EnumPropertyDrawer);
                 }
                 else    
                     return null;

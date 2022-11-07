@@ -30,6 +30,12 @@ namespace MVC.Editor.ModelViewer.PropertyDrawer.Properties
             UseFoldOut = true;
         }
 
+        protected override void OnBeforeDrawGUI()
+        {
+            base.OnBeforeDrawGUI();
+            EditorGUILayout.BeginVertical();
+        }
+
         protected override void OnDrawGUI()
         {
             base.OnDrawGUI();
@@ -64,6 +70,13 @@ namespace MVC.Editor.ModelViewer.PropertyDrawer.Properties
             }
         }
 
+        protected override void OnDrawCompletedGUI()
+        {
+            base.OnDrawCompletedGUI();
+            
+            EditorGUILayout.EndVertical();
+        }
+
         private void CheckValueCountAndPropertyDrawerCount()
         {
             var value = GetValue();
@@ -85,12 +98,18 @@ namespace MVC.Editor.ModelViewer.PropertyDrawer.Properties
             propertyDrawer.SetFieldName(listIndex.ToString());
             propertyDrawer.ShowFieldName = ShowFieldName;
             
-            ((PropertyDrawer<T>) propertyDrawer).SetValue(piece);
+            // ((PropertyDrawer<T>) propertyDrawer).SetValue(piece);
+            propertyDrawer.GetType().GetMethod("SetValue").Invoke(propertyDrawer, new []
+            {
+                piece as object
+            });
 
             propertyDrawer.OnValueChanged += () =>
             {
                 var value = GetValue();
-                value[listIndex] = ((PropertyDrawer<T>) propertyDrawer).GetValue();
+                // value[listIndex] = ((PropertyDrawer<T>) propertyDrawer).GetValue();
+                value[listIndex] = (T) propertyDrawer.GetType().GetMethod("GetValue").Invoke(propertyDrawer, null);
+                
                 SetValue(value);
                 ItemValueChanged?.Invoke(listIndex, value[listIndex]);
             };
