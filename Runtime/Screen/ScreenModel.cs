@@ -15,7 +15,7 @@ namespace MVC.Runtime.Screen
     {
         private Dictionary<int, IScreenManager> _screenManagerDict;
 
-        [ShowInModelViewer] private List<ScreenHistoryData> _historyDataList;
+        [ShowInModelViewer] private Dictionary<int, List<ScreenHistoryData>> _historyDataList;
         private List<ScreenDataContainer> _screenDataContainerPool;
 
         [Inject] protected IScreenPoolController _screenPoolController;
@@ -24,9 +24,11 @@ namespace MVC.Runtime.Screen
         protected void PostConstruct()
         {
             _screenManagerDict = new Dictionary<int, IScreenManager>();
-            _historyDataList = new List<ScreenHistoryData>();
+            _historyDataList = new Dictionary<int, List<ScreenHistoryData>>();
             _screenDataContainerPool = new List<ScreenDataContainer>();
         }
+
+        #region Register-ScreenManager
 
         public void RegisterScreenManager(ScreenManager screenManager)
         {
@@ -45,6 +47,10 @@ namespace MVC.Runtime.Screen
                 MVCConsole.Log(ConsoleLogType.Screen, "Screen UnRegistered! id: " + screenManager.ManagerIndex);
             }
         }
+
+        #endregion
+
+        #region NewScreen-HideScreen
 
         public IScreenDataContainer NewScreen(System.Enum screenType)
         {
@@ -105,7 +111,7 @@ namespace MVC.Runtime.Screen
                 HideAllScreens(screenManager.Key);
             }
         }
-        
+
         public ScreenState HasScreenOpen(System.Enum screenType, int screenManagerId = 0)
         {
             var screenManager = GetScreenManager(screenManagerId);
@@ -131,6 +137,8 @@ namespace MVC.Runtime.Screen
             screenDataContainer.Dispose();
             return screen;
         }
+        
+        #endregion
 
         internal TScreenType CreateOrGetScreen<TScreenType>(ScreenDataContainer screenDataContainer)
             where TScreenType : IScreenBody
@@ -177,10 +185,30 @@ namespace MVC.Runtime.Screen
         
         protected void AddScreenToHistory(ScreenDataContainer screenDataContainer)
         {
-            _historyDataList.Add(new ScreenHistoryData(
-                screenDataContainer.ManagerIndex, 
-                screenDataContainer.ScreenType, 
-                screenDataContainer.LayerIndex));
+            var history = new ScreenHistoryData(
+                screenDataContainer.ManagerIndex,
+                screenDataContainer.ScreenType,
+                screenDataContainer.LayerIndex);
+            var screenManagerId = screenDataContainer.ManagerIndex;
+            
+            if(!_historyDataList.ContainsKey(screenManagerId))
+                _historyDataList.Add(screenManagerId, new List<ScreenHistoryData>());
+            
+            _historyDataList[screenManagerId].Add(history);
+        }
+
+        public void ResetHistory(int screenManagerId)
+        {
+            if (_historyDataList.ContainsKey(screenManagerId))
+                _historyDataList.Remove(screenManagerId);
+        }
+
+        public void ResetHistoryInAllScreenManagers()
+        {
+            foreach (var historyDataList in _historyDataList)
+            {
+                ResetHistory(historyDataList.Key);
+            }
         }
     }
 }
