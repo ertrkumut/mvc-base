@@ -65,6 +65,17 @@ namespace MVC.Runtime.Screen
             screenBody.UnRegister();
         }
 
+        public void HideScreen(int screenManagerId, System.Enum screenType)
+        {
+            var screenManager = GetScreenManager(screenManagerId);
+            var screens = screenManager.GetScreens(screenType);
+            
+            foreach (var screenBody in screens)
+            {
+                HideScreen(screenBody);
+            }
+        }
+
         public void HideScreenInLayer(int screenManagerId, ScreenLayerIndex layerIndex)
         {
             var screenManager = GetScreenManager(screenManagerId);

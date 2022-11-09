@@ -13,6 +13,8 @@ namespace MVC.Runtime.Screen
         IScreenManager GetScreenManager(int managerId);
 
         void HideScreen(IScreenBody screenBody);
+        void HideScreen(int screenManagerId, System.Enum screenType);
+        void HideScreenInLayer(int screenManagerId, ScreenLayerIndex layerIndex);
         void HideAllScreens(int screenManagerId = 0);
         void HideAllScreensInAllManagers();
         
