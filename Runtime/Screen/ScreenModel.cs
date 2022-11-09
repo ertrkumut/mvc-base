@@ -129,11 +129,12 @@ namespace MVC.Runtime.Screen
 
         internal IScreenBody ShowScreen(ScreenDataContainer screenDataContainer)
         {
-            if (!screenDataContainer.HidedFromHistory)
-                AddScreenToHistory(screenDataContainer);
-            
             var screen = CreateOrGetScreen<IScreenBody>(screenDataContainer);
             MVCConsole.Log(ConsoleLogType.Screen, $"Show Screen! \ntype: {screenDataContainer.ScreenType} \nManager; {screenDataContainer.ManagerIndex} \nLayer: {screenDataContainer.LayerIndex}");
+
+            if (!screenDataContainer.HidedFromHistory && screen is IScreenView)
+                AddScreenToHistory(screenDataContainer);
+            
             screenDataContainer.Dispose();
             return screen;
         }
@@ -197,7 +198,30 @@ namespace MVC.Runtime.Screen
             _historyDataList[screenManagerId].Add(history);
         }
 
-        public void ResetHistory(int screenManagerId)
+        public virtual void BackToHistory(int screenManagerId = 0)
+        {
+            var historyDataList = GetScreenHistoryData(screenManagerId);
+            if(historyDataList == null)
+            {
+                MVCConsole.LogError(ConsoleLogType.Screen, $"There is no screen history! ScreenManagerId: {screenManagerId}");
+                return;
+            }
+
+            var lastItem = historyDataList[^1];
+            historyDataList.Remove(lastItem);
+
+            NewScreen(lastItem.ScreenType)
+                .SetManagerIndex(lastItem.ManagerIndex)
+                .SetLayer(lastItem.LayerIndex)
+                .Show();
+        }
+
+        internal List<ScreenHistoryData> GetScreenHistoryData(int screenManagerId)
+        {
+            return _historyDataList.ContainsKey(screenManagerId) ? _historyDataList[screenManagerId] : null;
+        }
+
+        public void ResetHistory(int screenManagerId = 0)
         {
             if (_historyDataList.ContainsKey(screenManagerId))
                 _historyDataList.Remove(screenManagerId);

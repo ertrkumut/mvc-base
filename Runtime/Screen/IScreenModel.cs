@@ -22,7 +22,8 @@ namespace MVC.Runtime.Screen
 
         TScreenType GetScreen<TScreenType>(System.Enum screenType, int screenManagerId = 0)
             where TScreenType : IScreenBody;
-        
+
+        void BackToHistory(int screenManagerId = 0);
         void ResetHistory(int screenManagerId);
         void ResetHistoryInAllScreenManagers();
     }
