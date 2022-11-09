@@ -8,6 +8,8 @@ namespace MVC.Editor.CodeGenerator.TempViews
     [RequireComponent(typeof(ViewInjector))]
     internal class TempView : MonoBehaviour, IView
     {
+        public bool IsRegistered { get; set; }
+        
         //@Actions
     }
 }

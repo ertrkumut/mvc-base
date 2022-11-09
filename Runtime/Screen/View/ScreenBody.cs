@@ -6,6 +6,8 @@ namespace MVC.Runtime.Screen.View
 {
     public class ScreenBody : MonoBehaviour, IScreenBody
     {
+        public bool IsRegistered { get; set; }
+        
         public Action OnScreenOpened;
         public Action OnScreenClosed;
         

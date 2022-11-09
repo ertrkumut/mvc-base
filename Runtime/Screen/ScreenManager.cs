@@ -11,6 +11,8 @@ namespace MVC.Runtime.Screen
     [RequireComponent(typeof(ViewInjector))]
     public class ScreenManager : MonoBehaviour, IScreenManager
     {
+        public bool IsRegistered { get; set; }
+        
         [SerializeField] private int _managerIndex;
         public int ManagerIndex => _managerIndex;
 

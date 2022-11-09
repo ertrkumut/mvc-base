@@ -112,6 +112,7 @@ namespace MVC.Runtime.Injectable.Components
                 return;
             
             injectorData.IsRegistered = true;
+            view.IsRegistered = true;
         }
 
         #endregion

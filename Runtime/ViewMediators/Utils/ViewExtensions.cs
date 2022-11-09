@@ -119,6 +119,8 @@ namespace MVC.Runtime.ViewMediators.Utils
             var mediator = injectedMediatorData.mediator;
             mediator.OnRemove();
 
+            view.IsRegistered = false;
+            
             injectedMediatorData.mediator = null;
             viewInjectorData.IsRegistered = false;
 

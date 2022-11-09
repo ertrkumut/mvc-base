@@ -2,5 +2,6 @@
 {
     public interface IView : ITransform
     {
+        bool IsRegistered { get; set; }
     }
 }
