@@ -2,6 +2,8 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Reflection;
+using MVC.Editor.CodeGenerator;
 using MVC.Runtime.Contexts;
 using MVC.Runtime.Root;
 using UnityEditor;
@@ -256,6 +258,7 @@ namespace MVC.Root.Editor
                     .GetTypes()
                     .Where(x => typeof(IContext).IsAssignableFrom(x))
                     .Where(x => _root.SubContextTypes.FirstOrDefault(a => a.ContextFullName == x.FullName) == null)
+                    .Where(x => x.GetField(CodeGeneratorStrings.ContextTestFlag, BindingFlags.Instance | BindingFlags.Static | BindingFlags.NonPublic) == null)
                     .ToList();
 
                 var genericMenu = new GenericMenu();
