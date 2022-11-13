@@ -135,8 +135,12 @@ namespace MVC.Runtime.Injectable.Utils
 
                 if (param == null)
                 {
-                    Debug.LogError("Signal Param is not found! \n ParamType: " + paramType.Name + "\nCommand: " + command.GetType().Name);
-                    MVCConsole.LogError(ConsoleLogType.Command, "Signal Param is not found! \n ParamType: " + paramType.Name + "\nCommand: " + command.GetType().Name);
+                    var errString =
+                        "<b><color=#FF6666>► Signal Param is not found!</color></b>\n" +
+                        "<b><color=#FF6666>► Command:</color><color=#FFEFD5> " + command.GetType().Name + "</color></b>\n" +
+                        "<b><color=#FF6666>► ParamType:</color><color=#FFEFD5> " + paramType.Name + "</color></b>";
+                    Debug.LogError(errString);
+                    MVCConsole.LogError(ConsoleLogType.Command, errString);
                 }
                 signalField.SetValue(command, param);
             }
@@ -152,8 +156,12 @@ namespace MVC.Runtime.Injectable.Utils
 
                 if (param == null)
                 {
-                    Debug.LogError("Signal Param is not found! \n ParamType: " + paramType.Name + "\nCommand: " + command.GetType().Name);
-                    MVCConsole.LogError(ConsoleLogType.Command, "Signal Param is not found! \n ParamType: " + paramType.Name + "\nCommand: " + command.GetType().Name);
+                    var errString =
+                        "<b><color=#FF6666>► Signal Param is not found!</color></b>\n" +
+                        "<b><color=#FF6666>► Command:</color><color=#FFEFD5> " + command.GetType().Name + "</color></b>\n" +
+                        "<b><color=#FF6666>► ParamType:</color><color=#FFEFD5> " + paramType.Name + "</color></b>";
+                    Debug.LogError(errString);
+                    MVCConsole.LogError(ConsoleLogType.Command, errString);
                 }
                 signalProperty.SetValue(command, param);
             }
@@ -221,13 +229,14 @@ namespace MVC.Runtime.Injectable.Utils
             var injectionValue = context.GetInjectedObject(injectedMemberInfo);
             if (injectionValue == null)
             {
-                Debug.LogError("Injection Failed! There is no injected property in container! " +
-                               "\n Instance Type: " + objectInstance.GetType().Name + 
-                               "\n Injection Type: " + injectionType.Name + " - " + injectedMemberInfo.Name);
+                var errString =
+                    "<b><color=#FF6666>► INJECTION FAILED!</color></b> There is no injected property in container!" +
+                    "\n<b><color=#FF6666>► Instance Type:</color><color=#FFEFD5> " + objectInstance.GetType().Name + "</color></b>" +
+                    "\n<b><color=#FF6666>► Injection Type:</color> " + injectionType.Name + " - " +
+                    injectedMemberInfo.Name + "</b>";
                 
-                MVCConsole.LogError(ConsoleLogType.Injection, "Injection Failed! There is no injected property in container! " +
-                                                                  "\n Instance Type: " + objectInstance.GetType().Name + 
-                                                                  "\n Injection Type: " + injectionType.Name + " - " + injectedMemberInfo.Name);
+                Debug.LogError(errString);
+                MVCConsole.LogError(ConsoleLogType.Injection, errString);
             }
             
             if (injectedMemberInfo.MemberType == MemberTypes.Field)
