@@ -51,6 +51,7 @@ namespace MVC.Runtime.Screen.Pool
 
         public void SendScreenToPool(IScreenBody screenBody)
         {
+            screenBody.transform.SetParent(_poolParent);
             RemoveScreenFromActiveDict(screenBody);
             AddScreenToPoolDict(screenBody);
         }
