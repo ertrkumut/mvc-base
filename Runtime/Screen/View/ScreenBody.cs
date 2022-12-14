@@ -1,4 +1,5 @@
 using System;
+using MVC.Runtime.Pool;
 using MVC.Runtime.Screen.Enum;
 using UnityEngine;
 
@@ -72,6 +73,8 @@ namespace MVC.Runtime.Screen.View
         {
         }
 
+        #region IPoolable Methods
+
         public string PoolKey { get; set; }
 
         public virtual void OnGetFromPool()
@@ -81,8 +84,11 @@ namespace MVC.Runtime.Screen.View
         public virtual void OnReturnToPool()
         {
         }
-        
-        
+
+        public Action<IPoolable> ReturnToPoolAction { get; set; }
+        #endregion
+
+
         /// <summary>
         /// It runs if CustomOpeningAnimation is true.
         /// This is the method for handling custom animations.

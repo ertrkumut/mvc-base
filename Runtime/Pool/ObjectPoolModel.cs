@@ -58,17 +58,17 @@ namespace MVC.Runtime.Pool
             }
         }
 
-        internal void RegisterPoolObject(ObjectPoolVO objectPoolVO)
+        internal void RegisterPoolObject(ObjectPoolVO objectPool)
         {
-            if(_poolMap.ContainsKey(objectPoolVO.Key))
+            if(_poolMap.ContainsKey(objectPool.Key))
                 return;
             
-            _poolMap.Add(objectPoolVO.Key, objectPoolVO);
+            _poolMap.Add(objectPool.Key, objectPool);
             
-            if(!_disabledObjects.ContainsKey(objectPoolVO.Key))
-                _disabledObjects.Add(objectPoolVO.Key, new List<IPoolable>());
-            if(!_enabledObjects.ContainsKey(objectPoolVO.Key))
-                _enabledObjects.Add(objectPoolVO.Key, new List<IPoolable>());
+            if(!_disabledObjects.ContainsKey(objectPool.Key))
+                _disabledObjects.Add(objectPool.Key, new List<IPoolable>());
+            if(!_enabledObjects.ContainsKey(objectPool.Key))
+                _enabledObjects.Add(objectPool.Key, new List<IPoolable>());
         }
         
         public void RegisterPoolObject(string key, GameObject prefab, int count = 0)
@@ -86,13 +86,8 @@ namespace MVC.Runtime.Pool
                 Count = count,
                 Prefab = prefab
             };
-            
-            if(!_disabledObjects.ContainsKey(key))
-                _disabledObjects.Add(key, new List<IPoolable>());
-            if(!_enabledObjects.ContainsKey(key))
-                _enabledObjects.Add(key, new List<IPoolable>());
-            
-            _poolMap.Add(key, objectPool);
+
+            RegisterPoolObject(objectPool);
         }
 
         public void UnRegisterPoolObject(string key)
@@ -149,9 +144,15 @@ namespace MVC.Runtime.Pool
             _disabledObjects[key].Remove(availableItem);
             _enabledObjects[key].Add(availableItem);
 
+            availableItem.ReturnToPoolAction = OnReturnToPoolAction;
             availableItem.OnGetFromPool();
             MVCConsole.Log(ConsoleLogType.Pool, "Object Taken From Pool key: " + key);
             return availableItem;
+        }
+
+        private void OnReturnToPoolAction(IPoolable poolItem)
+        {
+            Return(poolItem);
         }
 
         public virtual void Return(IPoolable poolItem)

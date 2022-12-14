@@ -1,3 +1,4 @@
+using System;
 using UnityEngine;
 
 namespace MVC.Runtime.Pool
@@ -10,5 +11,11 @@ namespace MVC.Runtime.Pool
         
         void OnGetFromPool();
         void OnReturnToPool();
+        Action<IPoolable> ReturnToPoolAction { get; set; }
+
+        void ReturnToPool()
+        {
+            ReturnToPoolAction?.Invoke(this);
+        }
     }
 }
