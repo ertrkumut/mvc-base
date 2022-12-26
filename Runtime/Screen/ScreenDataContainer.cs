@@ -20,7 +20,7 @@ namespace MVC.Runtime.Screen
         {
             _screenModel = screenModel;
             ManagerIndex = 0;
-            LayerIndex = ScreenLayerIndex.Layer_1;
+            LayerIndex = ScreenLayerIndex.Layer_0;
             HidedFromHistory = true;
         }
 
