@@ -18,6 +18,13 @@ namespace MVC.Runtime.ViewMediators.Utils
     {
         public static bool Register(this IView view)
         {
+            if (view.IsRegistered)
+            {
+                Debug.LogWarning("View is already registered. \nviewType: " + view.GetType().Name);
+                MVCConsole.LogWarning(ConsoleLogType.Injection, "View is already registered. \nviewType: " + view.GetType().Name);
+                return false;
+            }
+            
             var context = view.FindViewContext();
             if (context == null)
             {
@@ -31,6 +38,13 @@ namespace MVC.Runtime.ViewMediators.Utils
         
         internal static bool Register(this IView view, ViewInjectorData injectorData)
         {
+            if (view.IsRegistered)
+            {
+                Debug.LogWarning("View is already registered. \nviewType: " + view.GetType().Name);
+                MVCConsole.LogWarning(ConsoleLogType.Injection, "View is already registered. \nviewType: " + view.GetType().Name);
+                return false;
+            }
+            
             if (injectorData.SelectedRoot == null)
             {
                 return view.Register();
