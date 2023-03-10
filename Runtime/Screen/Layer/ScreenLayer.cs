@@ -12,6 +12,9 @@ namespace MVC.Runtime.Screen.Layer
         [SerializeField] private ScreenLayerIndex _layerIndex;
         public ScreenLayerIndex LayerIndex => _layerIndex;
         
+        [SerializeField] private bool _isSafeAreaExists = true;
+        public bool IsSafeAreaExists => _isSafeAreaExists;
+        
         public Dictionary<System.Enum, List<IScreenBody>> ScreensDict;
 
         public bool AddScreen(IScreenBody screenBody)
