@@ -14,7 +14,6 @@ namespace MVC.Runtime.Screen.View
         /// It shows the state of the screen. None, InPool, InUse, InOpeningAnimation, InClosingAnimation
         /// </summary>
         ScreenState ScreenState { get; set; }
-
         System.Enum ScreenType { get; set; }
         ScreenLayerIndex LayerIndex { get; set; }
         int ScreenManagerId { get; set; }

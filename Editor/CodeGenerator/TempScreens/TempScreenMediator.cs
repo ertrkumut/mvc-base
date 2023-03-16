@@ -9,24 +9,24 @@ namespace MVC.Editor.CodeGenerator.TempScreens
         
         public virtual void OnRegister()
         {
-            _view.OnScreenOpened += ScreenOpenedListener;
-            _view.OnScreenClosed += ScreenClosedListener;
+            _view.ScreenOpened += OnScreenOpened;
+            _view.ScreenClosed += OnScreenClosed;
             //@Register
         }
 
         public virtual void OnRemove()
         {
-            _view.OnScreenOpened -= ScreenOpenedListener;
-            _view.OnScreenClosed -= ScreenClosedListener;
+            _view.ScreenOpened -= OnScreenOpened;
+            _view.ScreenClosed -= OnScreenClosed;
             //@Remove
         }
 
-        protected virtual void ScreenOpenedListener()
+        protected virtual void OnScreenOpened()
         {
             
         }
 
-        protected virtual void ScreenClosedListener()
+        protected virtual void OnScreenClosed()
         {
             
         }

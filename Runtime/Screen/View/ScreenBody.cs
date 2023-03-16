@@ -1,6 +1,9 @@
 using System;
+using MVC.Editor.Console;
+using MVC.Runtime.Console;
 using MVC.Runtime.Pool;
 using MVC.Runtime.Screen.Enum;
+using MVC.Runtime.ViewMediators.Utils;
 using UnityEngine;
 
 namespace MVC.Runtime.Screen.View
@@ -9,8 +12,8 @@ namespace MVC.Runtime.Screen.View
     {
         public bool IsRegistered { get; set; }
         
-        public Action OnScreenOpened;
-        public Action OnScreenClosed;
+        public Action ScreenOpened;
+        public Action ScreenClosed;
         
         [SerializeField] private bool _customOpeningAnimation;
         [SerializeField] private bool _customClosingAnimation;
@@ -24,29 +27,16 @@ namespace MVC.Runtime.Screen.View
         public bool CustomOpeningAnimation => _customOpeningAnimation;
         public bool CustomClosingAnimation => _customClosingAnimation;
 
-        protected virtual void ScreenOpened()
-        {
-            ScreenState = ScreenState.InUse;
-            OnScreenOpened?.Invoke();
-        }
-        
-        protected virtual void ScreenClosed()
-        {
-            ScreenState = ScreenState.InPool;
-            gameObject.SetActive(false);
-            OnScreenClosed?.Invoke();
-            OnReturnToPool();
-        }
-
         // It runs by ScreenModel
         internal void Open()
         {
+            transform.localPosition = Vector3.zero;
             gameObject.SetActive(true);
             OnGetFromPool();
             
             if(!_customOpeningAnimation)
             {
-                ScreenOpened();
+                OpenScreen();
                 return;
             }
             
@@ -59,14 +49,56 @@ namespace MVC.Runtime.Screen.View
         {
             if (!_customClosingAnimation)
             {
-                ScreenClosed();
-                gameObject.SetActive(false);
-                ScreenState = ScreenState.InPool;
+                CloseScreen();
                 return;
             }
             
             ScreenState = ScreenState.InClosingAnimation;
             ClosingAnimation();
+        }
+
+        private void OpenScreen()
+        {
+            ScreenState = ScreenState.InUse;
+            ScreenOpened?.Invoke();
+        }
+
+        private void CloseScreen()
+        {
+            ScreenState = ScreenState.InPool;
+            gameObject.SetActive(false);
+            this.UnRegister();
+            (this as IPoolable).ReturnToPool();
+            
+            MVCConsole.LogWarning(ConsoleLogType.Screen, "Hide Screen! type: " + this.GetType().Name);
+            ScreenClosed?.Invoke();
+        }
+
+        /// <summary>
+        /// It runs if CustomOpeningAnimation is true.
+        /// This is the method for handling custom animations.
+        /// You can run your timeline animations or you can use tween animations.
+        /// </summary>
+        protected virtual void OpeningAnimation()
+        {
+        }
+
+        /// <summary>
+        /// It runs if CustomClosingAnimation is true.
+        /// This is the method for handling custom animations.
+        /// You can run your timeline animations or you can use tween animations.
+        /// </summary>
+        protected virtual void ClosingAnimation()
+        {
+        }
+
+        protected void OpeningAnimationCompleted()
+        {
+            OpenScreen();
+        }
+        protected void ClosingAnimationCompleted()
+        {
+            CloseScreen();
         }
 
         internal virtual void InitializeScreenParams(params object[] screenParams)
@@ -87,24 +119,5 @@ namespace MVC.Runtime.Screen.View
 
         public Action<IPoolable> ReturnToPoolAction { get; set; }
         #endregion
-
-
-        /// <summary>
-        /// It runs if CustomOpeningAnimation is true.
-        /// This is the method for handling custom animations.
-        /// You can run your timeline animations or you can use tween animations.
-        /// </summary>
-        protected virtual void OpeningAnimation()
-        {
-        }
-        
-        /// <summary>
-        /// It runs if CustomClosingAnimation is true.
-        /// This is the method for handling custom animations.
-        /// You can run your timeline animations or you can use tween animations.
-        /// </summary>
-        protected virtual void ClosingAnimation()
-        {
-        }
     }
 }

@@ -65,10 +65,7 @@ namespace MVC.Runtime.Screen
             var screenManager = GetScreenManager(screenManagerId);
 
             screenManager.HideScreen(screenBody);
-            (screenBody as ScreenBody).Close();
-            screenBody.UnRegister();
-            _screenPoolController.SendScreenToPool(screenBody);
-            MVCConsole.LogWarning(ConsoleLogType.Screen, "Hide Screen! type: " + screenBody.GetType().Name);
+            (screenBody as ScreenBody)?.Close();
         }
 
         public void HideScreen(int screenManagerId, System.Enum screenType)

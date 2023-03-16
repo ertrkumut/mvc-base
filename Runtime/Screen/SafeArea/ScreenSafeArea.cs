@@ -6,6 +6,8 @@ namespace MVC.Runtime.Screen.SafeArea
 {
     public class ScreenSafeArea : MonoBehaviour
     {
+        [SerializeField] private bool _useWithSimulator;
+        [SerializeField] private bool _runInUpdate;
         private List<RectTransform> _layerRects = new ();
         private ScreenOrientation _lastOrientation;
         private Vector2 _lastResolution = Vector2.zero;
@@ -33,6 +35,9 @@ namespace MVC.Runtime.Screen.SafeArea
 
         void Update()
         {
+            if (!_runInUpdate)
+                return;
+            
             if (Application.isMobilePlatform && UnityEngine.Screen.orientation != _lastOrientation) OrientationChanged();
 
             if (UnityEngine.Screen.width != _lastResolution.x || UnityEngine.Screen.height != _lastResolution.y) ResolutionChanged();
@@ -44,10 +49,21 @@ namespace MVC.Runtime.Screen.SafeArea
         {
             var anchorMin = _lastSafeArea.position;
             var anchorMax = _lastSafeArea.position + _lastSafeArea.size;
-            anchorMin.x /= UnityEngine.Screen.currentResolution.width;
-            anchorMin.y /= UnityEngine.Screen.currentResolution.height;
-            anchorMax.x /= UnityEngine.Screen.currentResolution.width;
-            anchorMax.y /= UnityEngine.Screen.currentResolution.height;
+
+            if (_useWithSimulator)
+            {
+                anchorMin.x /= UnityEngine.Screen.currentResolution.width;
+                anchorMin.y /= UnityEngine.Screen.currentResolution.height;
+                anchorMax.x /= UnityEngine.Screen.currentResolution.width;
+                anchorMax.y /= UnityEngine.Screen.currentResolution.height;
+            }
+            else
+            {
+                anchorMin.x /= UnityEngine.Screen.width;
+                anchorMin.y /= UnityEngine.Screen.height;
+                anchorMax.x /= UnityEngine.Screen.width;
+                anchorMax.y /= UnityEngine.Screen.height;
+            }
             
             foreach (var rect in _layerRects)
             {

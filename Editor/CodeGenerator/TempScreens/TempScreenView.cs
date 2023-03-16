@@ -1,7 +1,4 @@
-using System;
-using MVC.Runtime.Injectable.Attributes;
 using MVC.Runtime.Injectable.Components;
-using MVC.Runtime.Screen;
 using MVC.Runtime.Screen.View;
 using UnityEngine;
 
@@ -12,16 +9,24 @@ namespace MVC.Editor.CodeGenerator.TempScreens
     {
         //@Actions
         
-        [Inject] protected IScreenModel _screenModel { get; set; }
-        
-        protected override void ScreenOpened()
+        /// <summary>
+        /// This method runs if CustomOpeningAnimation bool is true.
+        /// If you dont use custom animations delete this method.
+        /// </summary>
+        protected override void OpeningAnimation()
         {
-            base.ScreenOpened();
+            // Do some animation
+            OpeningAnimationCompleted();
         }
 
-        protected override void ScreenClosed()
+        /// <summary>
+        /// This method runs if CustomClosingAnimation bool is true.
+        /// If you dont use custom animations delete this method.
+        /// </summary>
+        protected override void ClosingAnimation()
         {
-            base.ScreenClosed();
+            // Do some animation
+            ClosingAnimationCompleted();
         }
     }
 }

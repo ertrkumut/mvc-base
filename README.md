@@ -260,22 +260,50 @@ Screens also work the same way as Views. You need to bind them into your context
 MediationBinder.Bind<LauncherScreenView>().To<LauncherScreenMediator>();
 ```
 
+### _Show / Open Screen_
 All screen operations handling by `IScreenModel`. It already bound in context file so you don't need to bind it again.
-
 ```csharp
 _screenModel.NewScreen(GameScreens.LauncherScreen)
     .SetLayer(ScreenLayerIndex.Layer_8)
     .SetParameters(_playerId)
     .Show<LauncherScreenView>();
 ```
-
+### _Hide / Close Screen_
 ```csharp
 _screenModel.HideScreen(_launcherScreen);
 ```
+### _Custom Opening & Closing Animations_
+If you want to use custom animations, please complete list below.
+1. Toggle on related buttons at screenview.
+2. Use related virtual methods : `OpeningAnimation`, `ClosingAnimation`
+3. Invoke related action after custom animation is completed : `OpeningAnimationCompleted`, `ClosingAnimationCompleted`
 
+```csharp
 
-
-
+        /// <summary>
+        /// It runs if CustomOpeningAnimation is true.
+        /// This is the method for handling custom animations.
+        /// You can run your timeline animations or you can use tween animations.
+        /// </summary>
+        protected override void OpeningAnimation()
+        {
+            // Do some opening animations
+            OpeningAnimationCompleted?.Invoke();
+        }
+```
+```csharp
+        /// <summary>
+        /// It runs if CustomClosingAnimation is true.
+        /// This is the method for handling custom animations.
+        /// You can run your timeline animations or you can use tween animations.
+        /// </summary>
+        protected override void ClosingAnimation()
+        {
+            // Do some closing animations
+            ClosingAnimationCompleted?.Invoke();
+        }
+        
+```
 
 
 
