@@ -3,7 +3,9 @@ using MVC.Editor.Console;
 using MVC.Runtime.Bind.Bindings;
 using MVC.Runtime.Console;
 using MVC.Runtime.Contexts;
+using MVC.Runtime.Injectable.Binders;
 using MVC.Runtime.Injectable.Components;
+using MVC.Runtime.Injectable.Mediator;
 using MVC.Runtime.Injectable.Utils;
 using MVC.Runtime.Root;
 using MVC.Runtime.ViewMediators.Mediator;
@@ -109,20 +111,44 @@ namespace MVC.Runtime.ViewMediators.Utils
             }
             return injectionResult;
         }
-        
-        public static void UnRegister(this IView view)
+
+        public static bool FindMediationBinder(this IView view, out MediationBinder mediationBinder)
         {
             var viewContext = view.FindViewContext();
+            mediationBinder = null;
+            
             if (viewContext == null)
-                return;
+                return false;
             
-            var mediationBinder = viewContext.MediationBinder;
+            mediationBinder = viewContext.MediationBinder;
             if(mediationBinder == null)
+                return false;
+            
+            var injectedMediatorData = mediationBinder.GetInjectedMediatorData(view);
+            if (injectedMediatorData?.mediator != null)
+                return true;
+
+            var viewSubContexts = view.FindViewContext().SubContexts;
+            foreach (var viewSubContext in viewSubContexts)
+            {
+                mediationBinder = viewSubContext.MediationBinder;
+                if(mediationBinder == null)
+                    return false;
+                
+                injectedMediatorData = mediationBinder.GetInjectedMediatorData(view);
+                if (injectedMediatorData?.mediator != null)
+                    return true;
+
+            }
+            return false;
+        }
+
+        public static void UnRegister(this IView view)
+        {
+            if (!view.FindMediationBinder(out var mediationBinder))
                 return;
             
-            var injectedMediatorData = mediationBinder.GetOrCreateInjectedMediatorData(view);
-            if (injectedMediatorData.mediator == null)
-                return;
+            var injectedMediatorData = mediationBinder.GetInjectedMediatorData(view);
             
             var viewInjectorComponent = injectedMediatorData.viewInjector;
 

@@ -72,5 +72,13 @@ namespace MVC.Runtime.Injectable.Binders
             
             return mediatorData;
         }
+        internal InjectedMediatorData GetInjectedMediatorData(IView view)
+        {
+            InjectedMediatorData mediatorData = null;
+            if (_injectedMediators.ContainsKey(view))
+                mediatorData = _injectedMediators[view];
+            
+            return mediatorData;
+        }
     }
 }
