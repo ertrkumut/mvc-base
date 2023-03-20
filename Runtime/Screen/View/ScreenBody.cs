@@ -54,6 +54,7 @@ namespace MVC.Runtime.Screen.View
             }
             
             ScreenState = ScreenState.InClosingAnimation;
+            MVCConsole.Log(ConsoleLogType.Screen, "Screen ClosingAnimation started! id: " + this.GetType().Name);
             ClosingAnimation();
         }
 
@@ -94,6 +95,7 @@ namespace MVC.Runtime.Screen.View
 
         protected void OpeningAnimationCompleted()
         {
+            MVCConsole.Log(ConsoleLogType.Screen, "Screen OpeningAnimation completed! id: " + this.GetType().Name);
             OpenScreen();
         }
         protected void ClosingAnimationCompleted()

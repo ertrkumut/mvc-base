@@ -4,6 +4,7 @@ using MVC.Editor.Console;
 using MVC.Runtime.Attributes;
 using MVC.Runtime.Console;
 using MVC.Runtime.Injectable.Attributes;
+using MVC.Runtime.Pool;
 using MVC.Runtime.Screen.Enum;
 using MVC.Runtime.Screen.Pool;
 using MVC.Runtime.Screen.View;
@@ -149,6 +150,7 @@ namespace MVC.Runtime.Screen
 
             availableScreen.Register();
             ((ScreenBody) availableScreen).InitializeScreenParams(screenDataContainer.ScreenParameters);
+            ((ScreenBody) availableScreen).ReturnToPoolAction = OnReturnToPoolAction;
             ((ScreenBody) availableScreen).Open();
             
             _screenDataContainerPool.Add(screenDataContainer);
@@ -156,6 +158,11 @@ namespace MVC.Runtime.Screen
             return (TScreenType) availableScreen;
         }
 
+        private void OnReturnToPoolAction(IPoolable poolItem)
+        {
+            HideScreen((ScreenBody) poolItem);
+        }
+        
         public IScreenManager GetScreenManager(int managerId)
         {
             if (!_screenManagerDict.ContainsKey(managerId))
