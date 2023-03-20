@@ -160,7 +160,7 @@ namespace MVC.Runtime.Screen
 
         private void OnReturnToPoolAction(IPoolable poolItem)
         {
-            HideScreen((ScreenBody) poolItem);
+            _screenPoolController.SendScreenToPool((ScreenBody) poolItem);
         }
         
         public IScreenManager GetScreenManager(int managerId)
