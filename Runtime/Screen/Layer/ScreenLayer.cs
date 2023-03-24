@@ -15,7 +15,7 @@ namespace MVC.Runtime.Screen.Layer
         [SerializeField] private bool _isSafeAreaExists = true;
         public bool IsSafeAreaExists => _isSafeAreaExists;
         
-        public Dictionary<System.Enum, List<IScreenBody>> ScreensDict;
+        public Dictionary<System.Enum, List<IScreenBody>> ScreensDict = new();
 
         public bool AddScreen(IScreenBody screenBody)
         {
@@ -98,9 +98,6 @@ namespace MVC.Runtime.Screen.Layer
         
         private void CreateDictionaryKeyIfIsNotExist(System.Enum screenType)
         {
-            if (ScreensDict == null)
-                ScreensDict = new Dictionary<System.Enum, List<IScreenBody>>();
-            
             if(!ScreensDict.ContainsKey(screenType))
                 ScreensDict.Add(screenType, new List<IScreenBody>());
         }
