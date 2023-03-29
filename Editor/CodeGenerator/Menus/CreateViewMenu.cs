@@ -21,6 +21,7 @@ namespace MVC.Editor.CodeGenerator.Menus
         protected virtual string _tempMediatorName => "TempMediator";
         
         protected virtual string _targetViewPath => CodeGeneratorStrings.GetPath(CodeGeneratorStrings.ViewPath);
+        protected virtual string _targetTestViewPath => CodeGeneratorStrings.GetPath(CodeGeneratorStrings.TestViewPath);
         protected virtual string _tempViewPath => CodeGeneratorStrings.GetPath(CodeGeneratorStrings.TempViewPath);
         protected virtual string _tempMediatorPath => CodeGeneratorStrings.GetPath(CodeGeneratorStrings.TempMediatorPath);
 
@@ -160,12 +161,16 @@ namespace MVC.Editor.CodeGenerator.Menus
                 _viewName = "TEST_" + _viewName;
                 _mediatorName = "TEST_" + _mediatorName;
 
-                _viewNameInputField = "TEST/" + _viewNameInputField;
+                //_viewNameInputField = "TEST/" + _viewNameInputField;
             }
-         
-            var path = Application.dataPath + string.Format(_targetViewPath, _selectedContextName.Replace("Context", "")) + _viewNameInputField;
-            _viewNamespace = path.Replace(Application.dataPath + "/Scripts/", "").Replace("/", ".").TrimEnd('.');
             
+            
+            var path = Application.dataPath + string.Format(_targetViewPath, _selectedContextName.Replace("Context", "")) + _viewNameInputField;
+            // if (_isTestView)
+            //     path = Application.dataPath + string.Format(_targetTestViewPath, _selectedContextName.Replace("Context", "")) + _viewNameInputField;
+
+            _viewNamespace = path.Replace(Application.dataPath + "/Scripts/", "").Replace("/", ".").TrimEnd('.');
+            Debug.Log("-->" + _viewNamespace);
             CodeGeneratorUtils.CreateView(_viewName, _tempViewName, path, _tempViewPath, _viewNamespace, _actionNames, _isTestView);
             CodeGeneratorUtils.CreateMediator(_mediatorName, _viewName, _tempMediatorName, path, _tempMediatorPath, _viewNamespace, _actionNames, _isTestView);
 
