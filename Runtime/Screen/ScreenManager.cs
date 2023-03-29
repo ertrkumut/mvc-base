@@ -1,7 +1,6 @@
 using System.Collections.Generic;
 using System.Linq;
 using MVC.Runtime.Injectable.Components;
-using MVC.Runtime.Screen.Enum;
 using MVC.Runtime.Screen.Layer;
 using MVC.Runtime.Screen.View;
 using UnityEngine;
@@ -33,6 +32,11 @@ namespace MVC.Runtime.Screen
             return layer.AddScreen(screenBody);
         }
 
+        /// <summary>
+        /// Remove ScreenBody from dictionary
+        /// </summary>
+        /// <param name="screenBody"></param>
+        /// <returns></returns>
         public bool HideScreen(IScreenBody screenBody)
         {
             var layerIndex = screenBody.LayerIndex;
@@ -52,11 +56,10 @@ namespace MVC.Runtime.Screen
             var result = _screenLayerList
                 .SelectMany(layer => layer.GetScreens(screenType))
                 .ToList();
-
             return result;
         }
         
-        public List<IScreenBody> GetScreensInLayer(ScreenLayerIndex layerIndex)
+        public List<IScreenBody> GetScreensInLayer(int layerIndex)
         {
             var layer = GetLayer(layerIndex);
             return layer.GetAllScreens();
@@ -71,20 +74,21 @@ namespace MVC.Runtime.Screen
             return result;
         }
 
-        public bool IsScreenContains(System.Enum screenType, ScreenLayerIndex layerIndex)
+        public bool IsScreenContains(System.Enum screenType, int layerIndex)
         {
             var layer = GetLayer(layerIndex);
             
             return layer != null && layer.IsScreenContains(screenType);
         }
         
-        protected ScreenLayer GetLayer(ScreenLayerIndex layerIndex)
+        protected ScreenLayer GetLayer(int layerIndex)
         {
-            var layer = _screenLayerList.FirstOrDefault(x => x.LayerIndex == layerIndex);
-            if(layer == null)
+            if (layerIndex > _screenLayerList.Length - 1)
+            {
                 Debug.LogError("Layer not found! ManagerIndex: " + _managerIndex + " LayerIndex: " + layerIndex);
+            }
             
-            return layer;
+            return _screenLayerList[layerIndex];
         }
     }
 }

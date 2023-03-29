@@ -7,9 +7,9 @@ namespace MVC.Runtime.Screen
     {
         [ReadOnly] public int ManagerIndex;
         [ReadOnly] public System.Enum ScreenType;
-        [ReadOnly] public ScreenLayerIndex LayerIndex;
+        [ReadOnly] public int LayerIndex;
 
-        public ScreenHistoryData(int managerIndex, System.Enum screenType, ScreenLayerIndex layerIndex)
+        public ScreenHistoryData(int managerIndex, System.Enum screenType, int layerIndex)
         {
             ManagerIndex = managerIndex;
             ScreenType = screenType;

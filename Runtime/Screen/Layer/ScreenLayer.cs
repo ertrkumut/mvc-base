@@ -1,7 +1,4 @@
 using System.Collections.Generic;
-using MVC.Editor.Console;
-using MVC.Runtime.Console;
-using MVC.Runtime.Screen.Enum;
 using MVC.Runtime.Screen.View;
 using UnityEngine;
 
@@ -9,13 +6,11 @@ namespace MVC.Runtime.Screen.Layer
 {
     public class ScreenLayer : MonoBehaviour, IScreenLayer
     {
-        [SerializeField] private ScreenLayerIndex _layerIndex;
-        public ScreenLayerIndex LayerIndex => _layerIndex;
-        
         [SerializeField] private bool _isSafeAreaExists = true;
         public bool IsSafeAreaExists => _isSafeAreaExists;
-        
+
         public Dictionary<System.Enum, List<IScreenBody>> ScreensDict = new();
+
 
         public bool AddScreen(IScreenBody screenBody)
         {
@@ -37,19 +32,18 @@ namespace MVC.Runtime.Screen.Layer
                 
                 return true;
             }
-            
-            Debug.LogError("Screen already in this layer! ScreenType: " + screenType + " Layer: " + _layerIndex);
-            MVCConsole.LogError(ConsoleLogType.Screen, "Screen already in this layer! ScreenType: " + screenType + " Layer: " + _layerIndex);
-            
             return false;
         }
 
         public bool RemoveScreen(IScreenBody screenBody)
         {
             var screenType = screenBody.ScreenType;
-            CreateDictionaryKeyIfIsNotExist(screenType);
 
+            if (!ScreensDict.ContainsKey(screenType))
+                return false;
+            
             var screens = ScreensDict[screenType];
+                
             if(screens.Contains(screenBody))
             {
                 ScreensDict[screenType].Remove(screenBody);
@@ -71,9 +65,9 @@ namespace MVC.Runtime.Screen.Layer
         {
             var result = new List<IScreenBody>();
 
-            foreach (var screenKeyValuePair in ScreensDict)
+            foreach (var screenKeyValue in ScreensDict.Values)
             {
-                foreach (var screenBody in screenKeyValuePair.Value)
+                foreach (var screenBody in screenKeyValue)
                 {
                     result.Add(screenBody);
                 }

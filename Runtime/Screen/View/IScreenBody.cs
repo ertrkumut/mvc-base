@@ -15,7 +15,7 @@ namespace MVC.Runtime.Screen.View
         /// </summary>
         ScreenState ScreenState { get; set; }
         System.Enum ScreenType { get; set; }
-        ScreenLayerIndex LayerIndex { get; set; }
+        int LayerIndex { get; set; }
         int ScreenManagerId { get; set; }
         
         /// <summary>

@@ -11,7 +11,7 @@ namespace MVC.Runtime.Screen
     
         public int ManagerIndex;
         public System.Enum ScreenType;
-        public ScreenLayerIndex LayerIndex;
+        public int LayerIndex;
         public bool HidedFromHistory;
 
         [HideInModelViewer] public object[] ScreenParameters;
@@ -20,7 +20,7 @@ namespace MVC.Runtime.Screen
         {
             _screenModel = screenModel;
             ManagerIndex = 0;
-            LayerIndex = ScreenLayerIndex.Layer_0;
+            LayerIndex = 0;
             HidedFromHistory = true;
         }
 
@@ -30,7 +30,7 @@ namespace MVC.Runtime.Screen
             return this;
         }
         
-        public IScreenDataContainer SetLayer(ScreenLayerIndex layerIndex = ScreenLayerIndex.Layer_0)
+        public IScreenDataContainer SetLayer(int layerIndex = 0)
         {
             LayerIndex = layerIndex;
             return this;
@@ -67,7 +67,7 @@ namespace MVC.Runtime.Screen
             ScreenParameters = null;
             
             ManagerIndex = 0;
-            LayerIndex = ScreenLayerIndex.Layer_0;
+            LayerIndex = 0;
             HidedFromHistory = true;
         }
     }

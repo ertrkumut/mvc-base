@@ -20,7 +20,7 @@ namespace MVC.Runtime.Screen.View
 
         public ScreenState ScreenState { get; set; }
         public System.Enum ScreenType { get; set; }
-        public ScreenLayerIndex LayerIndex { get; set; }
+        public int LayerIndex { get; set; }
 
         public int ScreenManagerId { get; set; }
         
@@ -45,6 +45,9 @@ namespace MVC.Runtime.Screen.View
         }
 
         // It runs by ScreenModel
+        /// <summary>
+        /// Check Closing Animation And SendTo Pool
+        /// </summary>
         internal void Close()
         {
             if (!_customClosingAnimation)

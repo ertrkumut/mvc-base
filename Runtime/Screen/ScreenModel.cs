@@ -9,6 +9,7 @@ using MVC.Runtime.Screen.Enum;
 using MVC.Runtime.Screen.Pool;
 using MVC.Runtime.Screen.View;
 using MVC.Runtime.ViewMediators.Utils;
+using UnityEngine;
 
 namespace MVC.Runtime.Screen
 {
@@ -65,8 +66,8 @@ namespace MVC.Runtime.Screen
             var screenManagerId = screenBody.ScreenManagerId;
             var screenManager = GetScreenManager(screenManagerId);
 
-            screenManager.HideScreen(screenBody);
-            (screenBody as ScreenBody)?.Close();
+            screenManager.HideScreen(screenBody); // Remove ScreenBody from dictionary
+            (screenBody as ScreenBody)?.Close(); // Check Closing Animation And SendTo Pool
         }
 
         public void HideScreen(int screenManagerId, System.Enum screenType)
@@ -80,7 +81,7 @@ namespace MVC.Runtime.Screen
             }
         }
 
-        public void HideScreenInLayer(int screenManagerId, ScreenLayerIndex layerIndex)
+        public void HideScreenInLayer(int screenManagerId, int layerIndex)
         {
             var screenManager = GetScreenManager(screenManagerId);
             var screens = screenManager.GetScreensInLayer(layerIndex);
@@ -146,7 +147,13 @@ namespace MVC.Runtime.Screen
 
             var availableScreen = _screenPoolController.GetScreenFromPool(screenDataContainer.ScreenType);
             availableScreen.LayerIndex = screenDataContainer.LayerIndex;
-            screenManager.ShowScreen(availableScreen);
+            
+            var isScreenAvailable = screenManager.ShowScreen(availableScreen);
+            if (!isScreenAvailable)
+            {
+                Debug.LogError("Screen already in this layer! ScreenType: " + screenDataContainer.ScreenType + " Layer: " + screenDataContainer.LayerIndex);
+                MVCConsole.LogError(ConsoleLogType.Screen, "Screen already in this layer! ScreenType: " + screenDataContainer.ScreenType + " Layer: " + screenDataContainer.LayerIndex);
+            }
 
             availableScreen.Register();
             ((ScreenBody) availableScreen).InitializeScreenParams(screenDataContainer.ScreenParameters);
