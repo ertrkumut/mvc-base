@@ -12,6 +12,11 @@ namespace MVC.Runtime.Provider.Update
         private event UnityAction OnLateUpdate;
         private event UnityAction OnFixedUpdate;
 
+        private void Awake()
+        {
+            DontDestroyOnLoad(this);
+        }
+
         #region Update
 
         public void AddUpdate(UnityAction callback)

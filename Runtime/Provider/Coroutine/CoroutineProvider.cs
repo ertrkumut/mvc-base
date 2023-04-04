@@ -9,6 +9,11 @@ namespace MVC.Runtime.Provider.Coroutine
     [HideInModelViewer]
     public class CoroutineProvider : MonoBehaviour, ICoroutineProvider
     {
+        private void Awake()
+        {
+            DontDestroyOnLoad(this);
+        }
+        
         #region WaitForSeconds
 
         public UnityEngine.Coroutine WaitForSeconds(float seconds, UnityAction callback)
