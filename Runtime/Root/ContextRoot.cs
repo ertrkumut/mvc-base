@@ -80,6 +80,12 @@ namespace MVC.Runtime.Root
             BindMediations();
             BindCommands();
             
+            foreach (var subContextData in _subContexts)
+                subContextData.Key.InjectAllInstances();
+            
+            foreach (var subContextData in _subContexts)
+                subContextData.Key.ExecutePostConstructMethods();
+
             _context.InjectAllInstances();
             _context.ExecutePostConstructMethods();
 
