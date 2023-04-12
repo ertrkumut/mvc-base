@@ -1,17 +1,13 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
-using System.Reflection;
 using MVC.Editor.Console;
-using MVC.Runtime.Bind.Bindings;
 using MVC.Runtime.Console;
 using MVC.Runtime.Controller.Binder;
 using MVC.Runtime.Function.Provider;
 using MVC.Runtime.Injectable;
-using MVC.Runtime.Injectable.Attributes;
 using MVC.Runtime.Injectable.Binders;
 using MVC.Runtime.Injectable.CrossContext;
 using MVC.Runtime.Injectable.Utils;
-using MVC.Runtime.Pool;
 using MVC.Runtime.Provider.Coroutine;
 using MVC.Runtime.Provider.Update;
 using UnityEngine;
@@ -39,6 +35,7 @@ namespace MVC.Runtime.Contexts
             _gameObject = contextGameObject;
             InitializeOrder = initializeOrder;
             InjectionBinderCrossContext = injectionBinderCrossContext;
+            InjectionBinderCrossContext.SetContext(this);
             SubContexts = subContexts;
 
             AllContexts = subContexts;
@@ -54,18 +51,22 @@ namespace MVC.Runtime.Contexts
 
         void IContext.InjectAllInstances()
         {
-            var injectedTypes = InjectionBinder.GetInjectedInstances();
-            var injectedCrossContextTypes = InjectionBinderCrossContext.GetInjectedInstances();
+            var injectedBindings = InjectionBinder.GetInjectedInstances();
+            var injectedCrossContextBindings = InjectionBinderCrossContext.GetInjectedInstances();
 
-            injectedTypes = injectedTypes.Concat(injectedCrossContextTypes).ToList();
+            injectedBindings = injectedBindings.Concat(injectedCrossContextBindings).ToList();
 
-            foreach (InjectionBinding injectedType in injectedTypes)
+            foreach (InjectionBinding binding in injectedBindings)
             {
-                if(injectedType == null)
+                if(binding == null)
                     continue;
 
-                this.TryToInjectObject(injectedType.Value);
+                if (binding.ContainerContext == null)
+                    this.TryToInjectObject(binding.Value);
+                else
+                    binding.ContainerContext.TryToInjectObject(binding.Value);
             }
+            
         }
         
         void IContext.ExecutePostConstructMethods()
@@ -91,6 +92,7 @@ namespace MVC.Runtime.Contexts
         protected virtual void CoreBindings()
         {
             InjectionBinder = new InjectionBinder();
+            //InjectionBinder.SetContext(this);
             MediationBinder = InjectionBinder.Bind<MediationBinder>();
             
             InjectionBinderCrossContext.BindInstance(InjectionBinderCrossContext);

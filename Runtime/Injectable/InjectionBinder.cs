@@ -5,6 +5,7 @@ using MVC.Editor.Console;
 using MVC.Runtime.Attributes;
 using MVC.Runtime.Bind.Bindings.Pool;
 using MVC.Runtime.Console;
+using MVC.Runtime.Contexts;
 using MVC.Runtime.Injectable.Utils;
 using MVC.Runtime.Root;
 using UnityEngine;
@@ -18,10 +19,17 @@ namespace MVC.Runtime.Injectable
 
         protected BindingPoolController _bindingPoolController;
         
+        protected IContext _context;
+        
         public InjectionBinder()
         {
             _container = new Dictionary<Type, List<InjectionBinding>>();
             _bindingPoolController = RootsManager.Instance.bindingPoolController;
+        }
+
+        public void SetContext(IContext context)
+        {
+            _context = context;
         }
 
         #region Bind
@@ -58,6 +66,7 @@ namespace MVC.Runtime.Injectable
             injectionBinding.Name = name;
             injectionBinding.SetValue(instance);
             injectionBinding.SetKey(injectionType);
+            injectionBinding.ContainerContext = _context;
             
             MVCConsole.Log(ConsoleLogType.Injection, "Binding: " + injectionType.Name + (name != "" ? (" Name: " + name) : ""));
             _container[injectionType].Add(injectionBinding);    
@@ -80,6 +89,7 @@ namespace MVC.Runtime.Injectable
             injectionBinding.Name = name;
             injectionBinding.SetValue(instance);
             injectionBinding.SetKey(injectionType);
+            injectionBinding.ContainerContext = _context;
             
             MVCConsole.Log(ConsoleLogType.Injection, "Binding: " + typeof(TAbstract).Name + (name != "" ? (" Name: " + name) : ""));
             _container[injectionType].Add(injectionBinding);    
@@ -239,12 +249,13 @@ namespace MVC.Runtime.Injectable
             if(!_container.ContainsKey(injectionType))
                 _container.Add(injectionType, new List<InjectionBinding>());
 
-            var injectionData = _bindingPoolController.GetAvailableBinding<InjectionBinding>();
-            injectionData.Name = name;
-            injectionData.SetValue(instance);
-            injectionData.SetKey(injectionType);
+            var injectionBinding = _bindingPoolController.GetAvailableBinding<InjectionBinding>();
+            injectionBinding.Name = name;
+            injectionBinding.SetValue(instance);
+            injectionBinding.SetKey(injectionType);
+            injectionBinding.ContainerContext = _context;
             
-            _container[injectionType].Add(injectionData);
+            _container[injectionType].Add(injectionBinding);
 
             return instance;
         }
@@ -258,12 +269,13 @@ namespace MVC.Runtime.Injectable
             if(!_container.ContainsKey(injectionType))
                 _container.Add(injectionType, new List<InjectionBinding>());
 
-            var injectionData = _bindingPoolController.GetAvailableBinding<InjectionBinding>();
-            injectionData.Name = name;
-            injectionData.SetValue(instance);
-            injectionData.SetKey(injectionType);
+            var injectionBinding = _bindingPoolController.GetAvailableBinding<InjectionBinding>();
+            injectionBinding.Name = name;
+            injectionBinding.SetValue(instance);
+            injectionBinding.SetKey(injectionType);
+            injectionBinding.ContainerContext = _context;
             
-            _container[injectionType].Add(injectionData);
+            _container[injectionType].Add(injectionBinding);
             return instance;
         }
 
