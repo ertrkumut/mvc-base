@@ -3,7 +3,7 @@ using MVC.Runtime.Contexts;
 
 namespace MVC.Runtime.Root
 {
-    public interface IContextRoot
+    public interface IRoot
     {
         void StartContext(bool forceToStart = false);
         void InitializeSubContexts();

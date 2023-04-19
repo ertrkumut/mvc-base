@@ -112,15 +112,8 @@ namespace MVC.Runtime.Contexts
         public virtual void InjectionBindings(){}
         public virtual void MediationBindings(){}
         public virtual void CommandBindings(){}
-        
-        public virtual void PostBindings()
-        {
-            
-        }
-        
-        public virtual void Launch()
-        {
-        }
+        public virtual void PostBindings() { }
+        public virtual void Launch() { }
 
         public virtual void DestroyContext()
         {
@@ -128,6 +121,7 @@ namespace MVC.Runtime.Contexts
             
             MediationBinder?.UnBindAll();
             InjectionBinder?.UnBindAll();
+            CommandBinder?.UnBindAll();
         }
     }
 }

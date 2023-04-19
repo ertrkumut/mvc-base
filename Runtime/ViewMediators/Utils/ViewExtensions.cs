@@ -176,23 +176,23 @@ namespace MVC.Runtime.ViewMediators.Utils
             return contextRoot == null ? null : contextRoot.GetContext();
         }
 
-        internal static IContextRoot FindRoot(this IView view)
+        internal static IRoot FindRoot(this IView view)
         {
             var parent = view.transform.parent;
             if (parent == null)
                 return null;
 
-            IContextRoot contextRoot = null;
+            IRoot root = null;
 
-            while (contextRoot == null)
+            while (root == null)
             {
-                contextRoot = parent.GetComponent<IContextRoot>();
+                root = parent.GetComponent<IRoot>();
                 if(parent.parent == null)
                     break;
                 parent = parent.parent;
             }
             
-            return contextRoot;
+            return root;
         }
 
         internal static bool IsMediatorMono(this IMediator mediator)

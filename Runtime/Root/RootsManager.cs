@@ -39,13 +39,13 @@ namespace MVC.Runtime.Root
 
         // private bool _contextsStarted;
         
-        private List<IContextRoot> _contextRootList;
+        private List<IRoot> _contextRootList;
         
         public void Initialize()
         {
             MVCConsole.Log(ConsoleLogType.Context, "RootsManager Created - Initialize Started!");
 
-            _contextRootList = new List<IContextRoot>();
+            _contextRootList = new List<IRoot>();
             
             bindingPoolController = new BindingPoolController();
             injectionBinderCrossContext = new InjectionBinderCrossContext();
@@ -91,17 +91,17 @@ namespace MVC.Runtime.Root
             }
         }
 
-        public void RegisterContext(IContextRoot contextRoot)
+        public void RegisterContext(IRoot root)
         {
-            _contextRootList.Add(contextRoot);
-            MVCConsole.Log(ConsoleLogType.Context, "Context Registered! Context: " + contextRoot.GetType().Name);
+            _contextRootList.Add(root);
+            MVCConsole.Log(ConsoleLogType.Context, "Root Registered! Root: " + root.GetType().Name);
         }
 
-        public void UnRegisterContext(IContextRoot contextRoot)
+        public void UnRegisterContext(IRoot root)
         {
             // _contextsStarted = false;
-            _contextRootList.Remove(contextRoot);
-            MVCConsole.Log(ConsoleLogType.Context, "Context Unregistered! Context: " + contextRoot.GetType().Name);
+            _contextRootList.Remove(root);
+            MVCConsole.Log(ConsoleLogType.Context, "Root Unregistered! Root: " + root.GetType().Name);
         }
 
         public void StartContexts()

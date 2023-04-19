@@ -2,7 +2,7 @@
 
 namespace MVC.Editor.CodeGenerator.TempRoots
 {
-    internal class TempRoot : ContextRoot<TempContext>
+    internal class TempRoot : Root<TempContext>
     {
         
     }
