@@ -52,12 +52,13 @@ namespace MVC.Runtime.Contexts
             CoreBindings();
         }
 
-        void IContext.InjectAllInstances()
+        void IContext.InjectAllInstances(bool isSubContext = false)
         {
             var injectedTypes = InjectionBinder.GetInjectedInstances();
             var injectedCrossContextTypes = InjectionBinderCrossContext.GetInjectedInstances();
 
-            injectedTypes = injectedTypes.Concat(injectedCrossContextTypes).ToList();
+            if (!isSubContext)
+                injectedTypes = injectedTypes.Concat(injectedCrossContextTypes).ToList();
 
             foreach (InjectionBinding injectedType in injectedTypes)
             {
@@ -85,7 +86,7 @@ namespace MVC.Runtime.Contexts
                 InjectionBinderCrossContext.PostConstructedObjects.Add(injectedType.Value);
             }
             
-            MVCConsole.Log(ConsoleLogType.Context, "Context Executed Post Construct Methods! Context: " + GetType().Name);
+            //MVCConsole.Log(ConsoleLogType.Context, "Context Executed Post Construct Methods! Context: " + GetType().Name);
         }
 
         protected virtual void CoreBindings()

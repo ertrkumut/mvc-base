@@ -21,7 +21,7 @@ namespace MVC.Runtime.Contexts
         void Initialize(GameObject contextGameObject, int initializeOrder, InjectionBinderCrossContext injectionBinderCrossContext, List<IContext> subContexts);
         void Start();
 
-        internal void InjectAllInstances();
+        internal void InjectAllInstances(bool isSubContext = false);
         internal void ExecutePostConstructMethods();
         
         void SignalBindings();

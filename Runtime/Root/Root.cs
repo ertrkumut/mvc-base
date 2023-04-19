@@ -82,7 +82,19 @@ namespace MVC.Runtime.Root
             
             _context.InjectAllInstances();
             _context.ExecutePostConstructMethods();
-
+            MVCConsole.Log(ConsoleLogType.Context, "Context Executed Post Construct Methods! => " + _context.GetType().Name);
+            
+            foreach (var subContextData in _subContexts)
+            {
+                subContextData.Key.InjectAllInstances(true);
+                //MVCConsole.Log(ConsoleLogType.Context, "Sub Context Started! Context: " + subContextData.Key.GetType().Name);
+            }
+            foreach (var subContextData in _subContexts)
+            {
+                subContextData.Key.ExecutePostConstructMethods();
+                MVCConsole.Log(ConsoleLogType.Context, "Sub Context Executed Post Construct Methods! => " + subContextData.Key.GetType().Name);
+            }
+            
             AfterStarBeforeLaunchContext();
             
             _rootsManager.OnContextReady?.Invoke(Context);
