@@ -22,6 +22,7 @@ namespace MVC.Runtime.Root
         internal bool mediationsBound;
         internal bool commandsBound;
         internal bool hasInitialized;
+        internal bool hasSetuped;
         internal bool hasLaunched;
         
         public bool autoBindInjections = true;
@@ -173,6 +174,25 @@ namespace MVC.Runtime.Root
             return list;
         }
 
+        public void Setup()
+        {
+            if(!hasInitialized)
+                return;
+            
+            if(hasSetuped)
+                return;
+            
+            Context.Setup();
+            hasSetuped = true;
+            MVCConsole.Log(ConsoleLogType.Context, "Context Setuped! => " + GetType().Name);
+
+            foreach (var subContext in _subContexts)
+            {
+                subContext.Key.Setup();
+                MVCConsole.Log(ConsoleLogType.Context, "Sub Context Setuped! => " + subContext.Value.ContextName);
+            }
+        }
+
         public virtual void Launch(bool forceToLaunch = false)
         {
             if(!hasInitialized)
@@ -184,20 +204,18 @@ namespace MVC.Runtime.Root
             if(hasLaunched)
                 return;
             
-            Context.Setup();
-            foreach (var subContext in _subContexts)
-            {
-                if(subContext.Value.autoLaunch)
-                {
-                    subContext.Key.Setup();
-                    MVCConsole.Log(ConsoleLogType.Context, "Sub Context Launched \n" + subContext.Value.ContextFullName);
-                }
-            }
-            
             Context.Launch();
             hasLaunched = true;
             
-            MVCConsole.Log(ConsoleLogType.Context, "Context Launched! Context: " + GetType().Name);
+            // foreach (var subContext in _subContexts)
+            // {
+            //     if(subContext.Value.UseLaunch)
+            //      {
+            //     subContext.Key.Launch();
+            //     MVCConsole.Log(ConsoleLogType.Context, "Sub Context Launched! => " + subContext.Value.ContextFullName);
+            //     }
+            // }
+            MVCConsole.Log(ConsoleLogType.Context, "Context Launched! => " + GetType().Name);
         }
     }
 }

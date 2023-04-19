@@ -8,6 +8,6 @@ namespace MVC.Runtime.Root
         public string ContextFullName;
         public string ContextName;
 
-        public bool autoLaunch = true;
+        public bool UseLaunch = true;
     }
 }

@@ -125,8 +125,14 @@ namespace MVC.Runtime.Root
             var coroutineProvider = (ICoroutineProvider) injectionBinderCrossContext.GetInstance(typeof(ICoroutineProvider));
             coroutineProvider.WaitForEndOfFrame(() =>
             {
-                foreach (var contextRoot in unreadyContextList)
+                for (var index = 0; index < unreadyContextList.Count; index++)
                 {
+                    var contextRoot = unreadyContextList[index];
+                    contextRoot.Setup();
+                }
+                for (var index = unreadyContextList.Count - 1; index >= 0; index--)
+                {
+                    var contextRoot = unreadyContextList[index];
                     contextRoot.Launch();
                 }
             });

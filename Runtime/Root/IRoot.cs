@@ -10,6 +10,7 @@ namespace MVC.Runtime.Root
         IContext GetContext();
         List<IContext> GetSubContexts();
         List<IContext> GetAllContexts();
+        void Setup();
         void Launch(bool forceToLaunch = false);
     }
 }
