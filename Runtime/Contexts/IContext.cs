@@ -29,7 +29,7 @@ namespace MVC.Runtime.Contexts
         void MediationBindings();
         void CommandBindings();
         void PostBindings();
-        
+        void Setup();
         void Launch();
         void DestroyContext();
     }

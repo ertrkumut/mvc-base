@@ -27,6 +27,11 @@ namespace MVC.Editor.CodeGenerator.TempRoots
             base.CommandBindings();
         }
 
+        public override void Setup()
+        {
+            base.Setup();
+        }
+        
         public override void Launch()
         {
             base.Launch();

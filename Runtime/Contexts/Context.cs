@@ -113,6 +113,7 @@ namespace MVC.Runtime.Contexts
         public virtual void MediationBindings(){}
         public virtual void CommandBindings(){}
         public virtual void PostBindings() { }
+        public virtual void Setup() { }
         public virtual void Launch() { }
 
         public virtual void DestroyContext()

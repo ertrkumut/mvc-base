@@ -184,11 +184,12 @@ namespace MVC.Runtime.Root
             if(hasLaunched)
                 return;
             
+            Context.Setup();
             foreach (var subContext in _subContexts)
             {
                 if(subContext.Value.autoLaunch)
                 {
-                    subContext.Key.Launch();
+                    subContext.Key.Setup();
                     MVCConsole.Log(ConsoleLogType.Context, "Sub Context Launched \n" + subContext.Value.ContextFullName);
                 }
             }
