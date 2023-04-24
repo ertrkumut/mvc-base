@@ -9,7 +9,7 @@ using UnityEngine;
 
 namespace MVC.Runtime.Root
 {
-    public class RootBase : MonoBehaviour, IContextRoot
+    public class RootBase : MonoBehaviour, IRoot
     {
         public List<SubContextData> SubContextTypes;
 
@@ -22,6 +22,7 @@ namespace MVC.Runtime.Root
         internal bool mediationsBound;
         internal bool commandsBound;
         internal bool hasInitialized;
+        internal bool hasSetuped;
         internal bool hasLaunched;
         
         public bool autoBindInjections = true;
@@ -77,17 +78,16 @@ namespace MVC.Runtime.Root
             
             if(signalsBound)
                 return;
+
+            Context.SignalBindings();
             signalsBound = true;
-            
+            MVCConsole.Log(ConsoleLogType.Context, "Context Bind Signals! Context: " + GetType().Name);
+
             foreach (var subContext in _subContexts)
             {
                 subContext.Key.SignalBindings();
                 MVCConsole.Log(ConsoleLogType.Context, "Sub Context Bind Signals Context: " + subContext.Key.GetType().Name);
             }
-            
-            Context.SignalBindings();
-
-            MVCConsole.Log(ConsoleLogType.Context, "Context Bind Signals! Context: " + GetType().Name);
         }
 
         public void BindInjections(bool forceToBind = false)
@@ -100,17 +100,16 @@ namespace MVC.Runtime.Root
             
             if(injectionsBound)
                 return;
-            
+
+            Context.InjectionBindings();
+            injectionsBound = true;
+            MVCConsole.Log(ConsoleLogType.Context, "Context Bind Injections! Context: " + GetType().Name);
+
             foreach (var subContext in _subContexts)
             {
                 subContext.Key.InjectionBindings();
                 MVCConsole.Log(ConsoleLogType.Context, "Sub Context Bind Injections Context: " + subContext.Key.GetType().Name);
             }
-            
-            Context.InjectionBindings();
-            injectionsBound = true;
-
-            MVCConsole.Log(ConsoleLogType.Context, "Context Bind Injections! Context: " + GetType().Name);
         }
 
         public void BindMediations(bool forceToBind = false)
@@ -123,17 +122,16 @@ namespace MVC.Runtime.Root
             
             if(mediationsBound)
                 return;
+
+            Context.MediationBindings();
+            mediationsBound = true;
+            MVCConsole.Log(ConsoleLogType.Context, "Context Bind Mediations! Context: " + GetType().Name);
             
             foreach (var subContext in _subContexts)
             {
                 subContext.Key.MediationBindings();
                 MVCConsole.Log(ConsoleLogType.Context, "Sub Context Bind Mediations Context: " + subContext.Key.GetType().Name);
             }
-            
-            Context.MediationBindings();
-            mediationsBound = true;
-
-            MVCConsole.Log(ConsoleLogType.Context, "Context Bind Mediations! Context: " + GetType().Name);
         }
 
         public void BindCommands(bool forceToBind = false)
@@ -147,16 +145,16 @@ namespace MVC.Runtime.Root
             if (commandsBound)
                 return;
             
+            Context.CommandBindings();
+            commandsBound = true;
+            MVCConsole.Log(ConsoleLogType.Context, "Context Bind Commands! Context: " + GetType().Name);
+            
             foreach (var subContext in _subContexts)
             {
                 subContext.Key.CommandBindings();
                 MVCConsole.Log(ConsoleLogType.Context, "Sub Context Bind Commands Context: " + subContext.Key.GetType().Name);
             }
             
-            Context.CommandBindings();
-            commandsBound = true;
-            
-            MVCConsole.Log(ConsoleLogType.Context, "Context Bind Commands! Context: " + GetType().Name);
         }
         
         public IContext GetContext()
@@ -176,6 +174,25 @@ namespace MVC.Runtime.Root
             return list;
         }
 
+        public void Setup()
+        {
+            if(!hasInitialized)
+                return;
+            
+            if(hasSetuped)
+                return;
+            
+            Context.Setup();
+            hasSetuped = true;
+            MVCConsole.Log(ConsoleLogType.Context, "Context Setuped! => " + GetType().Name);
+
+            foreach (var subContext in _subContexts)
+            {
+                subContext.Key.Setup();
+                MVCConsole.Log(ConsoleLogType.Context, "Sub Context Setuped! => " + subContext.Value.ContextName);
+            }
+        }
+
         public virtual void Launch(bool forceToLaunch = false)
         {
             if(!hasInitialized)
@@ -187,19 +204,18 @@ namespace MVC.Runtime.Root
             if(hasLaunched)
                 return;
             
-            foreach (var subContext in _subContexts)
-            {
-                if(subContext.Value.autoLaunch)
-                {
-                    subContext.Key.Launch();
-                    MVCConsole.Log(ConsoleLogType.Context, "Sub Context Launched \n" + subContext.Value.ContextFullName);
-                }
-            }
-            
             Context.Launch();
             hasLaunched = true;
             
-            MVCConsole.Log(ConsoleLogType.Context, "Context Launched! Context: " + GetType().Name);
+            // foreach (var subContext in _subContexts)
+            // {
+            //     if(subContext.Value.UseLaunch)
+            //      {
+            //     subContext.Key.Launch();
+            //     MVCConsole.Log(ConsoleLogType.Context, "Sub Context Launched! => " + subContext.Value.ContextFullName);
+            //     }
+            // }
+            MVCConsole.Log(ConsoleLogType.Context, "Context Launched! => " + GetType().Name);
         }
     }
 }

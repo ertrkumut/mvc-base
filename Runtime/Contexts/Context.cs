@@ -1,7 +1,5 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
-using MVC.Editor.Console;
-using MVC.Runtime.Console;
 using MVC.Runtime.Controller.Binder;
 using MVC.Runtime.Function.Provider;
 using MVC.Runtime.Injectable;
@@ -35,7 +33,7 @@ namespace MVC.Runtime.Contexts
             _gameObject = contextGameObject;
             InitializeOrder = initializeOrder;
             InjectionBinderCrossContext = injectionBinderCrossContext;
-            InjectionBinderCrossContext.SetContext(this);
+            InjectionBinderCrossContext.SetBindedContext(this);
             SubContexts = subContexts;
 
             AllContexts = subContexts;
@@ -49,30 +47,30 @@ namespace MVC.Runtime.Contexts
             CoreBindings();
         }
 
-        void IContext.InjectAllInstances()
+        void IContext.InjectAllInstances(bool isSubContext = false)
         {
-            var injectedBindings = InjectionBinder.GetInjectedInstances();
-            var injectedCrossContextBindings = InjectionBinderCrossContext.GetInjectedInstances();
+            var injectionBindings = InjectionBinder.GetAllInjectionBindings();
+            var crossContextInjectedBindings = InjectionBinderCrossContext.GetAllInjectionBindings();
 
-            injectedBindings = injectedBindings.Concat(injectedCrossContextBindings).ToList();
+            if (!isSubContext)
+                injectionBindings = injectionBindings.Concat(crossContextInjectedBindings).ToList();
 
-            foreach (InjectionBinding binding in injectedBindings)
+            foreach (InjectionBinding binding in injectionBindings)
             {
                 if(binding == null)
                     continue;
 
-                if (binding.ContainerContext == null)
+                if (binding.BindedContext == null)
                     this.TryToInjectObject(binding.Value);
                 else
-                    binding.ContainerContext.TryToInjectObject(binding.Value);
+                    binding.BindedContext.TryToInjectObject(binding.Value);
             }
-            
         }
         
         void IContext.ExecutePostConstructMethods()
         {
-            var injectedTypes = InjectionBinder.GetInjectedInstances();
-            var injectedCrossContextTypes = InjectionBinderCrossContext.GetInjectedInstances();
+            var injectedTypes = InjectionBinder.GetAllInjectionBindings();
+            var injectedCrossContextTypes = InjectionBinderCrossContext.GetAllInjectionBindings();
 
             injectedTypes = injectedTypes.Concat(injectedCrossContextTypes).ToList();
             
@@ -86,13 +84,13 @@ namespace MVC.Runtime.Contexts
                 InjectionBinderCrossContext.PostConstructedObjects.Add(injectedType.Value);
             }
             
-            MVCConsole.Log(ConsoleLogType.Context, "Context Executed Post Construct Methods! Context: " + GetType().Name);
+            //MVCConsole.Log(ConsoleLogType.Context, "Context Executed Post Construct Methods! Context: " + GetType().Name);
         }
 
         protected virtual void CoreBindings()
         {
             InjectionBinder = new InjectionBinder();
-            //InjectionBinder.SetContext(this);
+            InjectionBinder.SetBindedContext(this);
             MediationBinder = InjectionBinder.Bind<MediationBinder>();
             
             InjectionBinderCrossContext.BindInstance(InjectionBinderCrossContext);
@@ -114,15 +112,9 @@ namespace MVC.Runtime.Contexts
         public virtual void InjectionBindings(){}
         public virtual void MediationBindings(){}
         public virtual void CommandBindings(){}
-        
-        public virtual void PostBindings()
-        {
-            
-        }
-        
-        public virtual void Launch()
-        {
-        }
+        public virtual void PostBindings() { }
+        public virtual void Setup() { }
+        public virtual void Launch() { }
 
         public virtual void DestroyContext()
         {
@@ -130,6 +122,7 @@ namespace MVC.Runtime.Contexts
             
             MediationBinder?.UnBindAll();
             InjectionBinder?.UnBindAll();
+            CommandBinder?.UnBindAll();
         }
     }
 }

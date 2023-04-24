@@ -19,7 +19,7 @@ namespace MVC.Runtime.Injectable
 
         protected BindingPoolController _bindingPoolController;
         
-        protected IContext _context;
+        protected IContext _bindedContext;
         
         public InjectionBinder()
         {
@@ -27,13 +27,12 @@ namespace MVC.Runtime.Injectable
             _bindingPoolController = RootsManager.Instance.bindingPoolController;
         }
 
-        public void SetContext(IContext context)
-        {
-            _context = context;
-        }
-
         #region Bind
 
+        public void SetBindedContext(IContext context)
+        {
+            _bindedContext = context;
+        }
         public TBindingType Bind<TBindingType>(string name = "")
             where TBindingType : new()
         {
@@ -66,7 +65,7 @@ namespace MVC.Runtime.Injectable
             injectionBinding.Name = name;
             injectionBinding.SetValue(instance);
             injectionBinding.SetKey(injectionType);
-            injectionBinding.ContainerContext = _context;
+            injectionBinding.BindedContext = _bindedContext;
             
             MVCConsole.Log(ConsoleLogType.Injection, "Binding: " + injectionType.Name + (name != "" ? (" Name: " + name) : ""));
             _container[injectionType].Add(injectionBinding);    
@@ -89,7 +88,7 @@ namespace MVC.Runtime.Injectable
             injectionBinding.Name = name;
             injectionBinding.SetValue(instance);
             injectionBinding.SetKey(injectionType);
-            injectionBinding.ContainerContext = _context;
+            injectionBinding.BindedContext = _bindedContext;
             
             MVCConsole.Log(ConsoleLogType.Injection, "Binding: " + typeof(TAbstract).Name + (name != "" ? (" Name: " + name) : ""));
             _container[injectionType].Add(injectionBinding);    
@@ -190,8 +189,8 @@ namespace MVC.Runtime.Injectable
             }
             
             var values = _container[type];
-            var injectionData = values.FirstOrDefault(x => x.Name == name);
-            return injectionData == null ? null : injectionData.Value;
+            var binding = values.FirstOrDefault(x => x.Name == name);
+            return binding == null ? null : binding.Value;
         }
 
         #endregion
@@ -253,7 +252,8 @@ namespace MVC.Runtime.Injectable
             injectionBinding.Name = name;
             injectionBinding.SetValue(instance);
             injectionBinding.SetKey(injectionType);
-            injectionBinding.ContainerContext = _context;
+            injectionBinding.BindedContext = _bindedContext;
+
             
             _container[injectionType].Add(injectionBinding);
 
@@ -273,7 +273,7 @@ namespace MVC.Runtime.Injectable
             injectionBinding.Name = name;
             injectionBinding.SetValue(instance);
             injectionBinding.SetKey(injectionType);
-            injectionBinding.ContainerContext = _context;
+            injectionBinding.BindedContext = _bindedContext;
             
             _container[injectionType].Add(injectionBinding);
             return instance;
@@ -281,7 +281,7 @@ namespace MVC.Runtime.Injectable
 
         #endregion
 
-        public List<InjectionBinding> GetInjectedInstances()
+        public List<InjectionBinding> GetAllInjectionBindings()
         {
             return _container.Values
                 .ToList()

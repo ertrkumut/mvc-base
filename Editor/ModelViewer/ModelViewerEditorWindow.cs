@@ -68,7 +68,7 @@ namespace MVC.Editor.ModelViewer
             EditorGUILayout.LabelField("Local Injected Objects", EditorStyles.boldLabel);
             
             var injectionBinder = _inspectedRoot.Context.InjectionBinder;
-            var injectedObjects = injectionBinder.GetInjectedInstances();
+            var injectedObjects = injectionBinder.GetAllInjectionBindings();
 
             foreach (InjectionBinding injectedObject in injectedObjects)
             {
@@ -83,7 +83,7 @@ namespace MVC.Editor.ModelViewer
             EditorGUILayout.LabelField("Cross Context Injected Objects", EditorStyles.boldLabel);
             
             var crossContextInjectionBinder = _inspectedRoot.Context.InjectionBinderCrossContext;
-            var crossContextInjectedObjects = crossContextInjectionBinder.GetInjectedInstances();
+            var crossContextInjectedObjects = crossContextInjectionBinder.GetAllInjectionBindings();
 
             foreach (InjectionBinding injectedObject in crossContextInjectedObjects)
             {

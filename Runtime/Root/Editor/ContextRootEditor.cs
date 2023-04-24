@@ -242,8 +242,8 @@ namespace MVC.Root.Editor
                     }
                     
                     EditorGUILayout.EndHorizontal();
-                    contextData.autoLaunch =
-                        EditorGUILayout.Toggle(new GUIContent("Auto Launch"), contextData.autoLaunch);
+                    // contextData.UseLaunch =
+                    //     EditorGUILayout.Toggle(new GUIContent("Use Launch"), contextData.UseLaunch);
                     EditorGUILayout.EndVertical();
                     EditorGUILayout.Space(5);
                 }

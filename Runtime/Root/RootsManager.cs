@@ -39,13 +39,13 @@ namespace MVC.Runtime.Root
 
         // private bool _contextsStarted;
         
-        private List<IContextRoot> _contextRootList;
+        private List<IRoot> _contextRootList;
         
         public void Initialize()
         {
             MVCConsole.Log(ConsoleLogType.Context, "RootsManager Created - Initialize Started!");
 
-            _contextRootList = new List<IContextRoot>();
+            _contextRootList = new List<IRoot>();
             
             bindingPoolController = new BindingPoolController();
             injectionBinderCrossContext = new InjectionBinderCrossContext();
@@ -67,7 +67,7 @@ namespace MVC.Runtime.Root
 
         private void SetSignalsNameInInjectionBinder(InjectionBinder injectionBinder)
         {
-            var injectedObjectList = injectionBinder.GetInjectedInstances();
+            var injectedObjectList = injectionBinder.GetAllInjectionBindings();
 
             foreach (var injectionBinding in injectedObjectList)
             {
@@ -91,17 +91,17 @@ namespace MVC.Runtime.Root
             }
         }
 
-        public void RegisterContext(IContextRoot contextRoot)
+        public void RegisterContext(IRoot root)
         {
-            _contextRootList.Add(contextRoot);
-            MVCConsole.Log(ConsoleLogType.Context, "Context Registered! Context: " + contextRoot.GetType().Name);
+            _contextRootList.Add(root);
+            MVCConsole.Log(ConsoleLogType.Context, "Root Registered! Root: " + root.GetType().Name);
         }
 
-        public void UnRegisterContext(IContextRoot contextRoot)
+        public void UnRegisterContext(IRoot root)
         {
             // _contextsStarted = false;
-            _contextRootList.Remove(contextRoot);
-            MVCConsole.Log(ConsoleLogType.Context, "Context Unregistered! Context: " + contextRoot.GetType().Name);
+            _contextRootList.Remove(root);
+            MVCConsole.Log(ConsoleLogType.Context, "Root Unregistered! Root: " + root.GetType().Name);
         }
 
         public void StartContexts()
@@ -125,8 +125,14 @@ namespace MVC.Runtime.Root
             var coroutineProvider = (ICoroutineProvider) injectionBinderCrossContext.GetInstance(typeof(ICoroutineProvider));
             coroutineProvider.WaitForEndOfFrame(() =>
             {
-                foreach (var contextRoot in unreadyContextList)
+                for (var index = 0; index < unreadyContextList.Count; index++)
                 {
+                    var contextRoot = unreadyContextList[index];
+                    contextRoot.Setup();
+                }
+                for (var index = unreadyContextList.Count - 1; index >= 0; index--)
+                {
+                    var contextRoot = unreadyContextList[index];
                     contextRoot.Launch();
                 }
             });

@@ -259,9 +259,9 @@ namespace MVC.Runtime.Injectable.Utils
             var allContexts = context.AllContexts;
             
             object injectionValue = null;
-            foreach (var theContext in allContexts)
+            foreach (var cntxt in allContexts)
             {
-                injectionValue = theContext.InjectionBinder.GetInstance(injectionType, injectAttribute.Name);
+                injectionValue = cntxt.InjectionBinder.GetInstance(injectionType, injectAttribute.Name);
                 if (injectionValue != null)
                     return injectionValue;
             }

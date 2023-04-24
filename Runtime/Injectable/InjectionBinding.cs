@@ -6,6 +6,6 @@ namespace MVC.Runtime.Injectable
     public class InjectionBinding : Binding
     {
         public string Name;
-        public IContext ContainerContext;
+        public IContext BindedContext;
     }
 }

@@ -7,7 +7,7 @@ using UnityEngine;
 
 namespace MVC.Runtime.Root
 {
-    public class ContextRoot<TContextType> : RootBase
+    public class Root<TContextType> : RootBase
         where TContextType : IContext, new()
     {
         protected TContextType _context
@@ -66,15 +66,15 @@ namespace MVC.Runtime.Root
             hasInitialized = true;
             AfterCreateBeforeStartContext();
 
+            MVCConsole.Log(ConsoleLogType.Context, "Context Started! Context: " + GetType().Name);
+            _context.Start();
+            
             foreach (var subContextData in _subContexts)
             {
                 subContextData.Key.Start();
                 MVCConsole.Log(ConsoleLogType.Context, "Sub Context Started! Context: " + subContextData.Key.GetType().Name);
             }
-            
-            MVCConsole.Log(ConsoleLogType.Context, "Context Started! Context: " + GetType().Name);
-            _context.Start();
-            
+
             BindInjections();
             BindSignals();
             BindMediations();
@@ -88,7 +88,19 @@ namespace MVC.Runtime.Root
 
             _context.InjectAllInstances();
             _context.ExecutePostConstructMethods();
-
+            MVCConsole.Log(ConsoleLogType.Context, "Context Executed Post Construct Methods! => " + _context.GetType().Name);
+            
+            foreach (var subContextData in _subContexts)
+            {
+                subContextData.Key.InjectAllInstances(true);
+                //MVCConsole.Log(ConsoleLogType.Context, "Sub Context Started! Context: " + subContextData.Key.GetType().Name);
+            }
+            foreach (var subContextData in _subContexts)
+            {
+                subContextData.Key.ExecutePostConstructMethods();
+                MVCConsole.Log(ConsoleLogType.Context, "Sub Context Executed Post Construct Methods! => " + subContextData.Key.GetType().Name);
+            }
+            
             AfterStarBeforeLaunchContext();
             
             _rootsManager.OnContextReady?.Invoke(Context);
@@ -102,6 +114,7 @@ namespace MVC.Runtime.Root
             
             injectionsBound = false;
             mediationsBound = false;
+            commandsBound = false;
         }
     }
 }
