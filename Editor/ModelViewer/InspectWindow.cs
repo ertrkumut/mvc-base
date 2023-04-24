@@ -139,12 +139,12 @@ namespace MVC.Editor.ModelViewer
                 .FirstOrDefault(x => x.GetType().Name == contextName);
 
             var binding = context.InjectionBinder
-                .GetInjectedInstances()
+                .GetAllInjectionBindings()
                 .FirstOrDefault(x => x.Value.GetType().Name == objectTypeName && x.Name == bindingName);
             
             if(binding == null)
                 binding = context.InjectionBinderCrossContext
-                    .GetInjectedInstances()
+                    .GetAllInjectionBindings()
                     .FirstOrDefault(x => x.Value.GetType().Name == objectTypeName && x.Name == bindingName);
 
             if (binding != null)

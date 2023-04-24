@@ -67,7 +67,7 @@ namespace MVC.Runtime.Root
 
         private void SetSignalsNameInInjectionBinder(InjectionBinder injectionBinder)
         {
-            var injectedObjectList = injectionBinder.GetInjectedInstances();
+            var injectedObjectList = injectionBinder.GetAllInjectionBindings();
 
             foreach (var injectionBinding in injectedObjectList)
             {
