@@ -188,8 +188,11 @@ namespace MVC.Runtime.Root
 
             foreach (var subContext in _subContexts)
             {
-                subContext.Key.Setup();
-                MVCConsole.Log(ConsoleLogType.Context, "Sub Context Setuped! => " + subContext.Value.ContextName);
+                if (subContext.Value.AutoSetup)
+                {
+                    subContext.Key.Setup();
+                    MVCConsole.Log(ConsoleLogType.Context, "Sub Context Setuped! => " + subContext.Value.ContextName);
+                }
             }
         }
 
