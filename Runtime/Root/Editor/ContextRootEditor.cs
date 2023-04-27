@@ -242,8 +242,17 @@ namespace MVC.Root.Editor
                     }
                     
                     EditorGUILayout.EndHorizontal();
-                    contextData.AutoSetup =
+                    var contextDataAutoSetup =
                         EditorGUILayout.Toggle(new GUIContent("AutoSetup"), contextData.AutoSetup);
+                    
+                    if (EditorGUI.EndChangeCheck())
+                    {
+                        Undo.RecordObject(_root, "auto-setup");
+                        contextData.AutoSetup = contextDataAutoSetup;
+                
+                        if(!Application.isPlaying)
+                            EditorSceneManager.MarkSceneDirty(SceneManager.GetActiveScene());
+                    }
                     EditorGUILayout.EndVertical();
                     EditorGUILayout.Space(5);
                 }
