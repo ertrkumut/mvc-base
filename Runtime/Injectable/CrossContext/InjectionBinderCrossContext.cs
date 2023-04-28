@@ -7,7 +7,6 @@ namespace MVC.Runtime.Injectable.CrossContext
     public class InjectionBinderCrossContext : InjectionBinder
     {
         internal List<object> PostConstructedObjects;
-
         public InjectionBinderCrossContext()
         {
             PostConstructedObjects = new List<object>();

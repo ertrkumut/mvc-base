@@ -15,14 +15,11 @@ namespace MVC.Runtime.Contexts
     public class Context : IContext
     {
         protected GameObject _gameObject;
-
         public bool ContextStarted { get; set; }
-        
         public MediationBinder MediationBinder { get; set; }
         public InjectionBinder InjectionBinder { get; set; }
         public InjectionBinderCrossContext InjectionBinderCrossContext { get; set; }
         public ICommandBinder CommandBinder { get; set; }
-
         public List<IContext> SubContexts { get; set; }
         public List<IContext> AllContexts { get; set; }
         
@@ -33,7 +30,6 @@ namespace MVC.Runtime.Contexts
             _gameObject = contextGameObject;
             InitializeOrder = initializeOrder;
             InjectionBinderCrossContext = injectionBinderCrossContext;
-            InjectionBinderCrossContext.SetBindedContext(this);
             SubContexts = subContexts;
 
             AllContexts = subContexts;
@@ -52,8 +48,8 @@ namespace MVC.Runtime.Contexts
             var injectionBindings = InjectionBinder.GetAllInjectionBindings();
             var crossContextInjectedBindings = InjectionBinderCrossContext.GetAllInjectionBindings();
 
-            if (!isSubContext)
-                injectionBindings = injectionBindings.Concat(crossContextInjectedBindings).ToList();
+            injectionBindings = injectionBindings.Concat(crossContextInjectedBindings).ToList();
+
 
             foreach (InjectionBinding binding in injectionBindings)
             {
@@ -63,7 +59,7 @@ namespace MVC.Runtime.Contexts
                 if (binding.BindedContext == null)
                     this.TryToInjectObject(binding.Value);
                 else
-                    binding.BindedContext.TryToInjectObject(binding.Value);
+                    binding.TryToInjectObject();
             }
         }
         
@@ -83,17 +79,17 @@ namespace MVC.Runtime.Contexts
                 
                 InjectionBinderCrossContext.PostConstructedObjects.Add(injectedType.Value);
             }
-            
-            //MVCConsole.Log(ConsoleLogType.Context, "Context Executed Post Construct Methods! Context: " + GetType().Name);
         }
 
         protected virtual void CoreBindings()
         {
             InjectionBinder = new InjectionBinder();
-            InjectionBinder.SetBindedContext(this);
+            //InjectionBinder.SetBindedContext(this);
+            
             MediationBinder = InjectionBinder.Bind<MediationBinder>();
             
             InjectionBinderCrossContext.BindInstance(InjectionBinderCrossContext);
+            InjectionBinderCrossContext.SetBindedContext(this);
 
             CommandBinder = InjectionBinder.Bind<ICommandBinder, CommandBinder>();
             ((CommandBinder) CommandBinder).Context = this;

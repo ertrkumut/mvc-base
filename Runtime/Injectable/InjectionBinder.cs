@@ -65,9 +65,9 @@ namespace MVC.Runtime.Injectable
             injectionBinding.Name = name;
             injectionBinding.SetValue(instance);
             injectionBinding.SetKey(injectionType);
-            injectionBinding.BindedContext = _bindedContext;
             
             MVCConsole.Log(ConsoleLogType.Injection, "Binding: " + injectionType.Name + (name != "" ? (" Name: " + name) : ""));
+
             _container[injectionType].Add(injectionBinding);    
         }
 
@@ -88,7 +88,6 @@ namespace MVC.Runtime.Injectable
             injectionBinding.Name = name;
             injectionBinding.SetValue(instance);
             injectionBinding.SetKey(injectionType);
-            injectionBinding.BindedContext = _bindedContext;
             
             MVCConsole.Log(ConsoleLogType.Injection, "Binding: " + typeof(TAbstract).Name + (name != "" ? (" Name: " + name) : ""));
             _container[injectionType].Add(injectionBinding);    
@@ -212,7 +211,7 @@ namespace MVC.Runtime.Injectable
                 instance = (TBindingType) GetInstance(bindingType, name);
                 MVCConsole.LogWarning(ConsoleLogType.Injection, "There is a same injection! \nType: " + typeof(TBindingType) + "name: " + name);
             }
-            
+
             return instance;
         }
 
@@ -254,7 +253,6 @@ namespace MVC.Runtime.Injectable
             injectionBinding.SetKey(injectionType);
             injectionBinding.BindedContext = _bindedContext;
 
-            
             _container[injectionType].Add(injectionBinding);
 
             return instance;

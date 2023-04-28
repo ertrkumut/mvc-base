@@ -16,6 +16,16 @@ namespace MVC.Runtime.Injectable.Utils
 {
     public static class InjectionExtensions
     {
+        internal static bool TryToInjectObject(this InjectionBinding binding)
+        {
+            var injectableFields = GetInjectableFieldInfoList<InjectAttribute>(binding.Value);
+            var injectableProperties = GetInjectablePropertyInfoList<InjectAttribute>(binding.Value);
+            
+            injectableFields.ForEach(x => SetInjectedValue(binding.Value, binding.BindedContext, x));
+            injectableProperties.ForEach(x => SetInjectedValue(binding.Value, binding.BindedContext, x));
+            
+            return true;
+        }
         internal static bool TryToInjectObject(this IContext context, object injectedObject)
         {
             var injectableFields = GetInjectableFieldInfoList<InjectAttribute>(injectedObject);
@@ -230,14 +240,26 @@ namespace MVC.Runtime.Injectable.Utils
             if (injectionValue == null)
             {
                 var errString =
-                    "<b><color=#FF6666>► INJECTION FAILED!</color></b> There is no injected property in container!" +
-                    "\n<b><color=#FF6666>► Instance Type:</color><color=#FFEFD5> " + objectInstance.GetType().Name + "</color></b>" +
-                    "\n<b><color=#FF6666>► Injection Type:</color> " + injectionType.Name + " - " +
-                    injectedMemberInfo.Name + "</b>";
-                
-                Debug.LogError(errString);
+                "<b><color=#FF6666>► INJECTION FAILED!</color></b> There is no injected property in container!" +
+                "\n<b><color=#FF6666>► Instance Type:</color><color=#FFEFD5> " + objectInstance.GetType().Name + "</color></b>" +
+                "\n<b><color=#FF6666>► Injection Type:</color> " + injectionType.Name + " - " +
+                injectedMemberInfo.Name + "</b>"+
+                "\n<b><color=#FF6666>► Injected Context:</color> "+ context + "</b>";
                 MVCConsole.LogError(ConsoleLogType.Injection, errString);
+                return;
             }
+            // else
+            // {
+            //     var errString =
+            //         "<b><color=#66FF66>► INJECTION COMPLETED!</color></b>" +
+            //         "\n<b><color=#66FF66>► Instance Type:</color><color=#FFEFD5> " + objectInstance.GetType().Name + "</color></b>" +
+            //         "\n<b><color=#66FF66>► Injection Type:</color> " + injectionType.Name + " - " +
+            //         injectedMemberInfo.Name + "</b>"+
+            //         "\n<b><color=#66FF66>► Injected Context:</color> "+ context + "</b>";
+            //     Debug.Log(errString);
+            //     MVCConsole.Log(ConsoleLogType.Injection, errString);
+            // }
+                
             
             if (injectedMemberInfo.MemberType == MemberTypes.Field)
                 (injectedMemberInfo as FieldInfo).SetValue(objectInstance, injectionValue);

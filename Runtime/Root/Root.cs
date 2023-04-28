@@ -1,9 +1,7 @@
-﻿using System.Collections.Generic;
-using System.Linq;
+﻿using System.Linq;
 using MVC.Editor.Console;
 using MVC.Runtime.Console;
 using MVC.Runtime.Contexts;
-using UnityEngine;
 
 namespace MVC.Runtime.Root
 {
@@ -49,18 +47,18 @@ namespace MVC.Runtime.Root
         private void CreateContext()
         {
             BeforeCreateContext();
-            
+            MVCConsole.Log(ConsoleLogType.Context, "Context - Initialize "+ GetType().Name);
             _context = new TContextType();
             Context = _context;
 
-            if (_subContexts == null)
-                _subContexts = new Dictionary<IContext, SubContextData>();
             _context.Initialize(gameObject, initializeOrder, _rootsManager.injectionBinderCrossContext, _subContexts.Keys.ToList());
+            
+            
         }
         
         public override void StartContext(bool forceToStart = false)
         {
-            if(!autoInitialize && !forceToStart)
+            if (!autoInitialize && !forceToStart)
                 return;
 
             hasInitialized = true;
@@ -68,37 +66,43 @@ namespace MVC.Runtime.Root
 
             MVCConsole.Log(ConsoleLogType.Context, "Context Started! Context: " + GetType().Name);
             _context.Start();
-            
-            foreach (var subContextData in _subContexts)
-            {
-                subContextData.Key.Start();
-                MVCConsole.Log(ConsoleLogType.Context, "Sub Context Started! Context: " + subContextData.Key.GetType().Name);
-            }
-
             BindInjections();
             BindSignals();
             BindMediations();
             BindCommands();
             
-            foreach (var subContextData in _subContexts)
-                subContextData.Key.InjectAllInstances();
-            
-            foreach (var subContextData in _subContexts)
-                subContextData.Key.ExecutePostConstructMethods();
+            foreach (var subContext in _subContexts)
+            {
+                MVCConsole.Log(ConsoleLogType.Context, "Sub Context Started! Context: " + subContext.Key.GetType().Name);
+                subContext.Key.Start();
+                
+                MVCConsole.Log(ConsoleLogType.Context, "Sub Context Bind Injections Context: " + subContext.Key.GetType().Name);
+                subContext.Key.InjectionBindings();
+                
+                MVCConsole.Log(ConsoleLogType.Context, "Sub Context Bind Signals Context: " + subContext.Key.GetType().Name);
+                subContext.Key.SignalBindings();
+                
+                MVCConsole.Log(ConsoleLogType.Context, "Sub Context Bind Mediations Context: " + subContext.Key.GetType().Name);
+                subContext.Key.MediationBindings();
+                
+                MVCConsole.Log(ConsoleLogType.Context, "Sub Context Bind Commands Context: " + subContext.Key.GetType().Name);
+                subContext.Key.CommandBindings();
+            }
 
+            MVCConsole.Log(ConsoleLogType.Context, "Context InjectAllInstances => " + _context.GetType().Name);
             _context.InjectAllInstances();
-            _context.ExecutePostConstructMethods();
             MVCConsole.Log(ConsoleLogType.Context, "Context Executed Post Construct Methods! => " + _context.GetType().Name);
+            _context.ExecutePostConstructMethods();
             
             foreach (var subContextData in _subContexts)
             {
+                MVCConsole.Log(ConsoleLogType.Context, "Sub Context InjectAllInstances! => " + subContextData.Key.GetType().Name);
                 subContextData.Key.InjectAllInstances(true);
-                //MVCConsole.Log(ConsoleLogType.Context, "Sub Context Started! Context: " + subContextData.Key.GetType().Name);
             }
             foreach (var subContextData in _subContexts)
             {
-                subContextData.Key.ExecutePostConstructMethods();
                 MVCConsole.Log(ConsoleLogType.Context, "Sub Context Executed Post Construct Methods! => " + subContextData.Key.GetType().Name);
+                subContextData.Key.ExecutePostConstructMethods();
             }
             
             AfterStarBeforeLaunchContext();

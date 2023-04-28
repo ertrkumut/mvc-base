@@ -141,7 +141,7 @@ namespace MVC.Runtime.Root
         public bool IsContextReady(IContext context)
         {
             return _contextRootList
-                .FirstOrDefault(contextRoot => contextRoot.GetContext() == context).GetContext()
+                .FirstOrDefault(contextRoot => contextRoot.GetContext() == context)!.GetContext()
                 .ContextStarted;
         }
     }

@@ -13,7 +13,7 @@ namespace MVC.Runtime.Root
     {
         public List<SubContextData> SubContextTypes;
 
-        protected Dictionary<IContext, SubContextData> _subContexts;
+        protected Dictionary<IContext, SubContextData> _subContexts = new();
 
         public int initializeOrder;
 
@@ -41,7 +41,7 @@ namespace MVC.Runtime.Root
             if(SubContextTypes == null || SubContextTypes.Count == 0)
                 return;
 
-            _subContexts = new Dictionary<IContext, SubContextData>();
+            _subContexts = new ();
 
             var assemblyTypes = AssemblyExtensions.GetAllContextTypes();
             
@@ -79,15 +79,15 @@ namespace MVC.Runtime.Root
             if(signalsBound)
                 return;
 
+            MVCConsole.Log(ConsoleLogType.Context, "Context Bind Signals! Context: " + GetType().Name);
             Context.SignalBindings();
             signalsBound = true;
-            MVCConsole.Log(ConsoleLogType.Context, "Context Bind Signals! Context: " + GetType().Name);
 
-            foreach (var subContext in _subContexts)
-            {
-                subContext.Key.SignalBindings();
-                MVCConsole.Log(ConsoleLogType.Context, "Sub Context Bind Signals Context: " + subContext.Key.GetType().Name);
-            }
+            // foreach (var subContext in _subContexts)
+            // {
+            //     subContext.Key.SignalBindings();
+            //     MVCConsole.Log(ConsoleLogType.Context, "Sub Context Bind Signals Context: " + subContext.Key.GetType().Name);
+            // }
         }
 
         public void BindInjections(bool forceToBind = false)
@@ -101,15 +101,15 @@ namespace MVC.Runtime.Root
             if(injectionsBound)
                 return;
 
+            MVCConsole.Log(ConsoleLogType.Context, "Context Bind Injections! Context: " + GetType().Name);
             Context.InjectionBindings();
             injectionsBound = true;
-            MVCConsole.Log(ConsoleLogType.Context, "Context Bind Injections! Context: " + GetType().Name);
 
-            foreach (var subContext in _subContexts)
-            {
-                subContext.Key.InjectionBindings();
-                MVCConsole.Log(ConsoleLogType.Context, "Sub Context Bind Injections Context: " + subContext.Key.GetType().Name);
-            }
+            // foreach (var subContext in _subContexts)
+            // {
+            //     subContext.Key.InjectionBindings();
+            //     MVCConsole.Log(ConsoleLogType.Context, "Sub Context Bind Injections Context: " + subContext.Key.GetType().Name);
+            // }
         }
 
         public void BindMediations(bool forceToBind = false)
@@ -123,15 +123,15 @@ namespace MVC.Runtime.Root
             if(mediationsBound)
                 return;
 
+            MVCConsole.Log(ConsoleLogType.Context, "Context Bind Mediations! Context: " + GetType().Name);
             Context.MediationBindings();
             mediationsBound = true;
-            MVCConsole.Log(ConsoleLogType.Context, "Context Bind Mediations! Context: " + GetType().Name);
             
-            foreach (var subContext in _subContexts)
-            {
-                subContext.Key.MediationBindings();
-                MVCConsole.Log(ConsoleLogType.Context, "Sub Context Bind Mediations Context: " + subContext.Key.GetType().Name);
-            }
+            // foreach (var subContext in _subContexts)
+            // {
+            //     subContext.Key.MediationBindings();
+            //     MVCConsole.Log(ConsoleLogType.Context, "Sub Context Bind Mediations Context: " + subContext.Key.GetType().Name);
+            // }
         }
 
         public void BindCommands(bool forceToBind = false)
@@ -145,15 +145,15 @@ namespace MVC.Runtime.Root
             if (commandsBound)
                 return;
             
+            MVCConsole.Log(ConsoleLogType.Context, "Context Bind Commands! Context: " + GetType().Name);
             Context.CommandBindings();
             commandsBound = true;
-            MVCConsole.Log(ConsoleLogType.Context, "Context Bind Commands! Context: " + GetType().Name);
             
-            foreach (var subContext in _subContexts)
-            {
-                subContext.Key.CommandBindings();
-                MVCConsole.Log(ConsoleLogType.Context, "Sub Context Bind Commands Context: " + subContext.Key.GetType().Name);
-            }
+            // foreach (var subContext in _subContexts)
+            // {
+            //     subContext.Key.CommandBindings();
+            //     MVCConsole.Log(ConsoleLogType.Context, "Sub Context Bind Commands Context: " + subContext.Key.GetType().Name);
+            // }
             
         }
         
