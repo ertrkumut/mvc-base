@@ -71,11 +71,10 @@ namespace MVC.Runtime.Screen.View
         {
             ScreenState = ScreenState.InPool;
             gameObject.SetActive(false);
+            ScreenClosed?.Invoke();
             this.UnRegister();
             (this as IPoolable).ReturnToPool();
-            
             MVCConsole.LogWarning(ConsoleLogType.Screen, "Hide Screen! type: " + this.GetType().Name);
-            ScreenClosed?.Invoke();
         }
 
         /// <summary>
