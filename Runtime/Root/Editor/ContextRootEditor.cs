@@ -251,7 +251,8 @@ namespace MVC.Root.Editor
                         contextData.AutoSetup = contextDataAutoSetup;
                 
                         if(!Application.isPlaying)
-                            EditorSceneManager.MarkSceneDirty(SceneManager.GetActiveScene());
+                            MarkDirty();
+                        //     EditorSceneManager.MarkSceneDirty(SceneManager.GetActiveScene());
                     }
                     EditorGUILayout.EndVertical();
                     EditorGUILayout.Space(5);
