@@ -130,7 +130,8 @@ namespace MVC.Runtime.Root
                     var contextRoot = unreadyContextList[index];
                     contextRoot.Setup();
                 }
-                for (var index = unreadyContextList.Count - 1; index >= 0; index--)
+                for (var index = 0; index < unreadyContextList.Count; index++)
+                //for (var index = unreadyContextList.Count - 1; index >= 0; index--)
                 {
                     var contextRoot = unreadyContextList[index];
                     contextRoot.Launch();
