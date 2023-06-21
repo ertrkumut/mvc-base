@@ -3,6 +3,7 @@
     public interface ICommandBody
     {
         bool IsRetain { get; set; }
+        bool HasRetain { get; set; }
 
         void Retain();
         void Release(params object[] sequenceData);

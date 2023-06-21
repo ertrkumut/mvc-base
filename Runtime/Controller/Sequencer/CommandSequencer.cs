@@ -55,26 +55,26 @@ namespace MVC.Runtime.Controller.Sequencer
             context.InjectCommand(command, _signalParameters);
             
             ExecuteCommand(command, commandParameters);
-            (this as ICommandSequencer).AutoReleaseCommand(command);
         }
         
-        private void ExecuteCommand(ICommandBody commandBody, params object[] parameters)
+        private void ExecuteCommand(ICommandBody command, params object[] parameters)
         {
-            var commandType = commandBody.GetType();
+            var commandType = command.GetType();
             
             MVCConsole.Log(ConsoleLogType.Command, "Command Executed! - " + commandType.Name);
             
             var executeMethodInfo = commandType.GetMethod("Execute");
-            executeMethodInfo.Invoke(commandBody, parameters);
+            executeMethodInfo?.Invoke(command, parameters);
+            
+            (this as ICommandSequencer).AutoReleaseCommand(command);
         }
         
         void ICommandSequencer.AutoReleaseCommand(ICommandBody command)
         {
-            if(_commandBinding.ExecutionType == CommandExecutionType.Sequence && command.IsRetain)
+            if (command.HasRetain)
                 return;
             
-            if(!command.IsRetain)
-                _commandBinder.ReturnCommandToPool(command);
+            _commandBinder.ReturnCommandToPool(command);
             
             var next = !(_sequenceCompleted || _commands.Last() == command.GetType());
             if(next)
@@ -83,13 +83,7 @@ namespace MVC.Runtime.Controller.Sequencer
 
         public virtual void ReleaseCommand(ICommandBody command, params object[] commandParameters)
         {
-            // if (_commandBinding.ExecutionType == CommandExecutionType.Parallel)
-            // {
-            //     Debug.LogWarning("Command Execute Mode must be InSequence, if you want to call manual RELEASE! \n Command: " + command.GetType().Name);
-            //     MVCConsole.LogWarning(ConsoleLogType.Command, "Command Execute Mode must be InSequence, if you want to call manual RELEASE! \n Command: " + command.GetType().Name);
-            //     return;
-            // }
-            
+            MVCConsole.Log(ConsoleLogType.Command, "ReleaseCommand! - " + command.GetType().Name + " : "+ command.IsRetain);
             if (!command.IsRetain)
             {
                 Debug.LogError("Command must be retain, if you want to call manual RELEASE! \n Command: " + command.GetType().Name);
@@ -99,21 +93,18 @@ namespace MVC.Runtime.Controller.Sequencer
             
             _commandBinder.ReturnCommandToPool(command);
             
-            if (_commandBinding.ExecutionType == CommandExecutionType.Parallel)
-                return;
-            
             (this as ICommandSequencer).NextCommand(commandParameters);
         }
 
         public virtual void JumpCommand<TCommandType>(ICommandBody command, params object[] commandParameters)
             where TCommandType : ICommandBody
         {
-            // if (_commandBinding.ExecutionType == CommandExecutionType.Parallel)
-            // {
-            //     Debug.LogWarning("Command Execute Mode must be InSequence, if you want to call JUMP! \n Command: " + command.GetType().Name);
-            //     MVCConsole.LogWarning(ConsoleLogType.Command, "Command Execute Mode must be InSequence, if you want to call JUMP! \n Command: " + command.GetType().Name);
-            //     return;
-            // }
+            if (_commandBinding.ExecutionType == CommandExecutionType.Parallel)
+            {
+                Debug.LogWarning("Command Execute Mode must be InSequence, if you want to call JUMP! \n Command: " + command.GetType().Name);
+                MVCConsole.LogWarning(ConsoleLogType.Command, "Command Execute Mode must be InSequence, if you want to call JUMP! \n Command: " + command.GetType().Name);
+                return;
+            }
             
             _commandBinder.ReturnCommandToPool(command);
             var nextCommandType = FindCommand<TCommandType>();

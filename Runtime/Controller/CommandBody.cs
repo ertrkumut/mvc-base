@@ -11,10 +11,13 @@ namespace MVC.Runtime.Controller
         [Inject] protected ICommandBinder CommandBinder { get; set; }
         
         public bool IsRetain { get; set; }
+        public bool HasRetain { get; set; }
 
         public virtual void Retain()
         {
+            Debug.Log("Retain --> " + this.GetType().Name);
             IsRetain = true;
+            HasRetain = true;
         }
 
         public virtual void Release(params object[] sequenceData)
@@ -42,6 +45,8 @@ namespace MVC.Runtime.Controller
 
         public virtual void Clean()
         {
+            Debug.Log("Clean --> " + this.GetType().Name);
+
             IsRetain = false;
         }
     }
