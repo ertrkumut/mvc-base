@@ -65,17 +65,28 @@ namespace MVC.Runtime.Controller.Sequencer
             
             var executeMethodInfo = commandType.GetMethod("Execute");
             executeMethodInfo?.Invoke(command, parameters);
-            
-            (this as ICommandSequencer).AutoReleaseCommand(command);
+
+            if (_commandBinding.ExecutionType == CommandExecutionType.Parallel)
+                (this as ICommandSequencer).ParallelAutoReleaseCommand(command);
+            else
+                (this as ICommandSequencer).SequenceAutoReleaseCommand(command);
         }
-        
-        void ICommandSequencer.AutoReleaseCommand(ICommandBody command)
+
+        void ICommandSequencer.ParallelAutoReleaseCommand(ICommandBody command)
+        {
+            if (!command.HasRetain)
+                _commandBinder.ReturnCommandToPool(command);
+            
+            if (_commands.Last() != command.GetType())
+                (this as ICommandSequencer).NextCommand();
+        }
+        void ICommandSequencer.SequenceAutoReleaseCommand(ICommandBody command)
         {
             if (command.HasRetain)
                 return;
             
             _commandBinder.ReturnCommandToPool(command);
-            
+
             var next = !(_sequenceCompleted || _commands.Last() == command.GetType());
             if(next)
                 (this as ICommandSequencer).NextCommand();
@@ -83,7 +94,6 @@ namespace MVC.Runtime.Controller.Sequencer
 
         public virtual void ReleaseCommand(ICommandBody command, params object[] commandParameters)
         {
-            MVCConsole.Log(ConsoleLogType.Command, "ReleaseCommand! - " + command.GetType().Name + " : "+ command.IsRetain);
             if (!command.IsRetain)
             {
                 Debug.LogError("Command must be retain, if you want to call manual RELEASE! \n Command: " + command.GetType().Name);
@@ -93,7 +103,8 @@ namespace MVC.Runtime.Controller.Sequencer
             
             _commandBinder.ReturnCommandToPool(command);
             
-            (this as ICommandSequencer).NextCommand(commandParameters);
+            if (_commandBinding.ExecutionType == CommandExecutionType.Sequence)
+                (this as ICommandSequencer).NextCommand(commandParameters);
         }
 
         public virtual void JumpCommand<TCommandType>(ICommandBody command, params object[] commandParameters)
@@ -123,10 +134,10 @@ namespace MVC.Runtime.Controller.Sequencer
         void ICommandSequencer.NextCommand(params object[] commandParameters)
         {
             _sequenceId++;
-            if(!IsSequenceCompleted())
-                (this as ICommandSequencer).ExecuteCommand(commandParameters);
-            else
+            if(IsSequenceCompleted())
                 (this as ICommandSequencer).CompleteSequence();
+            else
+                (this as ICommandSequencer).ExecuteCommand(commandParameters);
         }
 
         void ICommandSequencer.CompleteSequence()
