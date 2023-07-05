@@ -132,15 +132,19 @@ namespace MVC.Runtime.Controller.Binder
 
         #region CommandPool
 
-        internal ICommandBody GetCommand(Type commandType)
+        internal ICommandBody GetCommand(Type commandType, out bool isCreated)
         {
+            isCreated = false;
             ICommandBody command = null;
+            
             if (_commandPool.ContainsKey(commandType) && _commandPool[commandType].Count != 0)
             {
                 command = _commandPool[commandType][0];
                 _commandPool[commandType].Remove(command);
                 return command;
             }
+            
+            isCreated = true;
             
             command = (ICommandBody) Activator.CreateInstance(commandType);
             return command;
