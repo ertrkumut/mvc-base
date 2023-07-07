@@ -53,8 +53,7 @@ namespace MVC.Runtime.Controller.Sequencer
             
             var context = _commandBinding.Context;
             
-            if(isCreated)
-                context.InjectCommand(command, _signalParameters);
+            context.InjectCommand(command, isCreated, _signalParameters);
             
             ExecuteCommand(command, commandParameters);
         }

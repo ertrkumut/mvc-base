@@ -111,19 +111,18 @@ namespace MVC.Runtime.Injectable.Utils
         
         #region InjectCommands
 
-        internal static void InjectCommand(this IContext context, ICommandBody command, params object[] signalParams)
+        internal static void InjectCommand(this IContext context, ICommandBody command, bool isCreated, params object[] signalParams)
         {
             var injectableFields = GetInjectableFieldInfoList<InjectAttribute>(command);
             var injectableProperties = GetInjectablePropertyInfoList<InjectAttribute>(command);
 
-            foreach (var injectableField in injectableFields)
+            if (isCreated)
             {
-                SetInjectedValue(command, context, injectableField);
-            }
+                foreach (var injectableField in injectableFields)
+                    SetInjectedValue(command, context, injectableField);
 
-            foreach (var injectableProperty in injectableProperties)
-            {
-                SetInjectedValue(command, context, injectableProperty);
+                foreach (var injectableProperty in injectableProperties)
+                    SetInjectedValue(command, context, injectableProperty);
             }
 
             InjectSignalParamsToCommand(context, command, signalParams);
