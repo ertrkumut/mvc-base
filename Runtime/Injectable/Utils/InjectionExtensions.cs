@@ -113,11 +113,12 @@ namespace MVC.Runtime.Injectable.Utils
 
         internal static void InjectCommand(this IContext context, ICommandBody command, bool isCreated, params object[] signalParams)
         {
-            var injectableFields = GetInjectableFieldInfoList<InjectAttribute>(command);
-            var injectableProperties = GetInjectablePropertyInfoList<InjectAttribute>(command);
 
             if (isCreated)
             {
+                var injectableFields = GetInjectableFieldInfoList<InjectAttribute>(command);
+                var injectableProperties = GetInjectablePropertyInfoList<InjectAttribute>(command);
+                
                 foreach (var injectableField in injectableFields)
                     SetInjectedValue(command, context, injectableField);
 
@@ -130,6 +131,9 @@ namespace MVC.Runtime.Injectable.Utils
 
         private static void InjectSignalParamsToCommand(IContext context, ICommandBody command, params object[] signalParams)
         {
+            if (signalParams == null || signalParams.Length == 0)
+                return;
+            
             var signalFields = GetInjectableFieldInfoList<SignalParamAttribute>(command);
             var signalProperties = GetInjectablePropertyInfoList<SignalParamAttribute>(command);
 
