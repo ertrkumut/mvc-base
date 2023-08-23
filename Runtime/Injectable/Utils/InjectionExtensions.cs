@@ -16,6 +16,9 @@ namespace MVC.Runtime.Injectable.Utils
 {
     public static class InjectionExtensions
     {
+        private static Dictionary<Type, List<FieldInfo>> _cashedFieldList = new();
+        private static Dictionary<Type, List<PropertyInfo>> _cashedPropertyList = new();
+
         internal static bool TryToInjectObject(this InjectionBinding binding)
         {
             var injectableFields = GetInjectableFieldInfoList<InjectAttribute>(binding.Value);
@@ -111,20 +114,16 @@ namespace MVC.Runtime.Injectable.Utils
         
         #region InjectCommands
 
-        internal static void InjectCommand(this IContext context, ICommandBody command, bool isCreated, params object[] signalParams)
+        internal static void InjectCommand(this IContext context, ICommandBody command, params object[] signalParams)
         {
-
-            if (isCreated)
-            {
-                var injectableFields = GetInjectableFieldInfoList<InjectAttribute>(command);
-                var injectableProperties = GetInjectablePropertyInfoList<InjectAttribute>(command);
+            var injectableFields = GetInjectableFieldInfoList<InjectAttribute>(command);
+            var injectableProperties = GetInjectablePropertyInfoList<InjectAttribute>(command);
                 
-                foreach (var injectableField in injectableFields)
-                    SetInjectedValue(command, context, injectableField);
+            foreach (var injectableField in injectableFields)
+                SetInjectedValue(command, context, injectableField);
 
-                foreach (var injectableProperty in injectableProperties)
-                    SetInjectedValue(command, context, injectableProperty);
-            }
+            foreach (var injectableProperty in injectableProperties)
+                SetInjectedValue(command, context, injectableProperty);
 
             InjectSignalParamsToCommand(context, command, signalParams);
         }
@@ -187,46 +186,61 @@ namespace MVC.Runtime.Injectable.Utils
         private static List<FieldInfo> GetInjectableFieldInfoList<TAttribute>(object instance)
             where TAttribute : Attribute
         {
-            var injectableTypes = instance.GetType().GetAllChildClasses();
-            
-            if(!injectableTypes.Contains(instance.GetType()))
-                injectableTypes.Add(instance.GetType());
-            
-            var injectableFields = new List<FieldInfo>();
-            foreach (var injectableType in injectableTypes)
-            {
-                var fields = injectableType.GetFields(BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic)
-                    .Where(x => 
-                        x.GetCustomAttributes(typeof(TAttribute)).ToList().Count != 0)
-                    .ToList();
+            var instanceType = instance.GetType();
+            var injectableTypes = instanceType.GetAllChildClasses();
 
-                injectableFields = injectableFields.Concat(fields).ToList();
+            if(!injectableTypes.Contains(instanceType))
+                injectableTypes.Add(instanceType);
+            
+            if(!_cashedFieldList.ContainsKey(instanceType))
+            {
+                var injectableFields = new List<FieldInfo>();
+                foreach (var injectableType in injectableTypes)
+                {
+                    var fields = injectableType
+                        .GetFields(BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic)
+                        .Where(x =>
+                            x.GetCustomAttributes(typeof(TAttribute)).ToList().Count != 0)
+                        .ToList();
+
+                    injectableFields = injectableFields.Concat(fields).ToList();
+                }
+                
+                _cashedFieldList.Add(instanceType, injectableFields);
+                return injectableFields;
             }
 
-            return injectableFields;
+            return _cashedFieldList[instance.GetType()];
         }
 
         private static List<PropertyInfo> GetInjectablePropertyInfoList<TAttribute>(object instance)
             where TAttribute : Attribute
         {
-            var injectableTypes = instance.GetType().GetAllChildClasses();
+            var instanceType = instance.GetType();
+            var injectableTypes = instanceType.GetAllChildClasses();
 
-            if(!injectableTypes.Contains(instance.GetType()))
-                injectableTypes.Add(instance.GetType());
+            if(!injectableTypes.Contains(instanceType))
+                injectableTypes.Add(instanceType);
             
-            var injectableProperties = new List<PropertyInfo>();
-            foreach (var injectableType in injectableTypes)
+            if(!_cashedPropertyList.ContainsKey(instanceType))
             {
-                var properties = injectableType
-                    .GetProperties(BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic)
-                    .Where(x => 
-                        x.GetCustomAttributes(typeof(TAttribute)).ToList().Count != 0)
-                    .ToList();
+                var injectableProperties = new List<PropertyInfo>();
+                foreach (var injectableType in injectableTypes)
+                {
+                    var properties = injectableType
+                        .GetProperties(BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic)
+                        .Where(x =>
+                            x.GetCustomAttributes(typeof(TAttribute)).ToList().Count != 0)
+                        .ToList();
 
-                injectableProperties = injectableProperties.Concat(properties).ToList();
+                    injectableProperties = injectableProperties.Concat(properties).ToList();
+                }
+                
+                _cashedPropertyList.Add(instanceType, injectableProperties);
+                return injectableProperties;
             }
 
-            return injectableProperties;
+            return _cashedPropertyList[instanceType];
         }
 
         #endregion

@@ -48,12 +48,12 @@ namespace MVC.Runtime.Controller.Sequencer
                 return;
             
             var commandType = GetCurrentCommandType();
-            var command = _commandBinder.GetCommand(commandType, out bool isCreated);
+            var command = _commandBinder.GetCommand(commandType);
             CurrentCommand = command;
             
             var context = _commandBinding.Context;
             
-            context.InjectCommand(command, isCreated, _signalParameters);
+            context.InjectCommand(command, _signalParameters);
             
             ExecuteCommand(command, commandParameters);
         }
