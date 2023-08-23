@@ -298,12 +298,19 @@ namespace MVC.Runtime.Injectable.Utils
 
         internal static List<Type> GetAllChildClasses(this Type type)
         {
+            var cashData = InjectionCashing.GetCashData(type);
+
+            if (cashData != null)
+                return cashData.Children;
+            
             var childTypes = Assembly
                 .GetAssembly(type)
                 .GetTypes()
                 .Where(x => x.IsAssignableFrom(type) && !x.IsInterface)
                 .ToList();
 
+            InjectionCashing.AddCashData(type, childTypes);
+            
             return childTypes;
         }
     }
