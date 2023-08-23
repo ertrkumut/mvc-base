@@ -16,9 +16,15 @@ namespace MVC.Runtime.Injectable.Utils
 {
     public static class InjectionExtensions
     {
-        private static Dictionary<Type, List<FieldInfo>> _cashedFieldList = new();
-        private static Dictionary<Type, List<PropertyInfo>> _cashedPropertyList = new();
+        private static Dictionary<Type, CashedInjectableData> _cashedInjectableData = new();
 
+        private class CashedInjectableData
+        {
+            public Type Main;
+            public Dictionary<Type, List<FieldInfo>> CashedFieldInfoList;
+            public Dictionary<Type, List<PropertyInfo>> CashedPropertyInfoList;
+        }
+        
         internal static bool TryToInjectObject(this InjectionBinding binding)
         {
             var injectableFields = GetInjectableFieldInfoList<InjectAttribute>(binding.Value);
@@ -192,7 +198,13 @@ namespace MVC.Runtime.Injectable.Utils
             if(!injectableTypes.Contains(instanceType))
                 injectableTypes.Add(instanceType);
             
-            if(!_cashedFieldList.ContainsKey(instanceType))
+            if(!_cashedInjectableData.ContainsKey(instanceType))
+                _cashedInjectableData.Add(instanceType, new CashedInjectableData
+                {
+                    Main = instanceType
+                });
+            
+            if(!_cashedInjectableData[instanceType].CashedFieldInfoList.ContainsKey(typeof(TAttribute)))
             {
                 var injectableFields = new List<FieldInfo>();
                 foreach (var injectableType in injectableTypes)
@@ -206,11 +218,11 @@ namespace MVC.Runtime.Injectable.Utils
                     injectableFields = injectableFields.Concat(fields).ToList();
                 }
                 
-                _cashedFieldList.Add(instanceType, injectableFields);
+                _cashedInjectableData[instanceType].CashedFieldInfoList.Add(typeof(TAttribute), injectableFields);
                 return injectableFields;
             }
 
-            return _cashedFieldList[instance.GetType()];
+            return _cashedInjectableData[instanceType].CashedFieldInfoList[typeof(TAttribute)];
         }
 
         private static List<PropertyInfo> GetInjectablePropertyInfoList<TAttribute>(object instance)
@@ -222,7 +234,13 @@ namespace MVC.Runtime.Injectable.Utils
             if(!injectableTypes.Contains(instanceType))
                 injectableTypes.Add(instanceType);
             
-            if(!_cashedPropertyList.ContainsKey(instanceType))
+            if(!_cashedInjectableData.ContainsKey(instanceType))
+                _cashedInjectableData.Add(instanceType, new CashedInjectableData
+                {
+                    Main = instanceType
+                });
+            
+            if(!_cashedInjectableData[instanceType].CashedPropertyInfoList.ContainsKey(typeof(TAttribute)))
             {
                 var injectableProperties = new List<PropertyInfo>();
                 foreach (var injectableType in injectableTypes)
@@ -236,11 +254,11 @@ namespace MVC.Runtime.Injectable.Utils
                     injectableProperties = injectableProperties.Concat(properties).ToList();
                 }
                 
-                _cashedPropertyList.Add(instanceType, injectableProperties);
+                _cashedInjectableData[instanceType].CashedPropertyInfoList.Add(typeof(TAttribute), injectableProperties);
                 return injectableProperties;
             }
 
-            return _cashedPropertyList[instanceType];
+            return _cashedInjectableData[instanceType].CashedPropertyInfoList[typeof(TAttribute)];
         }
 
         #endregion
