@@ -21,8 +21,8 @@ namespace MVC.Runtime.Injectable.Utils
         private class CashedInjectableData
         {
             public Type Main;
-            public Dictionary<Type, List<FieldInfo>> CashedFieldInfoList;
-            public Dictionary<Type, List<PropertyInfo>> CashedPropertyInfoList;
+            public Dictionary<Type, List<FieldInfo>> CashedFieldInfoList = new();
+            public Dictionary<Type, List<PropertyInfo>> CashedPropertyInfoList = new();
         }
         
         internal static bool TryToInjectObject(this InjectionBinding binding)
