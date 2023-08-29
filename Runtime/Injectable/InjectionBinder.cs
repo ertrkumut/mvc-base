@@ -118,7 +118,6 @@ namespace MVC.Runtime.Injectable
         #region UnBind
 
         public virtual void UnBind<TBindingType>(string name = "")
-            where TBindingType : new()
         {
             var hasBindingExist = HasInstanceExist<TBindingType>(name);
             if (!hasBindingExist)
