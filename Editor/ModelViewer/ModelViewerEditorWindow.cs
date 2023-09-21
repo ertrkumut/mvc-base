@@ -14,7 +14,7 @@ namespace MVC.Editor.ModelViewer
         {
             GetWindow<ModelViewerEditorWindow>("Model Viewer");
         }
-        
+
         private RootBase _inspectedRoot;
 
         private void OnGUI()
@@ -24,7 +24,7 @@ namespace MVC.Editor.ModelViewer
                 EditorGUILayout.LabelField("Enter Play Mode to view Models.");
                 return;
             }
-            
+
             if (_inspectedRoot == null)
             {
                 DisplayAllRootsAndSelectGUI();
@@ -38,7 +38,7 @@ namespace MVC.Editor.ModelViewer
         {
             var rootObjects = FindObjectsOfType<RootBase>();
             EditorGUILayout.BeginVertical("box");
-            
+
             foreach (var contextRoot in rootObjects)
             {
                 if (GUILayout.Button(contextRoot.name))
@@ -46,16 +46,18 @@ namespace MVC.Editor.ModelViewer
                     _inspectedRoot = contextRoot;
                 }
             }
-                
+
             EditorGUILayout.EndVertical();
         }
-        
+
+        Vector2 _scrollPosition = Vector2.zero;
+
         private void DisplayAllInjectedTypesGUI()
         {
             GUI.backgroundColor = Color.red;
             var backButton = GUILayout.Button("Select Context");
             GUI.backgroundColor = Color.white;
-            
+
             if (backButton)
             {
                 _inspectedRoot = null;
@@ -66,7 +68,7 @@ namespace MVC.Editor.ModelViewer
 
             EditorGUILayout.BeginVertical("box");
             EditorGUILayout.LabelField("Local Injected Objects", EditorStyles.boldLabel);
-            
+
             var injectionBinder = _inspectedRoot.Context.InjectionBinder;
             var injectedObjects = injectionBinder.GetAllInjectionBindings();
 
@@ -74,14 +76,16 @@ namespace MVC.Editor.ModelViewer
             {
                 DrawInjectedObject(injectedObject);
             }
-            
+
             EditorGUILayout.EndVertical();
-            
+
             EditorGUILayout.Space(10);
             
-            EditorGUILayout.BeginVertical("box");
+            _scrollPosition = EditorGUILayout.BeginScrollView(_scrollPosition);
+
+            //EditorGUILayout.BeginVertical("box");
             EditorGUILayout.LabelField("Cross Context Injected Objects", EditorStyles.boldLabel);
-            
+
             var crossContextInjectionBinder = _inspectedRoot.Context.InjectionBinderCrossContext;
             var crossContextInjectedObjects = crossContextInjectionBinder.GetAllInjectionBindings();
 
@@ -89,21 +93,23 @@ namespace MVC.Editor.ModelViewer
             {
                 DrawInjectedObject(injectedObject);
             }
-            
-            EditorGUILayout.EndVertical();
+
+            EditorGUILayout.EndScrollView();
         }
 
         private void DrawInjectedObject(InjectionBinding injectedObject)
         {
-            var hideAttribute = injectedObject.Value.GetType().GetCustomAttributes(typeof(HideInModelViewerAttribute), true).Length != 0;
-            if(hideAttribute)
+            var hideAttribute = injectedObject.Value.GetType()
+                .GetCustomAttributes(typeof(HideInModelViewerAttribute), true).Length != 0;
+            if (hideAttribute)
                 return;
 
             var injectionName = injectedObject.Name != "" ? " - {" + injectedObject.Name + "}" : "";
-            
+
             if (GUILayout.Button(injectedObject.Value.GetType().Name + injectionName))
             {
-                var window = CreateWindow<InspectWindow>(injectedObject.Value.GetType() + " Name: " + injectedObject.Name);
+                var window =
+                    CreateWindow<InspectWindow>(injectedObject.Value.GetType() + " Name: " + injectedObject.Name);
                 window.Initialize(injectedObject.Value, _inspectedRoot.Context, injectedObject.Name);
             }
         }
