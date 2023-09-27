@@ -91,14 +91,16 @@ namespace MVC.Runtime.Root
 
             MVCConsole.Log(ConsoleLogType.Context, "Context InjectAllInstances => " + _context.GetType().Name);
             _context.InjectAllInstances();
-            MVCConsole.Log(ConsoleLogType.Context, "Context Executed Post Construct Methods! => " + _context.GetType().Name);
-            _context.ExecutePostConstructMethods();
-            
+
             foreach (var subContextData in _subContexts)
             {
                 MVCConsole.Log(ConsoleLogType.Context, "Sub Context InjectAllInstances! => " + subContextData.Key.GetType().Name);
                 subContextData.Key.InjectAllInstances(true);
             }
+
+            MVCConsole.Log(ConsoleLogType.Context, "Context Executed Post Construct Methods! => " + _context.GetType().Name);
+            _context.ExecutePostConstructMethods();
+            
             foreach (var subContextData in _subContexts)
             {
                 MVCConsole.Log(ConsoleLogType.Context, "Sub Context Executed Post Construct Methods! => " + subContextData.Key.GetType().Name);
