@@ -89,6 +89,8 @@ namespace MVC.Runtime.Root
                 subContext.Key.CommandBindings();
             }
 
+            AfterBindingsBeforeInjections();
+            
             MVCConsole.Log(ConsoleLogType.Context, "Context InjectAllInstances => " + _context.GetType().Name);
             _context.InjectAllInstances();
 

@@ -66,6 +66,7 @@ namespace MVC.Runtime.Root
             InitializeSubContexts();
         }
         protected virtual void AfterCreateBeforeStartContext(){}
+        protected virtual void AfterBindingsBeforeInjections(){}
         protected virtual void AfterStarBeforeLaunchContext(){}
         
         public void BindSignals(bool forceToBind = false)
