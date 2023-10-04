@@ -1,7 +1,7 @@
 using MVC.Runtime.Controller;
 using MVC.Runtime.Injectable.Attributes;
 
-namespace MVC.Runtime.Pool.Controllers
+namespace MVC.Runtime.PoolDeprecated.Controllers
 {
     public class InitializePoolCommand : Command
     {

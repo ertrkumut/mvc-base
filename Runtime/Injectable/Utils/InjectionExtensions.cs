@@ -280,6 +280,7 @@ namespace MVC.Runtime.Injectable.Utils
                 "\n<b><color=#FF6666>► Injection Type:</color> " + injectionType.Name + " - " +
                 injectedMemberInfo.Name + "</b>"+
                 "\n<b><color=#FF6666>► Injected Context:</color> "+ context + "</b>";
+                Debug.LogError(errString);
                 MVCConsole.LogError(ConsoleLogType.Injection, errString);
                 return;
             }

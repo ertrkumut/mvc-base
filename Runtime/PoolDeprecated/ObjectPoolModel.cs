@@ -4,11 +4,11 @@ using MVC.Editor.Console;
 using MVC.Runtime.Attributes;
 using MVC.Runtime.Console;
 using MVC.Runtime.Injectable.Attributes;
-using MVC.Runtime.Pool.UnityObject;
+using MVC.Runtime.PoolDeprecated.UnityObject;
 using UnityEngine;
 using Object = UnityEngine.Object;
 
-namespace MVC.Runtime.Pool
+namespace MVC.Runtime.PoolDeprecated
 {
     public class ObjectPoolModel : IObjectPoolModel
     {

@@ -174,8 +174,6 @@ namespace MVC.Editor.CodeGenerator.Menus
                     CodeGeneratorUtils.CreateRoot(_rootName, _contextName, "TempContext", "TempRoot", contextPath,
                         CodeGeneratorStrings.GetPath(CodeGeneratorStrings.TempRootPath), namespaceText, _isTest);
             }
-
-
             _rootPath = "*Name*";
         }
 

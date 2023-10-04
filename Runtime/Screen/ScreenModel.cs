@@ -5,6 +5,7 @@ using MVC.Runtime.Attributes;
 using MVC.Runtime.Console;
 using MVC.Runtime.Injectable.Attributes;
 using MVC.Runtime.Pool;
+using MVC.Runtime.PoolDeprecated;
 using MVC.Runtime.Screen.Enum;
 using MVC.Runtime.Screen.Pool;
 using MVC.Runtime.Screen.View;

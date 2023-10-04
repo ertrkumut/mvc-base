@@ -1,6 +1,6 @@
 using UnityEngine;
 
-namespace MVC.Runtime.Pool
+namespace MVC.Runtime.PoolDeprecated
 {
     public interface IObjectPoolModel
     {
