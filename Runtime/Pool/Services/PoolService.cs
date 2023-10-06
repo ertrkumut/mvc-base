@@ -52,6 +52,8 @@ namespace MVC.Runtime.Pool.Services
             return _poolModel.DestroyGroup(index);
         }
 
+        public bool CheckPoolServiceReady() => _poolModel.CheckAllPoolGroupsReady();
+
         public T GetItem<T>(string groupKey, string itemKey) where T : IPoolableItem
         {
             return _poolModel.GetItem<T>(groupKey, itemKey);

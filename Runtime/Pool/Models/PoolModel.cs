@@ -119,5 +119,14 @@ namespace MVC.Runtime.Pool.Models
 
             return default;
         }
+        
+        public bool CheckAllPoolGroupsReady()
+        {
+            foreach (var group in _poolGroupMap)
+                if (!group.Value.CheckAllPoolsReady()) 
+                    return false;
+
+            return true;
+        }
     }
 }

@@ -15,5 +15,7 @@ namespace MVC.Runtime.Pool.Models
 		T GetItem<T>(int groupIndex, string itemKey) where T : IPoolableItem;
 		T GetItem<T>(string itemKey) where T : IPoolableItem;
 		T SeekItem<T>(string itemKey) where T : IPoolableItem;
+		
+		bool CheckAllPoolGroupsReady();
 	}
 }

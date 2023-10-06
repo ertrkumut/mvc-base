@@ -5,6 +5,7 @@ namespace MVC.Runtime.Pool.Models
 {
     public interface IItemPool
     {
+        bool IsReady { get; }
         int ReadyCount { get; }
         int UsingCount { get; }
         int TotalItemCount { get; }

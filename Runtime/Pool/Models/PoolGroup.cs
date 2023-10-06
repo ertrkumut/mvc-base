@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using MVC.Runtime.Pool.Entities;
 using UnityEngine;
+using Object = UnityEngine.Object;
 
 namespace MVC.Runtime.Pool.Models
 {
@@ -46,7 +47,7 @@ namespace MVC.Runtime.Pool.Models
                 Debug.LogError("The item with key " + key + "has no gameobject instance");
             }
 
-            Type[] types = configType.BaseType.GenericTypeArguments;
+            var types = configType.BaseType.GenericTypeArguments;
 
             CreatePoolWithType(types[c_generic_pool_type_index_pointer], key, prefab, count, isExtendable, getItemEvenUsing);
         }
@@ -107,7 +108,7 @@ namespace MVC.Runtime.Pool.Models
         public virtual void DestroyGroup()
         {
             DestroyAllPools();
-            GameObject.Destroy(Root);
+            Object.Destroy(Root);
         }
 
         public virtual void DestroyAllPools()
@@ -132,6 +133,13 @@ namespace MVC.Runtime.Pool.Models
             _mainContainer.transform.parent = parent;
         }
 
+        public bool CheckAllPoolsReady()
+        {
+            foreach (var pool in _pools)
+                if (!pool.Value.IsReady) 
+                    return false;
 
+            return true;
+        }
     }
 }

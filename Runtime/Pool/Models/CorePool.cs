@@ -14,6 +14,8 @@ namespace MVC.Runtime.Pool.Models
         protected bool _getItemEvenUsing;
         protected bool _isDestroyed = false;
         
+        private bool _isReady = false;
+        
         public int ReadyCount
         {
             get
@@ -37,6 +39,8 @@ namespace MVC.Runtime.Pool.Models
                 return _readyItems.Count + _usingItems.Count;
             }
         }
+        
+        public bool IsReady => _isReady;
 
         protected abstract void CreateItem();
 
@@ -57,6 +61,8 @@ namespace MVC.Runtime.Pool.Models
             {
                 CreateItem();
             }
+            
+            _isReady = true;
         }
 
         protected virtual void PrepareItem(T item)
