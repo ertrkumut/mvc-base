@@ -6,10 +6,6 @@ namespace MVC.Runtime.Pool.Root
 {
     public class PoolContext : Context
     {
-        public override void SignalBindings()
-        {
-            base.SignalBindings();
-        }
         private IPoolService _service;
         public override void InjectionBindings()
         {
@@ -20,24 +16,9 @@ namespace MVC.Runtime.Pool.Root
             InjectionBinder.Bind<IPoolConfigModel, PoolConfigModel>();
         }
 
-        public override void MediationBindings()
-        {
-            base.MediationBindings();
-        }
-
-        public override void CommandBindings()
-        {
-            base.CommandBindings();
-        }
-
         public override void Setup()
         {
             base.Setup();
-        }
-
-        public override void Launch()
-        {
-            base.Launch();
             _service.Initialize();
         }
     }

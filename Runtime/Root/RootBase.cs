@@ -28,6 +28,7 @@ namespace MVC.Runtime.Root
         public bool autoBindInjections = true;
         public bool autoBindMediations = true;
         public bool autoInitialize = true;
+        public bool autoSetup = true;
         public bool autoLaunch = true;
         
         public IContext Context { get; set; }
@@ -156,9 +157,12 @@ namespace MVC.Runtime.Root
             return list;
         }
 
-        public void Setup()
+        public void Setup(bool forceToSetup = false)
         {
             if(!hasInitialized)
+                return;
+            
+            if(!autoSetup && !forceToSetup)
                 return;
             
             if(hasSetuped)
