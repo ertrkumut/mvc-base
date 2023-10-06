@@ -62,9 +62,23 @@ namespace MVC.Runtime.Pool.Models
         protected virtual void PrepareItem(T item)
         {
             item.transform.gameObject.SetActive(false);
-            item.OnInitialized();
-            item.ReturnPoolCallback = ReturnToPool;
-            _readyItems.AddFirst(item);
+            try
+            {
+                item.OnInitialized();
+                item.ReturnPoolCallback = ReturnToPool;
+                _readyItems.AddFirst(item);
+            }
+            catch (System.Exception e)
+            {
+                var errString =
+                    "<b><color=#ff6694> Error on Creating Poool Item!</color></b>" +
+                    "\n<b><color=#ff6694>Pool Container=></color></b>" + _container.name +
+                    "\n<color=#ffc966>Items removed due to will not be used properly</color>" +
+                    "\n<color=#ff6694>Error Message:</color>" + e.Message;
+
+                Debug.LogError(errString);
+                Object.Destroy(item.transform.gameObject);
+            }
         }
 
         protected virtual T GetItem()
