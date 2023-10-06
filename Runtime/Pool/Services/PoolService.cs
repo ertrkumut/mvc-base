@@ -12,12 +12,12 @@ namespace MVC.Runtime.Pool.Services
         [Inject] private IPoolConfigModel _poolConfigModel;
         [Inject(nameof(PoolContext))] private GameObject _root;
         
-        [PostConstruct]
-        private void OnPostConstruct()
+        public void Initialize()
         {
             _poolModel.Initialize(_root);
             Build();
         }
+
         private void Build()
         {
             PoolRootAdapter adapter = _root.GetComponent<PoolRootAdapter>();
@@ -35,6 +35,7 @@ namespace MVC.Runtime.Pool.Services
                 }
             }
         }
+
         public void CreateGroup(string groupConfigKey)
         {
             var config = _poolConfigModel.GetConfigByKey(groupConfigKey);

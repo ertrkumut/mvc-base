@@ -10,11 +10,12 @@ namespace MVC.Runtime.Pool.Root
         {
             base.SignalBindings();
         }
+        private IPoolService _service;
         public override void InjectionBindings()
         {
             base.InjectionBindings();
 
-            InjectionBinderCrossContext.Bind<IPoolService, PoolService>();
+            _service = InjectionBinderCrossContext.Bind<IPoolService, PoolService>();
             InjectionBinder.Bind<IPoolModel, PoolModel>();
             InjectionBinder.Bind<IPoolConfigModel, PoolConfigModel>();
         }
@@ -32,21 +33,12 @@ namespace MVC.Runtime.Pool.Root
         public override void Setup()
         {
             base.Setup();
-
-            // _poolSignals.CreatePoolGroup.Dispatch("CombatKingPool);
-            // _poolSignals.CreatePoolGroup.Dispatch("CombatTowerPool);
-            // _poolSignals.CreatePoolGroup.Dispatch("CombatUnitPool);
-            // _poolSignals.CreatePoolGroup.Dispatch("CombatProjectilePool);
-            // _poolSignals.CreatePoolGroup.Dispatch("CombatCommonParticleFXPool);
-            // _poolSignals.CreatePoolGroup.Dispatch("CombatKingEffectPool);
-            // _poolSignals.CreatePoolGroup.Dispatch("CombatAreaEffectPool);
-            // _poolSignals.CreatePoolGroup.Dispatch("CombatEffectFXPool);
-            // _poolSignals.CreatePoolGroup.Dispatch("AddressableTestPool);
         }
 
         public override void Launch()
         {
             base.Launch();
+            _service.Initialize();
         }
     }
 }

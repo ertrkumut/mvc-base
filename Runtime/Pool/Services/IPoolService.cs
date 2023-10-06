@@ -5,6 +5,7 @@ namespace MVC.Runtime.Pool.Services
 {
 	public interface IPoolService
 	{
+		void Initialize();
 		void CreateGroup(string groupConfigKey);
 		bool DestroyGroup(string groupConfigKey);
 		bool DestroyGroup(int index);
