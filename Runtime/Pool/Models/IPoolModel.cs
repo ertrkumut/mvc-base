@@ -11,10 +11,10 @@ namespace MVC.Runtime.Pool.Models
 		bool DestroyGroup(string key);
 		bool DestroyGroup(int index);
 
-		T GetItem<T>(string groupKey, string itemKey) where T : IPoolableItem;
-		T GetItem<T>(int groupIndex, string itemKey) where T : IPoolableItem;
-		T GetItem<T>(string itemKey) where T : IPoolableItem;
-		T SeekItem<T>(string itemKey) where T : IPoolableItem;
+		T GetItem<T>(string groupKey, string itemKey, Transform parent) where T : IPoolableItem;
+		T GetItem<T>(int groupIndex, string itemKey, Transform parent) where T : IPoolableItem;
+		T GetItem<T>(string itemKey, Transform parent) where T : IPoolableItem;
+		T SeekItem<T>(string itemKey, Transform parent) where T : IPoolableItem;
 		
 		bool CheckAllPoolGroupsReady();
 	}

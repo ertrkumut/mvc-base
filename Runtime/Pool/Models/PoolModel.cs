@@ -89,13 +89,13 @@ namespace MVC.Runtime.Pool.Models
         {
             return DestroyGroup(_keyMap[index]);
         }
-        public virtual T GetItem<T>(string groupKey, string itemKey) where T : IPoolableItem
+        public virtual T GetItem<T>(string groupKey, string itemKey, Transform parent = null) where T : IPoolableItem
         {
-            return (T)_poolGroupMap[groupKey].Get<T>(itemKey);
+            return (T)_poolGroupMap[groupKey].Get<T>(itemKey, parent);
         }
-        public virtual T GetItem<T>(int groupIndex, string itemKey) where T : IPoolableItem
+        public virtual T GetItem<T>(int groupIndex, string itemKey, Transform parent = null) where T : IPoolableItem
         {
-            return GetItem<T>(_keyMap[groupIndex], itemKey);
+            return GetItem<T>(_keyMap[groupIndex], itemKey, parent);
         }
 
         /// <summary>
@@ -103,17 +103,17 @@ namespace MVC.Runtime.Pool.Models
         /// <typeparam name="T"></typeparam>
         /// <param name="itemKey"></param>
         /// <returns>Returns an item from fist added pool group</returns>
-        public virtual T GetItem<T>(string itemKey) where T : IPoolableItem
+        public virtual T GetItem<T>(string itemKey, Transform parent = null) where T : IPoolableItem
         {
-            return GetItem<T>(_keyMap[0], itemKey);
+            return GetItem<T>(_keyMap[0], itemKey, parent);
         }
-        public T SeekItem<T>(string itemKey) where T : IPoolableItem
+        public T SeekItem<T>(string itemKey, Transform parent = null) where T : IPoolableItem
         {
             for (int i = 0; i < _keyMap.Count; i++)
             {
                 if (_poolGroupMap[_keyMap[i]].ContainsPool(itemKey))
                 {
-                    return _poolGroupMap[_keyMap[i]].Get<T>(itemKey);
+                    return _poolGroupMap[_keyMap[i]].Get<T>(itemKey, parent);
                 }
             }
 

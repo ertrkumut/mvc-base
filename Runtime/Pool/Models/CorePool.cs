@@ -71,7 +71,7 @@ namespace MVC.Runtime.Pool.Models
             try
             {
                 item.OnInitialized();
-                item.ReturnPoolCallback = ReturnToPool;
+                item.ReturnToPoolAction = ReturnToPool;
                 _readyItems.AddFirst(item);
             }
             catch (System.Exception e)
@@ -87,7 +87,7 @@ namespace MVC.Runtime.Pool.Models
             }
         }
 
-        protected virtual T GetItem()
+        protected virtual T GetItem(Transform parent)
         {
             if (_isDestroyed)
             {
@@ -104,6 +104,7 @@ namespace MVC.Runtime.Pool.Models
                 else if (_getItemEvenUsing)
                 {
                     T usingItem = _usingItems.First.Value;
+                    if(!ReferenceEquals(parent, null)) usingItem.transform.SetParent(parent);
                     usingItem.OnGetFromPool();
 
                     _usingItems.RemoveFirst();
@@ -118,6 +119,7 @@ namespace MVC.Runtime.Pool.Models
             }
 
             T item = _readyItems.First.Value;
+            if(!ReferenceEquals(parent, null)) item.transform.SetParent(parent);
             item.OnGetFromPool();
 
             _readyItems.RemoveFirst();
@@ -126,9 +128,9 @@ namespace MVC.Runtime.Pool.Models
             return item;
         }
 
-        public virtual object GetObject()
+        public virtual object GetObject(Transform parent)
         {
-            return GetItem();
+            return GetItem(parent);
         }
 
         public void ReturnToPool<TU>(TU item) where TU : class, IPoolableItem

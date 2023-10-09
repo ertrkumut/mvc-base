@@ -5,12 +5,15 @@ namespace MVC.Runtime.Pool.Entities
 {
     public interface IPoolableItem
     {
-        public Action<IPoolableItem> ReturnPoolCallback { get; set; }
+        public Action<IPoolableItem> ReturnToPoolAction { get; set; }
         Transform transform { get; }
-        void SetActive();
-        void Dismiss();
+
         void OnInitialized();
         void OnGetFromPool();
         void OnReturnToPool();
+        /// <summary>
+        /// use => ReturnToPoolAction?.Invoke(this);
+        /// </summary>
+        void Dismiss();
     }
 }

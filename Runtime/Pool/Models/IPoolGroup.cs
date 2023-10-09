@@ -20,7 +20,7 @@ namespace MVC.Runtime.Pool.Models
 
         public void ResetAllPools();
         public void ResetPool(string key);
-        public T Get<T>(string key) where T : IPoolableItem;
+        public T Get<T>(string key, Transform parent) where T : IPoolableItem;
         void SetParent(Transform parent);
         
         bool CheckAllPoolsReady();

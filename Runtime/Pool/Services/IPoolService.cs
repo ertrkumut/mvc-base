@@ -1,5 +1,6 @@
 
 using MVC.Runtime.Pool.Entities;
+using UnityEngine;
 
 namespace MVC.Runtime.Pool.Services
 {
@@ -11,9 +12,9 @@ namespace MVC.Runtime.Pool.Services
 		bool DestroyGroup(int index);
 		bool CheckPoolServiceReady();
 
-		T GetItem<T>(string groupKey, string itemKey) where T : IPoolableItem;
-		T GetItem<T>(int groupIndex, string itemKey) where T : IPoolableItem;
-		T GetItem<T>(string itemKey) where T : IPoolableItem;
-		T SeekItem<T>(string itemKey) where T : IPoolableItem;
+		T GetItem<T>(string groupKey, string itemKey, Transform parent = null) where T : IPoolableItem;
+		T GetItem<T>(int groupIndex, string itemKey, Transform parent = null) where T : IPoolableItem;
+		T GetItem<T>(string itemKey, Transform parent = null) where T : IPoolableItem;
+		T SeekItem<T>(string itemKey, Transform parent = null) where T : IPoolableItem;
 	}
 }

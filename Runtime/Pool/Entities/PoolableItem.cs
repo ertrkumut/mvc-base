@@ -5,7 +5,7 @@ namespace MVC.Runtime.Pool.Entities
 {
     public class PoolableItem : MonoBehaviour, IPoolableItem
     {
-        public Action<IPoolableItem> ReturnPoolCallback { get; set; }
+        public Action<IPoolableItem> ReturnToPoolAction { get; set; }
         public Transform transform { get; }
 
         public virtual void SetActive()
@@ -15,7 +15,7 @@ namespace MVC.Runtime.Pool.Entities
 
         public virtual void Dismiss()
         {
-            ReturnPoolCallback?.Invoke(this);
+            ReturnToPoolAction?.Invoke(this);
         }
 
         public virtual void OnInitialized()

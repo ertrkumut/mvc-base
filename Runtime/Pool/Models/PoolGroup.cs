@@ -79,10 +79,10 @@ namespace MVC.Runtime.Pool.Models
             _poolMap.Add(key);
             _pools.Add(key, pool);
         }
-
-        public virtual T Get<T>(string key) where T : IPoolableItem
+        
+        public virtual T Get<T>(string key, Transform parent) where T : IPoolableItem
         {
-            return (T)_pools[key].GetObject();
+            return (T)_pools[key].GetObject(parent);
         }
 
         public bool ContainsPool(string key)

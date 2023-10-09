@@ -13,7 +13,7 @@ namespace MVC.Runtime.Pool.Models
         bool CheckItemCompatibility(object prefab);
         void Initialize(GameObject container, object prefab, int count, bool isExtendable = true, bool getItemEvenUsing = false);
         void ResetPool();
-        object GetObject();
+        object GetObject(Transform parent);
         void ReturnToPool<TU>(TU item) where TU : class, IPoolableItem;
         void DestroyPool();
 

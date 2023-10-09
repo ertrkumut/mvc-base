@@ -54,28 +54,29 @@ namespace MVC.Runtime.Pool.Services
 
         public bool CheckPoolServiceReady() => _poolModel.CheckAllPoolGroupsReady();
 
-        public T GetItem<T>(string groupKey, string itemKey) where T : IPoolableItem
+        public T GetItem<T>(string groupKey, string itemKey, Transform parent = null) where T : IPoolableItem
         {
-            return _poolModel.GetItem<T>(groupKey, itemKey);
+            return _poolModel.GetItem<T>(groupKey, itemKey, parent);
         }
 
-        public T GetItem<T>(int groupIndex, string itemKey) where T : IPoolableItem
+        public T GetItem<T>(int groupIndex, string itemKey, Transform parent = null) where T : IPoolableItem
         {
-            return _poolModel.GetItem<T>(groupIndex, itemKey);
+            return _poolModel.GetItem<T>(groupIndex, itemKey, parent);
         }
+
         /// <summary>
         /// </summary>
         /// <typeparam name="T"></typeparam>
         /// <param name="itemKey"></param>
+        /// <param name="parent"></param>
         /// <returns>Returns an item from fist added pool group</returns>
-        public T GetItem<T>(string itemKey) where T : IPoolableItem
+        public T GetItem<T>(string itemKey, Transform parent = null) where T : IPoolableItem
         {
-            return _poolModel.GetItem<T>(itemKey);
+            return _poolModel.GetItem<T>(itemKey, parent);
         }
-
-        public T SeekItem<T>(string itemKey) where T : IPoolableItem
+        public T SeekItem<T>(string itemKey, Transform parent = null) where T : IPoolableItem
         {
-            return _poolModel.SeekItem<T>(itemKey);
+            return _poolModel.SeekItem<T>(itemKey, parent);
         }
     }
 }
