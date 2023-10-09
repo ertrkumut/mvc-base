@@ -6,7 +6,6 @@ namespace MVC.Runtime.Pool.Entities
     public class PoolableItem : MonoBehaviour, IPoolableItem
     {
         public Action<IPoolableItem> ReturnToPoolAction { get; set; }
-        public Transform transform { get; }
 
         public virtual void SetActive()
         {
