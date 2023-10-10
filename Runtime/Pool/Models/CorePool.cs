@@ -137,7 +137,7 @@ namespace MVC.Runtime.Pool.Models
         {
             _usingItems.Remove(item as T);
             _readyItems.AddLast(item as T);
-            item.transform.parent = _container.transform;
+            item.transform.SetParent(_container.transform);
             item.transform.gameObject.SetActive(false);
             item.OnReturnToPool();
         }

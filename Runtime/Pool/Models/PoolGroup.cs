@@ -34,7 +34,7 @@ namespace MVC.Runtime.Pool.Models
         private GameObject CreatePoolContainer(string key)
         {
             GameObject poolContainer = new GameObject(key);
-            poolContainer.transform.parent = _mainContainer.transform;
+            poolContainer.transform.SetParent(_mainContainer.transform);
             poolContainer.transform.localPosition = Vector3.zero;
             poolContainer.transform.localScale = Vector3.one;
             return poolContainer;
