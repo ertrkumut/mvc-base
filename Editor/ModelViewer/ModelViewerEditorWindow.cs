@@ -69,14 +69,43 @@ namespace MVC.Editor.ModelViewer
             EditorGUILayout.BeginVertical("box");
             EditorGUILayout.LabelField("Local Injected Objects", EditorStyles.boldLabel);
 
-            var injectionBinder = _inspectedRoot.Context.InjectionBinder;
+            /*
+             var injectionBinder = _inspectedRoot.Context.InjectionBinder;
             var injectedObjects = injectionBinder.GetAllInjectionBindings();
-
+            
             foreach (InjectionBinding injectedObject in injectedObjects)
             {
                 DrawInjectedObject(injectedObject);
             }
+            
+            foreach (var subContext in _inspectedRoot.Context.SubContexts)
+            {
+                var injectionBinderSub = subContext.InjectionBinder;
+                var injectedObjectsSub = injectionBinderSub.GetAllInjectionBindings();
+                
+                if (_inspectedRoot.Context.GetType() == subContext.GetType())
+                    continue;
 
+                EditorGUILayout.LabelField("SubContext{" + injectedObjectsSub.GetType() + "} - Local Injected Objects", EditorStyles.boldLabel);
+
+                foreach (InjectionBinding injectedObject in injectedObjectsSub)
+                {
+                    DrawInjectedObject(injectedObject);
+                }
+            }
+             
+             */
+            foreach (var subContext in _inspectedRoot.Context.SubContexts)
+            {
+                var injectionBinderSub = subContext.InjectionBinder;
+                var injectedObjectsSub = injectionBinderSub.GetAllInjectionBindings();
+
+                foreach (InjectionBinding injectedObject in injectedObjectsSub)
+                {
+                    DrawInjectedObject(injectedObject);
+                }
+            }
+            
             EditorGUILayout.EndVertical();
 
             EditorGUILayout.Space(10);
