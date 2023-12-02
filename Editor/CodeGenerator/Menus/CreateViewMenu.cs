@@ -21,9 +21,9 @@ namespace MVC.Editor.CodeGenerator.Menus
         protected virtual string _tempMediatorName => "TempMediator";
         
         protected virtual string _targetViewPath => CodeGeneratorStrings.GetPath(CodeGeneratorStrings.ViewPath, _parentFolderName);
-        protected virtual string _targetTestViewPath => CodeGeneratorStrings.GetPath(CodeGeneratorStrings.ViewPath, _parentFolderName);
-        protected virtual string _tempViewPath => CodeGeneratorStrings.GetPath(CodeGeneratorStrings.ViewPath, _parentFolderName);
-        protected virtual string _tempMediatorPath => CodeGeneratorStrings.GetPath(CodeGeneratorStrings.ViewPath, _parentFolderName);
+        protected virtual string _targetTestViewPath => CodeGeneratorStrings.GetPath(CodeGeneratorStrings.TestViewPath, _parentFolderName);
+        protected virtual string _tempViewPath => CodeGeneratorStrings.GetPath(CodeGeneratorStrings.TempViewPath, _parentFolderName);
+        protected virtual string _tempMediatorPath => CodeGeneratorStrings.GetPath(CodeGeneratorStrings.TempMediatorPath, _parentFolderName);
 
         protected string _fileName;
         protected string _viewNameInputField = "*Name*";
@@ -168,8 +168,6 @@ namespace MVC.Editor.CodeGenerator.Menus
             
             
             var path = Application.dataPath + string.Format(_targetViewPath, _selectedContextName.Replace("Context", "")) + _viewNameInputField;
-            // if (_isTestView)
-            //     path = Application.dataPath + string.Format(_targetTestViewPath, _selectedContextName.Replace("Context", "")) + _viewNameInputField;
 
             _viewNamespace = path.Replace(Application.dataPath + "/Scripts/", "").Replace("/", ".").TrimEnd('.');
             Debug.Log("-->" + _viewNamespace);
@@ -225,6 +223,7 @@ namespace MVC.Editor.CodeGenerator.Menus
                         _contextGUI[_selectedContextName] = false;
                     }
                     _selectedContextName = contextName;
+                    _parentFolderName = contextResultList.FirstOrDefault(x => x.Name == contextName).Namespace.Split(".")[0];
                 }
                 else if (!result && _selectedContextName == contextName)
                 {
