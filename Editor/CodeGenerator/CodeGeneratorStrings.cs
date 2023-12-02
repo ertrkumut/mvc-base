@@ -1,5 +1,4 @@
 ﻿#if UNITY_EDITOR
-using UnityEditor;
 using UnityEngine;
 
 namespace MVC.Editor.CodeGenerator
@@ -42,10 +41,11 @@ namespace MVC.Editor.CodeGenerator
         internal const string ContextTestFlag = "FLAG_testContext";
 
 
-        internal static string GetPath(string path)
+        internal static string GetPath(string path, string parentFolderName)
         {
-            var codeGenerationSettings = AssetDatabase.LoadAssetAtPath<MVCCodeGenerationSettings>("Assets/Editor/MVCCodeGenerationSettings.asset");
-            return codeGenerationSettings == null ? path.Replace("$", "Runtime") : path.Replace("$", codeGenerationSettings.MainFolderName);
+            return string.IsNullOrEmpty(parentFolderName) 
+                ? path.Replace("$", "Runtime") 
+                : path.Replace("$", parentFolderName);
         }
     }
 }

@@ -1,4 +1,5 @@
 #if UNITY_EDITOR
+using System;
 using System.Collections.Generic;
 using System.IO;
 using UnityEditor;
@@ -271,18 +272,21 @@ namespace MVC.Editor.CodeGenerator
         
         public static void CreateScreenEnum(string screenType)
         {
-            var gameScreenEnumPath = CodeGeneratorStrings.GetPath(CodeGeneratorStrings.ScreenTypeEnumPath) + "/" + CodeGeneratorStrings.ScreenTypeEnumFileName + ".cs";
+            // global screen enum path. ScreenEnum type doesn't has any parent folder.
+            var gameScreenEnumPath =
+                CodeGeneratorStrings.GetPath(CodeGeneratorStrings.ScreenTypeEnumPath, string.Empty) + "/" +
+                CodeGeneratorStrings.ScreenTypeEnumFileName + ".cs";
 
             var isFileExist = File.Exists(gameScreenEnumPath);
 
             if (!isFileExist)
             {
-                if (!Directory.Exists(CodeGeneratorStrings.GetPath(CodeGeneratorStrings.ScreenTypeEnumPath)))
-                    Directory.CreateDirectory(CodeGeneratorStrings.GetPath(CodeGeneratorStrings.ScreenTypeEnumPath));
+                if (!Directory.Exists(CodeGeneratorStrings.GetPath(CodeGeneratorStrings.ScreenTypeEnumPath, string.Empty)))
+                    Directory.CreateDirectory(CodeGeneratorStrings.GetPath(CodeGeneratorStrings.ScreenTypeEnumPath, string.Empty));
                 
                 var lineList = new List<string>();
 
-                var namespaceTxt = CodeGeneratorStrings.GetPath(CodeGeneratorStrings.ScreenTypeEnumPath)
+                var namespaceTxt = CodeGeneratorStrings.GetPath(CodeGeneratorStrings.ScreenTypeEnumPath, string.Empty)
                     .Replace(Application.dataPath + "/Scripts/", "")
                     .Replace("/", ".")
                     .TrimEnd('.');

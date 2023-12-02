@@ -1,4 +1,5 @@
 #if UNITY_EDITOR
+using System.Collections.Generic;
 using UnityEngine;
 
 namespace MVC.Editor.CodeGenerator
@@ -6,6 +7,7 @@ namespace MVC.Editor.CodeGenerator
     [CreateAssetMenu(fileName = "MVCCodeGenerationSettings", menuName = "MVC/CodeGeneration/Settings")]
     public class MVCCodeGenerationSettings : ScriptableObject
     {
+        public List<string> ParentFolderNames = new();
         public string MainFolderName = "Runtime";
     }
 }

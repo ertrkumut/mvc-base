@@ -20,16 +20,18 @@ namespace MVC.Editor.CodeGenerator.Menus
         protected virtual string _tempViewName => "TempView";
         protected virtual string _tempMediatorName => "TempMediator";
         
-        protected virtual string _targetViewPath => CodeGeneratorStrings.GetPath(CodeGeneratorStrings.ViewPath);
-        protected virtual string _targetTestViewPath => CodeGeneratorStrings.GetPath(CodeGeneratorStrings.TestViewPath);
-        protected virtual string _tempViewPath => CodeGeneratorStrings.GetPath(CodeGeneratorStrings.TempViewPath);
-        protected virtual string _tempMediatorPath => CodeGeneratorStrings.GetPath(CodeGeneratorStrings.TempMediatorPath);
+        protected virtual string _targetViewPath => CodeGeneratorStrings.GetPath(CodeGeneratorStrings.ViewPath, _parentFolderName);
+        protected virtual string _targetTestViewPath => CodeGeneratorStrings.GetPath(CodeGeneratorStrings.ViewPath, _parentFolderName);
+        protected virtual string _tempViewPath => CodeGeneratorStrings.GetPath(CodeGeneratorStrings.ViewPath, _parentFolderName);
+        protected virtual string _tempMediatorPath => CodeGeneratorStrings.GetPath(CodeGeneratorStrings.ViewPath, _parentFolderName);
 
         protected string _fileName;
         protected string _viewNameInputField = "*Name*";
 
         protected List<string> _actionNames;
 
+        protected string _parentFolderName;
+        
         protected string _viewNamespace;
         protected string _viewName;
         protected string _mediatorName;
