@@ -1,7 +1,10 @@
 #if UNITY_EDITOR
 using System;
+using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Reflection;
+using Mono.Cecil;
 using MVC.Runtime.Injectable.Components;
 using MVC.Runtime.Screen;
 using UnityEditor;
@@ -22,7 +25,7 @@ namespace MVC.Editor.CodeGenerator.Menus
         protected override string _tempViewName => "TempScreenView";
         protected override string _tempMediatorName => "TempScreenMediator";
 
-        protected override string _targetViewPath => CodeGeneratorStrings.GetPath(CodeGeneratorStrings.ScreenPath, _parentFolderName);
+        protected override string _targetViewPath => CodeGeneratorStrings.GetPath(CodeGeneratorStrings.ScreenViewPath, _parentFolderName);
         protected override string _tempViewPath => CodeGeneratorStrings.GetPath(CodeGeneratorStrings.TempScreenViewPath, _parentFolderName);
         protected override string _tempMediatorPath => CodeGeneratorStrings.GetPath(CodeGeneratorStrings.TempScreenMediatorPath, _parentFolderName);
 
@@ -54,6 +57,8 @@ namespace MVC.Editor.CodeGenerator.Menus
             PlayerPrefs.SetString("create-screen-menu-clicked", _fileName);
             PlayerPrefs.SetString("create-screen-root-name", rootName);
             PlayerPrefs.SetString("parent-folder-path", _parentFolderName);
+            PlayerPrefs.SetString("create-screen-namespace", _viewNamespace);
+            PlayerPrefs.SetString("create-screen-root-namespace", contextNamespace);
 
             CodeGeneratorUtils.CreateContext(contextName, "TempScreenTestContext", contextPath, CodeGeneratorStrings.GetPath(CodeGeneratorStrings.TempScreenTestContextPath, _parentFolderName),
                 contextNamespace, true,true);
@@ -62,7 +67,7 @@ namespace MVC.Editor.CodeGenerator.Menus
                 CodeGeneratorStrings.GetPath(CodeGeneratorStrings.TempScreenTestRootPath, _parentFolderName), contextNamespace, true);
             
             CodeGeneratorUtils.BindMediationInContext(contextPath + "/" + contextName + ".cs", _viewName, _mediatorName, "TempScreenView", "TempScreenMediator", _viewNamespace);
-            CodeGeneratorUtils.ShowScreenInLaunch(contextPath + "/" + contextName + ".cs", _viewName, "TempScreenView", "GameScreens." + _fileName.Replace("View", ""));
+            CodeGeneratorUtils.ShowScreenInLaunch(contextPath + "/" + contextName + ".cs", _viewName, "TempScreenView", "GameScreens." + _fileName.Replace("View", ""), _parentFolderName);
             
             CreateScene();
         }
@@ -80,7 +85,7 @@ namespace MVC.Editor.CodeGenerator.Menus
             
             PlayerPrefs.SetString("screen-scene-name", sceneName);
             
-            CodeGeneratorUtils.CreateScreenEnum(className);
+            CodeGeneratorUtils.CreateScreenEnum(_parentFolderName, className);
             
             var scene = EditorSceneManager.NewScene(NewSceneSetup.DefaultGameObjects, NewSceneMode.Single);
             scene.name = sceneName;
@@ -97,7 +102,9 @@ namespace MVC.Editor.CodeGenerator.Menus
                     return;
 
                 var screenName = PlayerPrefs.GetString("create-screen-menu-clicked");
+                var screenNamespace = PlayerPrefs.GetString("create-screen-namespace");
                 var rootName = PlayerPrefs.GetString("create-screen-root-name");
+                var rootNamespace = PlayerPrefs.GetString("create-screen-root-namespace");
 
                 var prefabName = screenName.Replace("View", "");
                 var sceneName = PlayerPrefs.GetString("screen-scene-name");
@@ -108,11 +115,37 @@ namespace MVC.Editor.CodeGenerator.Menus
                 PlayerPrefs.DeleteKey("create-screen-scene-path");
                 PlayerPrefs.DeleteKey("create-screen-root-name");
                 PlayerPrefs.DeleteKey("parent-folder-path");
+                PlayerPrefs.DeleteKey("create-screen-namespace");
+                PlayerPrefs.DeleteKey("create-screen-root-namespace");
                 
                 var assemblyList = AppDomain.CurrentDomain.GetAssemblies();
                 var currentAssembly = assemblyList.FirstOrDefault(x => x.FullName.StartsWith("Assembly-CSharp,"));
-                var screenType = currentAssembly.GetTypes().FirstOrDefault(x => x.Name == screenName);
-                var rootType = currentAssembly.GetTypes().FirstOrDefault(x => x.Name == rootName);
+
+                var codeGenerationSettings = Resources.Load<MVCCodeGenerationSettings>("MVCCodeGenerationSettings");
+                
+                var possibleAssemblyFiles = new List<Assembly>();
+                possibleAssemblyFiles.Add(currentAssembly);
+
+                if (codeGenerationSettings != null)
+                {
+                    foreach (var assemblyDefinitionAsset in codeGenerationSettings.AssemblyDefinitions)
+                    {
+                        var assembly = assemblyList.FirstOrDefault(x => x.FullName.StartsWith(assemblyDefinitionAsset.name));
+                        if(assembly != null)
+                            possibleAssemblyFiles.Add(assembly);
+                    }
+                }
+
+                Type screenType = null;
+                Type rootType = null;
+                foreach (var possibleAssemblyFile in possibleAssemblyFiles)
+                {
+                    if(screenType is null)
+                        screenType = possibleAssemblyFile.GetTypes().FirstOrDefault(x => x.Name == screenName && x.Namespace == screenNamespace);
+                    
+                    if(rootType is null)
+                        rootType = possibleAssemblyFile.GetTypes().FirstOrDefault(x => x.Name == rootName && x.Namespace == rootNamespace);
+                }
 
                 var rootGameObject = new GameObject(rootName).AddComponent(rootType);
 
@@ -158,6 +191,9 @@ namespace MVC.Editor.CodeGenerator.Menus
                 PlayerPrefs.DeleteKey("create-screen-menu-clicked");
                 PlayerPrefs.DeleteKey("create-screen-scene-path");
                 PlayerPrefs.DeleteKey("create-screen-root-name");
+                PlayerPrefs.DeleteKey("parent-folder-path");
+                PlayerPrefs.DeleteKey("create-screen-namespace");
+                PlayerPrefs.DeleteKey("create-screen-root-namespace");
                 
                 Debug.LogError(e);
             }

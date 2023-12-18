@@ -1,5 +1,7 @@
 #if UNITY_EDITOR
 using System.Collections.Generic;
+using Mono.Cecil;
+using UnityEditorInternal;
 using UnityEngine;
 
 namespace MVC.Editor.CodeGenerator
@@ -9,6 +11,8 @@ namespace MVC.Editor.CodeGenerator
     {
         public List<string> ParentFolderNames = new();
         public string MainFolderName = "Runtime";
+
+        public List<AssemblyDefinitionAsset> AssemblyDefinitions;
     }
 }
 #endif
