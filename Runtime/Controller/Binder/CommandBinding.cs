@@ -13,7 +13,7 @@ namespace MVC.Runtime.Controller.Binder
 
         public CommandBinding()
         {
-            ExecutionType = CommandExecutionType.Parallel;
+            ExecutionType = CommandExecutionType.Sequence;
         }
         
         public new virtual CommandBinding To<TValueType>()
