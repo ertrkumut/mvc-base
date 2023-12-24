@@ -4,14 +4,13 @@ namespace MVC.Runtime.Function.Provider
 {
     internal class FunctionDataContainer : IFunctionDataContainer
     {
-        private FunctionProvider _functionProvider;
+        public FunctionProvider FunctionProvider;
         
         internal Type FunctionType;
         internal object[] ExecuteParameters;
 
-        public FunctionDataContainer(FunctionProvider functionProvider)
+        public FunctionDataContainer()
         {
-            _functionProvider = functionProvider;
         }
         
         public void SetFunctionType(Type functionType)
@@ -27,13 +26,13 @@ namespace MVC.Runtime.Function.Provider
 
         public TReturnType SetReturn<TReturnType>()
         {
-            var result = _functionProvider.ExecuteFunction<TReturnType>(this);
+            var result = FunctionProvider.ExecuteFunction<TReturnType>(this);
             return result;
         }
 
         public void SetVoid()
         {
-            _functionProvider.ExecuteFunction(this);
+            FunctionProvider.ExecuteFunction(this);
         }
 
         public void Dispose()

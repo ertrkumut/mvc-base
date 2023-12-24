@@ -1,10 +1,15 @@
 ﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using MVC.Editor.Console;
+using MVC.Function.AsyncFunctions.DataContainer;
 using MVC.Runtime.Attributes;
 using MVC.Runtime.Console;
 using MVC.Runtime.Contexts;
+using MVC.Runtime.Function.AsyncFunctions;
+using MVC.Runtime.Injectable.Attributes;
 using MVC.Runtime.Injectable.Utils;
+using MVC.Runtime.Provider.Coroutine;
 using UnityEngine;
 
 namespace MVC.Runtime.Function.Provider
@@ -12,26 +17,38 @@ namespace MVC.Runtime.Function.Provider
     [HideInModelViewer]
     public class FunctionProvider : IFunctionProvider
     {
-        private List<FunctionDataContainer> _functionDataContainerPool;
+        [Inject] private ICoroutineProvider _coroutineProvider { get; set; }
+
+        private Dictionary<Type, List<FunctionDataContainer>> _functionDataContainerPool; 
         private Dictionary<Type, List<IFunctionBody>> _functionPool;
 
         internal IContext Context;
         
         public FunctionProvider()
         {
-            _functionDataContainerPool = new List<FunctionDataContainer>();
+            _functionDataContainerPool = new Dictionary<Type, List<FunctionDataContainer>>();
             _functionPool = new Dictionary<Type, List<IFunctionBody>>();
         }
 
-        private FunctionDataContainer GetFunctionDataContainer()
+        private FunctionDataContainer GetFunctionDataContainer<TDataContainerType>() where TDataContainerType : FunctionDataContainer
         {
-            var availableFunctionDataContainer = _functionDataContainerPool.Count != 0 
-                ? _functionDataContainerPool[0] : null;
+            var dataContainerType = typeof(TDataContainerType);
+            if(!_functionDataContainerPool.ContainsKey(dataContainerType))
+                _functionDataContainerPool.Add(dataContainerType, new List<FunctionDataContainer>());
+            
+            var availableFunctionDataContainer = _functionDataContainerPool[dataContainerType].Count != 0 
+                ? _functionDataContainerPool[dataContainerType][0] : null;
 
             if (availableFunctionDataContainer == null)
-                availableFunctionDataContainer = new FunctionDataContainer(this);
+            {
+                availableFunctionDataContainer = Activator.CreateInstance<TDataContainerType>();
+                availableFunctionDataContainer.FunctionProvider = this;
+
+                if (availableFunctionDataContainer is AsyncFunctionDataContainerBase asyncDataContainer)
+                    asyncDataContainer.CoroutineProvider = _coroutineProvider;
+            }
             else
-                _functionDataContainerPool.Remove(availableFunctionDataContainer);
+                _functionDataContainerPool[dataContainerType].Remove(availableFunctionDataContainer);
 
             return availableFunctionDataContainer;
         }
@@ -39,10 +56,28 @@ namespace MVC.Runtime.Function.Provider
         public IFunctionDataContainer Execute<TFunctionType>() where TFunctionType : IFunctionBody
         {
             var functionType = typeof(TFunctionType);
-            var functionDataContainer = GetFunctionDataContainer();
+            var functionDataContainer = GetFunctionDataContainer<FunctionDataContainer>();
             functionDataContainer.SetFunctionType(functionType);
 
             return functionDataContainer;
+        }
+        
+        public IAsyncFunctionDataContainer ExecuteAsync<TFunctionType>() where TFunctionType : IAsyncFunction
+        {
+            var functionType = typeof(TFunctionType);
+            var functionDataContainer = GetFunctionDataContainer<AsyncFunctionDataContainer>();
+            functionDataContainer.SetFunctionType(functionType);
+
+            return functionDataContainer as IAsyncFunctionDataContainer;
+        }
+
+        public IAsyncFunctionDataContainer<TParam1> ExecuteAsync<TFunctionType, TParam1>() where TFunctionType : IAsyncFunction<TParam1>
+        {
+            var functionType = typeof(TFunctionType);
+            var functionDataContainer = GetFunctionDataContainer<AsyncFunctionDataContainer<TParam1>>();
+            functionDataContainer.SetFunctionType(functionType);
+
+            return functionDataContainer as IAsyncFunctionDataContainer<TParam1>;
         }
 
         internal void ExecuteFunction(FunctionDataContainer functionDataContainer)
@@ -55,7 +90,7 @@ namespace MVC.Runtime.Function.Provider
             MVCConsole.LogWarning(ConsoleLogType.Function, "Function Executed! " + function.GetType().Name);
             ReturnFunctionToPool(function);
             functionDataContainer.Dispose();
-            _functionDataContainerPool.Add(functionDataContainer);
+            _functionDataContainerPool[functionDataContainer.GetType()].Add(functionDataContainer);
         }
 
         internal TReturnType ExecuteFunction<TReturnType>(FunctionDataContainer functionDataContainer)
@@ -68,10 +103,25 @@ namespace MVC.Runtime.Function.Provider
             MVCConsole.LogWarning(ConsoleLogType.Function, "Function Executed! " + function.GetType().Name);
             
             functionDataContainer.Dispose();
-            _functionDataContainerPool.Add(functionDataContainer);
+            _functionDataContainerPool[functionDataContainer.GetType()].Add(functionDataContainer);
             ReturnFunctionToPool(function);
             return (TReturnType) result;
         }
+
+        internal IEnumerator ExecuteAsyncFunction(FunctionDataContainer functionDataContainer)
+        {
+            var function = GetFunction(functionDataContainer) as AsyncFunctionBody;
+            var functionCompletedCallback = functionDataContainer.GetType().GetProperty("FunctionCompletedCallback").GetValue(functionDataContainer);
+            
+            function.GetType().GetProperty("FunctionCompletedCallback").SetValue(function, functionCompletedCallback);
+            Context.TryToInjectFunction(function);
+            yield return function.Execute();
+            MVCConsole.LogWarning(ConsoleLogType.Function, "Function Executed! " + function.GetType().Name);
+            ReturnFunctionToPool(function);
+            functionDataContainer.Dispose();
+            _functionDataContainerPool[functionDataContainer.GetType()].Add(functionDataContainer);
+        }
+        
 
         private void ReturnFunctionToPool(IFunctionBody functionBody)
         {
