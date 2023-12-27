@@ -230,7 +230,11 @@ namespace MVC.Editor.ModelViewer
             if (memberInfo.MemberType == MemberTypes.Field)
                 (memberInfo as FieldInfo).SetValue(rootObject, newValue);
             else if(memberInfo.MemberType == MemberTypes.Property)
-                (memberInfo as PropertyInfo).SetValue(rootObject, newValue);
+            {
+                var propertyField = memberInfo as PropertyInfo;
+                if(propertyField.CanWrite)
+                    propertyField.SetValue(rootObject, newValue);
+            }
         }
     }
 }
