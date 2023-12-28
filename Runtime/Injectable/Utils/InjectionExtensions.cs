@@ -158,7 +158,13 @@ namespace MVC.Runtime.Injectable.Utils
                 });
                 if (param == null)
                 {
-                    param = signalParams.FirstOrDefault(x => paramType.IsAssignableFrom(x.GetType()));
+                    param = signalParams.FirstOrDefault(x =>
+                    {
+                        if (x is null)
+                            return false;
+
+                        return paramType.IsAssignableFrom(x.GetType());
+                    });
                 }
 
                 if (param == null)
