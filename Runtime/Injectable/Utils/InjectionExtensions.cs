@@ -145,7 +145,17 @@ namespace MVC.Runtime.Injectable.Utils
             foreach (var signalField in signalFields)
             {
                 var paramType = signalField.FieldType;
-                var param = signalParams.FirstOrDefault(x => x.GetType() == paramType);
+                var param = signalParams.FirstOrDefault(x =>
+                {
+                    if(x is null)
+                    {
+                        Debug.LogError(
+                            $"[InjectionError] SignalParam couldn't injected Command:{command.GetType().Name}");
+                        return false;
+                    }
+                    
+                    return x.GetType() == paramType;
+                });
                 if (param == null)
                 {
                     param = signalParams.FirstOrDefault(x => paramType.IsAssignableFrom(x.GetType()));
