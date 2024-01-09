@@ -10,6 +10,7 @@ namespace MVC.Runtime.Pool.Models
 		void CreateGroup(CD_PoolGroupBase poolConfig);
 		bool DestroyGroup(string key);
 		bool DestroyGroup(int index);
+		void ResetGroup(string key);
 
 		T GetItem<T>(string groupKey, string itemKey, Transform parent) where T : IPoolableItem;
 		T GetItem<T>(int groupIndex, string itemKey, Transform parent) where T : IPoolableItem;

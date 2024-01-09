@@ -42,7 +42,6 @@ namespace MVC.Runtime.Pool.Models
                 );
             }
         }
-
         private bool TryAddGroup(IPoolGroup poolManager, string key)
         {
             if (RegisterGroup(poolManager, key))
@@ -70,7 +69,6 @@ namespace MVC.Runtime.Pool.Models
 
             return true;
         }
-        
         public bool DestroyGroup(string key)
         {
             if (!_poolGroupMap.ContainsKey(key))
@@ -88,6 +86,15 @@ namespace MVC.Runtime.Pool.Models
         public bool DestroyGroup(int index)
         {
             return DestroyGroup(_keyMap[index]);
+        }
+        public void ResetGroup(string key)
+        {
+            if (!_poolGroupMap.ContainsKey(key))
+            {
+                Debug.LogWarning("The key : " + key + " is not exist");
+                return;
+            }
+            _poolGroupMap[key].ResetAllPools();
         }
         public virtual T GetItem<T>(string groupKey, string itemKey, Transform parent = null) where T : IPoolableItem
         {
@@ -119,7 +126,6 @@ namespace MVC.Runtime.Pool.Models
 
             return default;
         }
-        
         public bool CheckAllPoolGroupsReady()
         {
             foreach (var group in _poolGroupMap)

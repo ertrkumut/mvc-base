@@ -146,8 +146,12 @@ namespace MVC.Runtime.Pool.Models
         {
             foreach (var item in _usingItems)
             {
-                ReturnToPool(item);
+                _readyItems.AddLast(item);
+                item.transform.SetParent(_container.transform);
+                item.transform.gameObject.SetActive(false);
+                item.OnReturnToPool();
             }
+            _usingItems.Clear();
         }
 
         public virtual void DestroyPool()

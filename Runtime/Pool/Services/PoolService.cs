@@ -53,6 +53,10 @@ namespace MVC.Runtime.Pool.Services
         }
 
         public bool CheckPoolServiceReady() => _poolModel.CheckAllPoolGroupsReady();
+        public void ResetGroup(string key)
+        {
+            _poolModel.ResetGroup(key);
+        }
 
         public T GetItem<T>(string groupKey, string itemKey, Transform parent = null) where T : IPoolableItem
         {
