@@ -47,6 +47,7 @@ namespace MVC.Runtime.Root
         private void CreateContext()
         {
             BeforeCreateContext();
+            InitializeSubContexts();
             MVCConsole.Log(ConsoleLogType.Context, "Context - Initialize "+ GetType().Name);
             _context = new TContextType();
             Context = _context;

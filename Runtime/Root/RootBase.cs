@@ -62,10 +62,7 @@ namespace MVC.Runtime.Root
             }
         }
 
-        protected virtual void BeforeCreateContext()
-        {
-            InitializeSubContexts();
-        }
+        protected virtual void BeforeCreateContext() {}
         protected virtual void AfterCreateBeforeStartContext(){}
         protected virtual void AfterBindingsBeforeInjections(){}
         protected virtual void AfterStarBeforeLaunchContext(){}
