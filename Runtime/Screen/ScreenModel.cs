@@ -159,6 +159,7 @@ namespace MVC.Runtime.Screen
             availableScreen.Register();
             ((ScreenBody) availableScreen).InitializeScreenParams(screenDataContainer.ScreenParameters);
             ((ScreenBody) availableScreen).ReturnToPoolAction = OnReturnToPoolAction;
+            ((ScreenBody) availableScreen).Setup();
             ((ScreenBody) availableScreen).Open();
             
             _screenDataContainerPool.Add(screenDataContainer);
