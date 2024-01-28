@@ -1,10 +1,8 @@
 ﻿#if UNITY_EDITOR
 using System;
 using System.Collections.Generic;
-using System.IO;
 using System.Linq;
 using System.Reflection;
-using MVC.Runtime.Contexts;
 using MVC.Runtime.Root.Utils;
 using UnityEditor;
 using UnityEngine;
@@ -13,6 +11,9 @@ namespace MVC.Editor.CodeGenerator.Menus
 {
     internal class CreateViewMenu : EditorWindow
     {
+        protected virtual bool _showCreateSceneToggle => false;
+        protected bool _createScene = true;
+        
         protected virtual string _classLabelName => "View Name: ";
         protected virtual string _classViewName => "View";
         protected virtual string _classMediatorName => "Mediator";
@@ -93,6 +94,9 @@ namespace MVC.Editor.CodeGenerator.Menus
 
             #endregion
 
+            if(_showCreateSceneToggle)
+                _createScene = EditorGUILayout.ToggleLeft(new GUIContent("Create Scene (Prefab won't be created if it's false)"), _createScene);
+            
             #region Actions
 
             EditorGUILayout.Space(25);
