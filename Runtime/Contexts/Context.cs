@@ -14,6 +14,8 @@ namespace MVC.Runtime.Contexts
 {
     public class Context : IContext
     {
+        protected virtual string LocalInjectionBinderName => GetType().Name;
+        
         protected GameObject _gameObject;
         public bool ContextStarted { get; set; }
         public MediationBinder MediationBinder { get; set; }
@@ -87,6 +89,8 @@ namespace MVC.Runtime.Contexts
             //InjectionBinder.SetBindedContext(this);
             
             MediationBinder = InjectionBinder.Bind<MediationBinder>();
+            InjectionBinder.BindInstance(InjectionBinder, LocalInjectionBinderName);
+            InjectionBinder.SetBindedContext(this);
             
             InjectionBinderCrossContext.BindInstance(InjectionBinderCrossContext);
             InjectionBinderCrossContext.SetBindedContext(this);
@@ -98,7 +102,7 @@ namespace MVC.Runtime.Contexts
             functionProvider.Context = this;
             
             InjectionBinderCrossContext.BindInstance<GameObject>(_gameObject, GetType().Name);
-            InjectionBinder.BindInstance<GameObject>(_gameObject, nameof(IContext));
+            InjectionBinder.BindInstance<GameObject>(_gameObject, GetType().Name);
             
             InjectionBinderCrossContext.BindMonoBehaviorInstance<IUpdateProvider, UpdateProvider>();
             InjectionBinderCrossContext.BindMonoBehaviorInstance<ICoroutineProvider, CoroutineProvider>();

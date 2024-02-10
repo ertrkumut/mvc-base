@@ -297,19 +297,9 @@ namespace MVC.Runtime.Injectable.Utils
                 injectedMemberInfo.Name + "</b>"+
                 "\n<b><color=#FF6666>► Injected Context:</color> "+ context + "</b>";
                 MVCConsole.LogError(ConsoleLogType.Injection, errString);
+                
                 return;
             }
-            // else
-            // {
-            //     var errString =
-            //         "<b><color=#66FF66>► INJECTION COMPLETED!</color></b>" +
-            //         "\n<b><color=#66FF66>► Instance Type:</color><color=#FFEFD5> " + objectInstance.GetType().Name + "</color></b>" +
-            //         "\n<b><color=#66FF66>► Injection Type:</color> " + injectionType.Name + " - " +
-            //         injectedMemberInfo.Name + "</b>"+
-            //         "\n<b><color=#66FF66>► Injected Context:</color> "+ context + "</b>";
-            //     Debug.Log(errString);
-            //     MVCConsole.Log(ConsoleLogType.Injection, errString);
-            // }
                 
             
             if (injectedMemberInfo.MemberType == MemberTypes.Field)
@@ -318,7 +308,7 @@ namespace MVC.Runtime.Injectable.Utils
                 (injectedMemberInfo as PropertyInfo).SetValue(objectInstance, injectionValue);
         }
         
-        private static object GetInjectedObject(this IContext context, MemberInfo memberInfo)
+        private static object GetInjectedObject(this IContext mainContext, MemberInfo memberInfo)
         {
             Type injectionType = null;
             if (memberInfo.MemberType == MemberTypes.Field)
@@ -327,9 +317,9 @@ namespace MVC.Runtime.Injectable.Utils
                 injectionType = (memberInfo as PropertyInfo).PropertyType;
             
             var injectAttribute = memberInfo.GetCustomAttributes(typeof(InjectAttribute)).ToList()[0] as InjectAttribute;
-            var crossContextInjectionBinder = context.InjectionBinderCrossContext;
+            var crossContextInjectionBinder = mainContext.InjectionBinderCrossContext;
 
-            var allContexts = context.AllContexts;
+            var allContexts = mainContext.AllContexts;
             
             object injectionValue = null;
             foreach (var cntxt in allContexts)
@@ -337,6 +327,7 @@ namespace MVC.Runtime.Injectable.Utils
                 injectionValue = cntxt.InjectionBinder.GetInstance(injectionType, injectAttribute.Name);
                 if (injectionValue != null)
                     return injectionValue;
+                
             }
             
             injectionValue = crossContextInjectionBinder.GetInstance(injectionType, injectAttribute.Name);
