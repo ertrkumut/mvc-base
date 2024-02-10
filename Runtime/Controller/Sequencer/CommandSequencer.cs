@@ -65,7 +65,7 @@ namespace MVC.Runtime.Controller.Sequencer
             MVCConsole.Log(ConsoleLogType.Command, "Command Executed! - " + commandType.Name);
             
             var executeMethodInfo = commandType.GetMethod("Execute");
-            executeMethodInfo?.Invoke(command, parameters);
+            executeMethodInfo.Invoke(command, parameters);
 
             if (_commandBinding.ExecutionType == CommandExecutionType.Parallel)
                 (this as ICommandSequencer).ParallelAutoReleaseCommand(command);
