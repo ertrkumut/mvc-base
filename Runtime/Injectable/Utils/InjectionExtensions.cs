@@ -11,6 +11,7 @@ using MVC.Runtime.Injectable.Attributes;
 using MVC.Runtime.ViewMediators.Mediator;
 using MVC.Runtime.ViewMediators.View;
 using UnityEngine;
+using Object = System.Object;
 
 namespace MVC.Runtime.Injectable.Utils
 {
@@ -341,13 +342,19 @@ namespace MVC.Runtime.Injectable.Utils
 
             if (cashData != null)
                 return cashData.Children;
-            
-            var childTypes = Assembly
-                .GetAssembly(type)
-                .GetTypes()
-                .Where(x => x.IsAssignableFrom(type) && !x.IsInterface)
-                .ToList();
 
+            Type baseType = type.BaseType;
+            var childTypes = new List<Type>();
+            childTypes.Add(type);
+            while (baseType != null)
+            {
+                if(baseType is null || baseType.IsInterface || baseType == typeof(Object))
+                    break;
+                    
+                childTypes.Add(baseType);
+                baseType = baseType.BaseType;
+            }
+            
             InjectionCashing.AddCashData(type, childTypes);
             
             return childTypes;
