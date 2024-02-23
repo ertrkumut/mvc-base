@@ -32,8 +32,16 @@ namespace MVC.Editor.CodeGenerator.Menus
         protected List<string> _actionNames;
 
         protected string _parentFolderName;
-        
-        protected string _viewNamespace;
+
+        protected string _viewNamespace
+        {
+            get
+            {
+                return _viewCreationPath.Replace(Application.dataPath + "/Scripts/", "")
+                    .Replace("/", ".")
+                    .TrimEnd('.');
+            }
+        }
         protected string _viewName;
         protected string _mediatorName;
 
@@ -43,6 +51,38 @@ namespace MVC.Editor.CodeGenerator.Menus
         protected bool _isTestView;
         
         protected List<Type> _contextTypes;
+
+        protected string _viewCreationPath
+        {
+            get
+            {
+                if (string.IsNullOrEmpty(_selectedContextName))
+                    return "";
+
+                var contextType = _contextTypes.FirstOrDefault(x => x.Name == _selectedContextName);
+
+                var pureContextFolder = contextType.Namespace.Substring(contextType.Namespace.IndexOf("Contexts.") + 9)
+                    .Replace(".Root", "")
+                    .Replace(".","/");
+                
+                return Application.dataPath  
+                       + string.Format(_targetViewPath, pureContextFolder) 
+                       + _viewNameInputField;
+            }
+        }
+
+        protected string _viewCreationPathForDEBUG
+        {
+            get
+            {
+                var path = _viewCreationPath;
+                if (string.IsNullOrEmpty(path))
+                    return "";
+
+                var index = path.IndexOf("Scripts");
+                return path.Substring(index);
+            }
+        }
         
         protected virtual void OnEnable()
         {
@@ -94,6 +134,10 @@ namespace MVC.Editor.CodeGenerator.Menus
 
             #endregion
 
+            EditorGUILayout.Space();
+            EditorGUILayout.LabelField($"View Path: {_viewCreationPathForDEBUG}");
+            EditorGUILayout.LabelField($"View Namespace: {_viewNamespace}");
+            
             if(_showCreateSceneToggle)
                 _createScene = EditorGUILayout.ToggleLeft(new GUIContent("Create Scene (Prefab won't be created if it's false)"), _createScene);
             
@@ -166,17 +210,10 @@ namespace MVC.Editor.CodeGenerator.Menus
             {
                 _viewName = "TEST_" + _viewName;
                 _mediatorName = "TEST_" + _mediatorName;
-
-                //_viewNameInputField = "TEST/" + _viewNameInputField;
             }
             
-            
-            var path = Application.dataPath + string.Format(_targetViewPath, _selectedContextName.Replace("Context", "")) + _viewNameInputField;
-
-            _viewNamespace = path.Replace(Application.dataPath + "/Scripts/", "").Replace("/", ".").TrimEnd('.');
-            Debug.Log("-->" + _viewNamespace);
-            CodeGeneratorUtils.CreateView(_viewName, _tempViewName, path, _tempViewPath, _viewNamespace, _actionNames, _isTestView);
-            CodeGeneratorUtils.CreateMediator(_mediatorName, _viewName, _tempMediatorName, path, _tempMediatorPath, _viewNamespace, _actionNames, _isTestView);
+            CodeGeneratorUtils.CreateView(_viewName, _tempViewName, _viewCreationPath, _tempViewPath, _viewNamespace, _actionNames, _isTestView);
+            CodeGeneratorUtils.CreateMediator(_mediatorName, _viewName, _tempMediatorName, _viewCreationPath, _tempMediatorPath, _viewNamespace, _actionNames, _isTestView);
 
             _fileName = _viewName;
         }
