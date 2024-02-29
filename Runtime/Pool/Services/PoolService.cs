@@ -1,4 +1,5 @@
 using MVC.Runtime.Injectable.Attributes;
+using MVC.Runtime.Pool.Data.UnityObjects;
 using MVC.Runtime.Pool.Entities;
 using MVC.Runtime.Pool.Models;
 using MVC.Runtime.Pool.Root;
@@ -42,27 +43,23 @@ namespace MVC.Runtime.Pool.Services
             if (!ReferenceEquals(config, null))
                 _poolModel.CreateGroup(config);
         }
-        public bool DestroyGroup(string groupConfigKey)
-        {
-            return _poolModel.DestroyGroup(groupConfigKey);
-        }
 
-        public bool DestroyGroup(int index)
+        public void CreateGroup(CD_PoolGroupBase newConfig)
         {
-            return _poolModel.DestroyGroup(index);
+            var config = _poolConfigModel.GetConfigByKey(newConfig.GroupName);
+            if (!ReferenceEquals(config, null))
+                _poolModel.CreateGroup(config);
+            else
+                _poolModel.CreateGroup(newConfig);
         }
-
+        public bool DestroyGroup(string groupConfigKey) => _poolModel.DestroyGroup(groupConfigKey);
+        public bool DestroyGroup(int index) => _poolModel.DestroyGroup(index);
         public bool CheckPoolServiceReady() => _poolModel.CheckAllPoolGroupsReady();
-        public void ResetGroup(string key)
-        {
-            _poolModel.ResetGroup(key);
-        }
-
+        public void ResetGroup(string key) => _poolModel.ResetGroup(key);
         public T GetItem<T>(string groupKey, string itemKey, Transform parent = null) where T : IPoolableItem
         {
             return _poolModel.GetItem<T>(groupKey, itemKey, parent);
         }
-
         public T GetItem<T>(int groupIndex, string itemKey, Transform parent = null) where T : IPoolableItem
         {
             return _poolModel.GetItem<T>(groupIndex, itemKey, parent);
