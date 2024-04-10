@@ -1,5 +1,4 @@
 #if UNITY_EDITOR
-using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
@@ -52,7 +51,7 @@ namespace MVC.Root.Editor
                 Undo.RecordObject(_root, "initialize-order");
                 _root.InitializeOrder = initializeOrder;
                 if(!Application.isPlaying)
-                    EditorSceneManager.MarkSceneDirty(SceneManager.GetActiveScene());
+                    MarkDirty();
             }
             
             EditorGUILayout.EndVertical();
@@ -246,6 +245,8 @@ namespace MVC.Root.Editor
                     }
                     
                     EditorGUILayout.EndHorizontal();
+                    EditorGUI.BeginChangeCheck();
+                    
                     var contextDataAutoSetup =
                         EditorGUILayout.Toggle(new GUIContent("AutoSetup"), contextData.AutoSetup);
                     
@@ -253,10 +254,9 @@ namespace MVC.Root.Editor
                     {
                         Undo.RecordObject(_root, "auto-setup");
                         contextData.AutoSetup = contextDataAutoSetup;
-                
+                        
                         if(!Application.isPlaying)
                             MarkDirty();
-                        //     EditorSceneManager.MarkSceneDirty(SceneManager.GetActiveScene());
                     }
                     EditorGUILayout.EndVertical();
                     EditorGUILayout.Space(5);
@@ -267,30 +267,7 @@ namespace MVC.Root.Editor
 
             if (GUILayout.Button("Add Sub Context"))
             {
-                var types = AssemblyHelper.GetAllTypesFromAssemblies();
-                var contextTypeList = types
-                    .Where(x => typeof(IContext).IsAssignableFrom(x))
-                    .Where(x => _root.SubContextTypes.FirstOrDefault(a => a.ContextFullName == x.FullName) == null)
-                    .Where(x => x.GetField(CodeGeneratorStrings.ContextTestFlag, BindingFlags.Instance | BindingFlags.Static | BindingFlags.NonPublic) == null)
-                    .ToList();
-
-                var genericMenu = new GenericMenu();
-
-                foreach (var type in contextTypeList)
-                {
-                    genericMenu.AddItem(new GUIContent(type.Name), false, data =>
-                    {
-                        _root.SubContextTypes.Add(new SubContextData
-                        {
-                            ContextFullName = type.FullName,
-                            ContextName = type.Name
-                        });
-
-                        MarkDirty();
-                    }, type);
-                }
-                
-                genericMenu.ShowAsContext();
+                AddSubContextWindow.ShowWindow(_root);
             }
         }
 
