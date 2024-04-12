@@ -223,6 +223,10 @@ namespace MVC.Editor.CodeGenerator.Menus
             DrawAllContexts();
         }
 
+        protected Vector2 _contextsScrollView = Vector2.zero; // To track the scroll position
+        protected string _contextSearchText = ""; // To hold the search text
+
+        
         protected void DrawAllContexts(bool isScreen = false)
         {
             var contextResultList = new List<Type>();
@@ -248,10 +252,37 @@ namespace MVC.Editor.CodeGenerator.Menus
                 .ToList();
 
             EditorGUILayout.BeginVertical("box");
+            
+            var searchStyle = new GUIStyle(GUI.skin.textField);
+            searchStyle.fontSize = 14;
+            searchStyle.normal.textColor = Color.white;
+            searchStyle.alignment = TextAnchor.MiddleLeft;
+            searchStyle.padding = new RectOffset(10, 0, 0, 0);
+            
+            var labelStyle = new GUIStyle(GUI.skin.label);
+            labelStyle.fontStyle = FontStyle.Bold;
+            labelStyle.fontSize = 12;
+            labelStyle.normal.textColor = Color.gray;
+            
+            GUILayout.BeginHorizontal();
+            GUILayout.Label("Search:", labelStyle, GUILayout.Width(50)); // Adjust width as needed
+            _contextSearchText = EditorGUILayout.TextField(_contextSearchText, searchStyle, GUILayout.MinWidth(200), GUILayout.Height(17));
+            GUILayout.EndHorizontal();
+
+            EditorGUILayout.Space(5);
+
+            _contextsScrollView = EditorGUILayout.BeginScrollView(_contextsScrollView);
+            
             for (var ii = 0; ii < contextNames.Count; ii++)
             {
                 EditorGUILayout.BeginHorizontal();
                 var contextName = contextNames[ii];
+                
+                if(!string.IsNullOrEmpty(_contextSearchText) && !contextName.Contains(_contextSearchText))
+                {
+                    EditorGUILayout.EndHorizontal();
+                    continue;
+                }
                 
                 if(!_contextGUI.ContainsKey(contextName))
                     _contextGUI.Add(contextName, false);
@@ -275,6 +306,8 @@ namespace MVC.Editor.CodeGenerator.Menus
                 
                 EditorGUILayout.EndHorizontal();
             }
+            
+            EditorGUILayout.EndScrollView();
             EditorGUILayout.EndVertical();
         }
     }
