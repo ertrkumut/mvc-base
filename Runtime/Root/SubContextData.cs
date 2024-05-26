@@ -3,7 +3,7 @@ using System;
 namespace MVC.Runtime.Root
 {
     [Serializable]
-    public class SubContextData
+    public struct SubContextData
     {
         public string ContextFullName;
         public string ContextName;

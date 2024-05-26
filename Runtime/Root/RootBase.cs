@@ -2,11 +2,11 @@
 using System.Collections.Generic;
 using System.Linq;
 using MVC.Editor.Console;
+using MVC.Runtime.Attributes;
 using MVC.Runtime.Console;
 using MVC.Runtime.Contexts;
 using MVC.Runtime.Root.Utils;
 using UnityEngine;
-using UnityEngine.Serialization;
 
 namespace MVC.Runtime.Root
 {
@@ -43,6 +43,21 @@ namespace MVC.Runtime.Root
 
             _subContexts = new ();
 
+            var subContextAttributes = GetType().GetCustomAttributes(typeof(SubContextAttribute),true);
+
+            foreach (var attribute in subContextAttributes)
+            {
+                if(attribute is not SubContextAttribute subContextAttribute)
+                    continue;
+                
+                CreateSubContextAndInitialize(subContextAttribute.ContextType, new SubContextData
+                {
+                    ContextFullName = subContextAttribute.ContextType.FullName,
+                    ContextName = subContextAttribute.ContextType.Name,
+                    AutoSetup = subContextAttribute.AutoSetup
+                });
+            }
+            
             var assemblyTypes = AssemblyExtensions.GetAllContextTypes();
             
             foreach (var subContextData in SubContextTypes)
@@ -54,17 +69,29 @@ namespace MVC.Runtime.Root
                     continue;
                 }
 
-                var context = (IContext) Activator.CreateInstance(contextType);
-                MVCConsole.Log(ConsoleLogType.Context, "Sub Context Initialized \n" + subContextData.ContextFullName);
-                context.Initialize(gameObject, InitializeOrder, _rootsManager.injectionBinderCrossContext, new List<IContext>());
-                _subContexts.Add(context, subContextData);
+                CreateSubContextAndInitialize(contextType, subContextData);
             }
         }
 
+        protected void CreateSubContextAndInitialize(Type contextType, SubContextData subContextData)
+        {
+            foreach (var keyPairOfSubContext in _subContexts)
+            {
+                if(keyPairOfSubContext.Key.GetType() == contextType)
+                    return;
+            }
+            
+            var context = (IContext) Activator.CreateInstance(contextType);
+            MVCConsole.Log(ConsoleLogType.Context, "Sub Context Initialized \n" + subContextData.ContextFullName);
+            context.Initialize(gameObject, InitializeOrder, _rootsManager.injectionBinderCrossContext, new List<IContext>());
+            _subContexts.Add(context, subContextData);
+        }
+        
         protected virtual void BeforeCreateContext()
         {
             InitializeSubContexts();
         }
+
         protected virtual void AfterCreateBeforeStartContext(){}
         protected virtual void AfterBindingsBeforeInjections(){}
         protected virtual void AfterStarBeforeLaunchContext(){}
