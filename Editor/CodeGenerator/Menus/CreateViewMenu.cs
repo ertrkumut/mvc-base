@@ -1,10 +1,8 @@
 ﻿#if UNITY_EDITOR
 using System;
 using System.Collections.Generic;
-using System.IO;
 using System.Linq;
 using System.Reflection;
-using MVC.Runtime.Contexts;
 using MVC.Runtime.Root.Utils;
 using UnityEditor;
 using UnityEngine;
@@ -19,11 +17,13 @@ namespace MVC.Editor.CodeGenerator.Menus
 
         protected virtual string _tempViewName => "TempView";
         protected virtual string _tempMediatorName => "TempMediator";
-        
+
         protected virtual string _targetViewPath => CodeGeneratorStrings.GetPath(CodeGeneratorStrings.ViewPath);
         protected virtual string _targetTestViewPath => CodeGeneratorStrings.GetPath(CodeGeneratorStrings.TestViewPath);
         protected virtual string _tempViewPath => CodeGeneratorStrings.GetPath(CodeGeneratorStrings.TempViewPath);
-        protected virtual string _tempMediatorPath => CodeGeneratorStrings.GetPath(CodeGeneratorStrings.TempMediatorPath);
+
+        protected virtual string _tempMediatorPath =>
+            CodeGeneratorStrings.GetPath(CodeGeneratorStrings.TempMediatorPath);
 
         protected string _fileName;
         protected string _viewNameInputField = "*Name*";
@@ -38,9 +38,10 @@ namespace MVC.Editor.CodeGenerator.Menus
         private Dictionary<string, bool> _contextGUI;
 
         protected bool _isTestView;
-        
+
         protected List<Type> _contextTypes;
-        
+        Vector2 _scrollPosition = Vector2.zero;
+
         protected virtual void OnEnable()
         {
             _actionNames = new List<string>();
@@ -61,14 +62,14 @@ namespace MVC.Editor.CodeGenerator.Menus
 
             EditorGUILayout.LabelField(_classLabelName, GUILayout.Width(75));
             _viewNameInputField = EditorGUILayout.TextField(_viewNameInputField);
-            
+
             EditorGUILayout.EndHorizontal();
-            
+
             EditorGUILayout.BeginHorizontal();
 
             var fullName = _viewNameInputField + _classViewName;
-            
-            if(GetType() == typeof(CreateViewMenu))
+
+            if (GetType() == typeof(CreateViewMenu))
             {
                 EditorGUILayout.LabelField("Is Test", GUILayout.Width(40));
                 var tempTestStatus = EditorGUILayout.Toggle(_isTestView, GUILayout.Width(30));
@@ -80,11 +81,11 @@ namespace MVC.Editor.CodeGenerator.Menus
                 }
 
                 _isTestView = tempTestStatus;
-                
+
                 if (_isTestView)
                     fullName = "TEST_" + fullName;
             }
-                
+
             EditorGUILayout.LabelField(fullName, EditorStyles.boldLabel);
             EditorGUILayout.EndHorizontal();
             EditorGUILayout.EndVertical();
@@ -101,8 +102,8 @@ namespace MVC.Editor.CodeGenerator.Menus
             GUI.backgroundColor = Color.green;
             var addActionButton = GUILayout.Button("Add Action");
             GUI.backgroundColor = Color.white;
-            
-            if(addActionButton)
+
+            if (addActionButton)
                 _actionNames.Add("ActionName");
 
             for (var ii = 0; ii < _actionNames.Count; ii++)
@@ -113,16 +114,18 @@ namespace MVC.Editor.CodeGenerator.Menus
                 GUI.backgroundColor = Color.red;
                 var removeButton = GUILayout.Button("-", GUILayout.Width(75));
                 GUI.backgroundColor = Color.white;
-                
+
                 if (removeButton)
                 {
                     _actionNames.RemoveAt(ii);
                     return;
                 }
-                
+
                 EditorGUILayout.EndHorizontal();
             }
+
             EditorGUILayout.EndVertical();
+
             #endregion
 
             #region SelectContext
@@ -130,22 +133,23 @@ namespace MVC.Editor.CodeGenerator.Menus
             GUI_ContextList();
 
             #endregion
-            
+
             #region Create
-            
+
             EditorGUILayout.Space(25);
 
             GUI.enabled = !string.IsNullOrEmpty(_selectedContextName);
-            if(!GUI.enabled)
+            if (!GUI.enabled)
             {
                 GUI.backgroundColor = Color.red;
                 EditorGUILayout.HelpBox("Choose Context!", MessageType.Error);
             }
+
             GUI.backgroundColor = Color.gray;
             var createButton = GUILayout.Button("Create");
             GUI.backgroundColor = Color.white;
             GUI.enabled = true;
-            if(createButton)
+            if (createButton)
                 CreateViewMediator();
 
             #endregion
@@ -163,16 +167,20 @@ namespace MVC.Editor.CodeGenerator.Menus
 
                 //_viewNameInputField = "TEST/" + _viewNameInputField;
             }
-            
-            
-            var path = Application.dataPath + string.Format(_targetViewPath, _selectedContextName.Replace("Context", "")) + _viewNameInputField;
+
+
+            var path = Application.dataPath +
+                       string.Format(_targetViewPath, _selectedContextName.Replace("Context", "")) +
+                       _viewNameInputField;
             // if (_isTestView)
             //     path = Application.dataPath + string.Format(_targetTestViewPath, _selectedContextName.Replace("Context", "")) + _viewNameInputField;
 
             _viewNamespace = path.Replace(Application.dataPath + "/Scripts/", "").Replace("/", ".").TrimEnd('.');
             Debug.Log("-->" + _viewNamespace);
-            CodeGeneratorUtils.CreateView(_viewName, _tempViewName, path, _tempViewPath, _viewNamespace, _actionNames, _isTestView);
-            CodeGeneratorUtils.CreateMediator(_mediatorName, _viewName, _tempMediatorName, path, _tempMediatorPath, _viewNamespace, _actionNames, _isTestView);
+            CodeGeneratorUtils.CreateView(_viewName, _tempViewName, path, _tempViewPath, _viewNamespace, _actionNames,
+                _isTestView);
+            CodeGeneratorUtils.CreateMediator(_mediatorName, _viewName, _tempMediatorName, path, _tempMediatorPath,
+                _viewNamespace, _actionNames, _isTestView);
 
             _fileName = _viewName;
         }
@@ -185,36 +193,37 @@ namespace MVC.Editor.CodeGenerator.Menus
         protected void DrawAllContexts(bool isScreen = false)
         {
             var contextResultList = new List<Type>();
-            
+
             if (isScreen)
                 contextResultList = _contextTypes
-                    .Where(x => x.GetField(CodeGeneratorStrings.ContextScreenFlag, BindingFlags.Instance | BindingFlags.Static | BindingFlags.NonPublic) != null)
-                    .ToList();
+                    .Where(x => x.GetField(CodeGeneratorStrings.ContextScreenFlag,
+                        BindingFlags.Instance | BindingFlags.Static | BindingFlags.NonPublic) != null).ToList();
             else
             {
                 if (_isTestView)
                     contextResultList = _contextTypes
-                        .Where(x => x.GetField(CodeGeneratorStrings.ContextTestFlag, BindingFlags.Instance | BindingFlags.Static | BindingFlags.NonPublic) != null)
-                        .ToList();
+                        .Where(x => x.GetField(CodeGeneratorStrings.ContextTestFlag,
+                            BindingFlags.Instance | BindingFlags.Static | BindingFlags.NonPublic) != null).ToList();
                 else
                     contextResultList = _contextTypes
-                        .Where(x => x.GetField(CodeGeneratorStrings.ContextTestFlag, BindingFlags.Instance | BindingFlags.Static | BindingFlags.NonPublic) == null)
-                        .ToList();
+                        .Where(x => x.GetField(CodeGeneratorStrings.ContextTestFlag,
+                            BindingFlags.Instance | BindingFlags.Static | BindingFlags.NonPublic) == null).ToList();
             }
-                
+
             var contextNames = contextResultList
                 .Select(x => x.Name)
                 .ToList();
 
-            EditorGUILayout.BeginVertical("box");
+            _scrollPosition = EditorGUILayout.BeginScrollView(_scrollPosition);
+            // EditorGUILayout.BeginVertical("box");
             for (var ii = 0; ii < contextNames.Count; ii++)
             {
                 EditorGUILayout.BeginHorizontal();
                 var contextName = contextNames[ii];
-                
-                if(!_contextGUI.ContainsKey(contextName))
+
+                if (!_contextGUI.ContainsKey(contextName))
                     _contextGUI.Add(contextName, false);
-                
+
                 var result = EditorGUILayout.ToggleLeft(contextName, _contextGUI[contextName]);
                 if (result && _selectedContextName != contextName)
                 {
@@ -222,18 +231,21 @@ namespace MVC.Editor.CodeGenerator.Menus
                     {
                         _contextGUI[_selectedContextName] = false;
                     }
+
                     _selectedContextName = contextName;
                 }
                 else if (!result && _selectedContextName == contextName)
                 {
                     _selectedContextName = "";
                 }
-                
+
                 _contextGUI[contextName] = result;
-                
+
                 EditorGUILayout.EndHorizontal();
             }
-            EditorGUILayout.EndVertical();
+
+            // EditorGUILayout.EndVertical();
+            EditorGUILayout.EndScrollView();
         }
     }
 }
