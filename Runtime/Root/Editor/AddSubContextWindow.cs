@@ -32,7 +32,7 @@ namespace MVC.Root.Editor
             var types = AssemblyHelper.GetAllTypesFromAssemblies();
             _contextTypeList = types
                 .Where(x => typeof(IContext).IsAssignableFrom(x))
-                .Where(x => _root.SubContextTypes.FirstOrDefault(a => a.ContextFullName == x.FullName).Equals(default))
+                .Where(x => _root.SubContextTypes.All(a => a.ContextFullName != x.FullName))
                 .Where(x => x.GetField(CodeGeneratorStrings.ContextTestFlag, BindingFlags.Instance | BindingFlags.Static | BindingFlags.NonPublic) == null)
                 .ToList();
         }
