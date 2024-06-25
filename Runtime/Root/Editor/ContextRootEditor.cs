@@ -167,10 +167,10 @@ namespace MVC.Root.Editor
 
             EditorGUI.BeginChangeCheck();
 
-            var autoSetup = EditorGUILayout.ToggleLeft("Auto Setup", _root.autoSetup, GUILayout.Width(125));
-            GUI.enabled = (Application.isPlaying && !_root.hasSetuped && _root.hasInitialized);
+            var autoSetup = EditorGUILayout.ToggleLeft("Auto Setup", _root.AutoSetup, GUILayout.Width(125));
+            GUI.enabled = (Application.isPlaying && !_root.HasSetupCompleted && _root.HasInitialized);
 
-            if (GUI.enabled && !_root.hasSetuped)
+            if (GUI.enabled && !_root.HasSetupCompleted)
                 GUI.backgroundColor = Color.green;
             else
                 GUI.backgroundColor = Color.red;
@@ -184,7 +184,7 @@ namespace MVC.Root.Editor
             if (EditorGUI.EndChangeCheck())
             {
                 Undo.RecordObject(_root, "auto-setup");
-                _root.autoSetup = autoSetup;
+                _root.AutoSetup = autoSetup;
                 
                 if(!Application.isPlaying)
                     EditorSceneManager.MarkSceneDirty(SceneManager.GetActiveScene());
