@@ -20,6 +20,29 @@ namespace MVC.Runtime.Injectable.Components
 
         private void Start()
         {
+            InjectViews();
+        }
+
+        protected virtual void OnDestroy()
+        {
+            RootsManager.Instance.OnContextReady -= OnContextsReadyListener;
+            
+            for (var ii = 0; ii < viewDataList.Count; ii++)
+            {
+                var viewInjectorData = viewDataList[ii];
+                if(!viewInjectorData.IsRegistered)
+                    continue;
+                var view = viewInjectorData.View as IView;
+                view.UnRegister();
+            }
+        }
+
+        #endregion
+
+        #region Injection
+
+        public void InjectViews()
+        {
             _viewRegistrationDataDict = new Dictionary<IView, IContext>();
             
             IContext bubbleUpContext = null;
@@ -52,24 +75,14 @@ namespace MVC.Runtime.Injectable.Components
             }
         }
 
-        protected virtual void OnDestroy()
+        public void UnregisterViews()
         {
-            RootsManager.Instance.OnContextReady -= OnContextsReadyListener;
-            
-            for (var ii = 0; ii < viewDataList.Count; ii++)
+            foreach (var viewInjectorData in viewDataList)
             {
-                var viewInjectorData = viewDataList[ii];
-                if(!viewInjectorData.IsRegistered)
-                    continue;
-                var view = viewInjectorData.View as IView;
-                view.UnRegister();
+                (viewInjectorData.View as IView).UnRegister();
             }
         }
-
-        #endregion
-
-        #region Injection
-
+        
         private void OnContextsReadyListener(IContext context)
         {
             var view = _viewRegistrationDataDict.FirstOrDefault(x => x.Value == context).Key;

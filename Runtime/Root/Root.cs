@@ -52,17 +52,17 @@ namespace MVC.Runtime.Root
             _context = new TContextType();
             Context = _context;
 
-            _context.Initialize(gameObject, initializeOrder, _rootsManager.injectionBinderCrossContext, _subContexts.Keys.ToList());
+            _context.Initialize(gameObject, InitializeOrder, _rootsManager.injectionBinderCrossContext, _subContexts.Keys.ToList());
             
             
         }
         
         public override void StartContext(bool forceToStart = false)
         {
-            if (!autoInitialize && !forceToStart)
+            if (!AutoInitialize && !forceToStart)
                 return;
 
-            hasInitialized = true;
+            HasInitialized = true;
             AfterCreateBeforeStartContext();
 
             MVCConsole.Log(ConsoleLogType.Context, "Context Started! Context: " + GetType().Name);
@@ -121,9 +121,9 @@ namespace MVC.Runtime.Root
             
             _context.DestroyContext();
             
-            injectionsBound = false;
-            mediationsBound = false;
-            commandsBound = false;
+            InjectionsBound = false;
+            MediationsBound = false;
+            CommandsBound = false;
         }
     }
 }

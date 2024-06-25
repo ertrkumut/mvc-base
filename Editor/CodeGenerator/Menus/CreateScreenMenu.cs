@@ -9,12 +9,22 @@ using UnityEditor.SceneManagement;
 using UnityEngine;
 using UnityEngine.EventSystems;
 using UnityEngine.SceneManagement;
-using UnityEngine.UI;
 
 namespace MVC.Editor.CodeGenerator.Menus
 {
     internal class CreateScreenMenu : CreateViewMenu
     {
+        private const string KEY_FILE_NAME = "file-name";
+        private const string KEY_ROOT_NAME = "root-name";
+        private const string KEY_PARENT_FOLDER_PATH = "parent-folder-path";
+        private const string KEY_VIEW_NAMESPACE = "view-namespace";
+        private const string KEY_CONTEXT_NAMESPACE = "context-namespace";
+        private const string KEY_SCREEN_NAME = "screen-scene-name";
+        private const string KEY_SCENE_PATH = "scene-path";
+        private const string KEY_CREATE_SCENE = "create-scene";
+        
+        protected override bool _showCreateSceneToggle => true;
+
         protected override string _classLabelName => "Screen Name: ";
         protected override string _classViewName => "ScreenView";
         protected override string _classMediatorName => "ScreenMediator";
@@ -22,9 +32,9 @@ namespace MVC.Editor.CodeGenerator.Menus
         protected override string _tempViewName => "TempScreenView";
         protected override string _tempMediatorName => "TempScreenMediator";
 
-        protected override string _targetViewPath => CodeGeneratorStrings.GetPath(CodeGeneratorStrings.ScreenPath);
-        protected override string _tempViewPath => CodeGeneratorStrings.GetPath(CodeGeneratorStrings.TempScreenViewPath);
-        protected override string _tempMediatorPath => CodeGeneratorStrings.GetPath(CodeGeneratorStrings.TempScreenMediatorPath);
+        protected override string _targetViewPath => CodeGeneratorStrings.GetPath(CodeGeneratorStrings.ScreenViewPath, _parentFolderName);
+        protected override string _tempViewPath => CodeGeneratorStrings.GetPath(CodeGeneratorStrings.TempScreenViewPath, _parentFolderName);
+        protected override string _tempMediatorPath => CodeGeneratorStrings.GetPath(CodeGeneratorStrings.TempScreenMediatorPath, _parentFolderName);
 
         protected override void GUI_ContextList()
         {
@@ -43,78 +53,98 @@ namespace MVC.Editor.CodeGenerator.Menus
 
             var contextName = (_fileName + "TestContext").Replace("View", "");
             var rootName = (_fileName + "TestRoot").Replace("View", "");
-            var contextPath = Application.dataPath + string.Format(CodeGeneratorStrings.GetPath(CodeGeneratorStrings.TestScreenRootPath), contextName) + _viewNameInputField;
+            var contextPath = Application.dataPath + string.Format(CodeGeneratorStrings.GetPath(CodeGeneratorStrings.TestScreenRootPath, _parentFolderName), contextName) + _viewNameInputField;
             
-            var contexNamespace = contextPath
+            var contextNamespace = contextPath
                 .Replace(Application.dataPath + "/Test/Scripts/", "")
                 .Replace("/", ".")
                 .TrimEnd('.');
-            contexNamespace = "Test." + contexNamespace;
+            contextNamespace = "Test." + contextNamespace;
 
-            PlayerPrefs.SetString("create-screen-menu-clicked", _fileName);
-            PlayerPrefs.SetString("create-screen-root-name", rootName);
+            PlayerPrefs.SetString(KEY_FILE_NAME, _fileName);
+            PlayerPrefs.SetString(KEY_ROOT_NAME, rootName);
+            PlayerPrefs.SetString(KEY_PARENT_FOLDER_PATH, _parentFolderName);
+            PlayerPrefs.SetString(KEY_VIEW_NAMESPACE, _viewNamespace);
+            PlayerPrefs.SetString(KEY_CONTEXT_NAMESPACE, contextNamespace);
+            PlayerPrefs.SetInt(KEY_CREATE_SCENE, _createScene ? 1 : 0);
 
-            CodeGeneratorUtils.CreateContext(contextName, "TempScreenTestContext", contextPath, CodeGeneratorStrings.GetPath(CodeGeneratorStrings.TempScreenTestContextPath),
-                contexNamespace, true,true);
+            CodeGeneratorUtils.CreateContext(contextName, "TempScreenTestContext", contextPath, CodeGeneratorStrings.GetPath(CodeGeneratorStrings.TempScreenTestContextPath, _parentFolderName),
+                contextNamespace, true,true);
 
             CodeGeneratorUtils.CreateRoot(rootName, contextName, "TempScreenTestContext", "TempScreenTestRoot", contextPath,
-                CodeGeneratorStrings.GetPath(CodeGeneratorStrings.TempScreenTestRootPath), contexNamespace, true);
+                CodeGeneratorStrings.GetPath(CodeGeneratorStrings.TempScreenTestRootPath, _parentFolderName), contextNamespace, true);
             
             CodeGeneratorUtils.BindMediationInContext(contextPath + "/" + contextName + ".cs", _viewName, _mediatorName, "TempScreenView", "TempScreenMediator", _viewNamespace);
-            CodeGeneratorUtils.ShowScreenInLaunch(contextPath + "/" + contextName + ".cs", _viewName, "TempScreenView", "GameScreens." + _fileName.Replace("View", ""));
+            CodeGeneratorUtils.ShowScreenInLaunch(contextPath + "/" + contextName + ".cs", _viewName, "TempScreenView", "GameScreens." + _fileName.Replace("View", ""), _parentFolderName);
             
             CreateScene();
         }
 
         private void CreateScene()
         {
-            var scenePath = CodeGeneratorStrings.GetPath(CodeGeneratorStrings.ScreenTestScenePath);
+            var scenePath = CodeGeneratorStrings.GetPath(CodeGeneratorStrings.ScreenTestScenePath, _parentFolderName);
 
             if (!Directory.Exists(scenePath)) 
                 Directory.CreateDirectory(scenePath);
 
-            var className = PlayerPrefs.GetString("create-screen-menu-clicked");
+            var className = PlayerPrefs.GetString(KEY_FILE_NAME);
             className = className.Replace("View", "");
             var sceneName = className + "TestScene";
             
-            PlayerPrefs.SetString("screen-scene-name", sceneName);
+            PlayerPrefs.SetString(KEY_SCREEN_NAME, sceneName);
             
-            CodeGeneratorUtils.CreateScreenEnum(className);
+            CodeGeneratorUtils.CreateScreenEnum(_parentFolderName, className);
+            
+            if(!_createScene)
+                return;
             
             var scene = EditorSceneManager.NewScene(NewSceneSetup.DefaultGameObjects, NewSceneMode.Single);
             scene.name = sceneName;
 
-            PlayerPrefs.SetString("create-screen-scene-path", scenePath);
+            PlayerPrefs.SetString(KEY_SCENE_PATH, scenePath);
         }
 
+        
         [UnityEditor.Callbacks.DidReloadScripts]
         private static void CodeGenerationCompleted()
         {
             try
             {
-                if (!PlayerPrefs.HasKey("create-screen-menu-clicked")) 
+                if (!PlayerPrefs.HasKey(KEY_FILE_NAME)) 
                     return;
 
-                var screenName = PlayerPrefs.GetString("create-screen-menu-clicked");
-                var rootName = PlayerPrefs.GetString("create-screen-root-name");
+                var screenName = PlayerPrefs.GetString(KEY_FILE_NAME);
+                var screenNamespace = PlayerPrefs.GetString(KEY_VIEW_NAMESPACE);
+                var rootName = PlayerPrefs.GetString(KEY_ROOT_NAME);
+                var rootNamespace = PlayerPrefs.GetString(KEY_CONTEXT_NAMESPACE);
 
                 var prefabName = screenName.Replace("View", "");
-                var sceneName = PlayerPrefs.GetString("screen-scene-name");
-                var path = PlayerPrefs.GetString("create-screen-scene-path") + sceneName + ".unity";
+                var sceneName = PlayerPrefs.GetString(KEY_SCREEN_NAME);
+                var path = PlayerPrefs.GetString(KEY_SCENE_PATH) + sceneName + ".unity";
+                var parentFolderName = PlayerPrefs.GetString(KEY_PARENT_FOLDER_PATH);
+
+                var createScene = PlayerPrefs.GetInt(KEY_CREATE_SCENE) == 1;
                 
-                PlayerPrefs.DeleteKey("create-screen-menu-clicked");
-                PlayerPrefs.DeleteKey("create-screen-scene-path");
-                PlayerPrefs.DeleteKey("create-screen-root-name");
+                PlayerPrefs.DeleteKey(KEY_FILE_NAME);
+                PlayerPrefs.DeleteKey(KEY_SCENE_PATH);
+                PlayerPrefs.DeleteKey(KEY_ROOT_NAME);
+                PlayerPrefs.DeleteKey(KEY_PARENT_FOLDER_PATH);
+                PlayerPrefs.DeleteKey(KEY_VIEW_NAMESPACE);
+                PlayerPrefs.DeleteKey(KEY_CONTEXT_NAMESPACE);
+                PlayerPrefs.DeleteKey(KEY_CREATE_SCENE);
+
+                if (!createScene)
+                    return;
                 
-                var assemblyList = AppDomain.CurrentDomain.GetAssemblies();
-                var currentAssembly = assemblyList.FirstOrDefault(x => x.FullName.StartsWith("Assembly-CSharp,"));
-                var screenType = currentAssembly.GetTypes().FirstOrDefault(x => x.Name == screenName);
-                var rootType = currentAssembly.GetTypes().FirstOrDefault(x => x.Name == rootName);
+                var possibleAssemblyFiles = AssemblyHelper.GetAllTypesFromAssemblies();
+
+                var screenType = possibleAssemblyFiles.FirstOrDefault(x => x.Name == screenName && x.Namespace == screenNamespace);;
+                var rootType = possibleAssemblyFiles.FirstOrDefault(x => x.Name == rootName && x.Namespace == rootNamespace);;
 
                 var rootGameObject = new GameObject(rootName).AddComponent(rootType);
 
                 var screenManagerPrefab =
-                    AssetDatabase.LoadAssetAtPath<ScreenManager>(CodeGeneratorStrings.GetPath(CodeGeneratorStrings.ScreenManagerPrefabPath));
+                    AssetDatabase.LoadAssetAtPath<ScreenManager>(CodeGeneratorStrings.GetPath(CodeGeneratorStrings.ScreenManagerPrefabPath, parentFolderName));
                 var screenManager =
                     (ScreenManager) PrefabUtility.InstantiatePrefab(screenManagerPrefab, rootGameObject.transform);
 
@@ -136,10 +166,10 @@ namespace MVC.Editor.CodeGenerator.Menus
 
                 viewInjector.InitializeForEditor();
                 
-                if (!Directory.Exists(CodeGeneratorStrings.GetPath(CodeGeneratorStrings.ScreenPrefabPath)))
-                    Directory.CreateDirectory(CodeGeneratorStrings.GetPath(CodeGeneratorStrings.ScreenPrefabPath));
+                if (!Directory.Exists(CodeGeneratorStrings.GetPath(CodeGeneratorStrings.ScreenPrefabPath, parentFolderName)))
+                    Directory.CreateDirectory(CodeGeneratorStrings.GetPath(CodeGeneratorStrings.ScreenPrefabPath, parentFolderName));
                 
-                PrefabUtility.SaveAsPrefabAssetAndConnect(screenGameObject, CodeGeneratorStrings.GetPath(CodeGeneratorStrings.ScreenPrefabPath) + prefabName + ".prefab",
+                PrefabUtility.SaveAsPrefabAssetAndConnect(screenGameObject, CodeGeneratorStrings.GetPath(CodeGeneratorStrings.ScreenPrefabPath, parentFolderName) + prefabName + ".prefab",
                     InteractionMode.UserAction);
 
                 var relativeScenePath = path.Replace(Application.dataPath, "");
@@ -152,9 +182,13 @@ namespace MVC.Editor.CodeGenerator.Menus
             }
             catch (Exception e)
             {
-                PlayerPrefs.DeleteKey("create-screen-menu-clicked");
-                PlayerPrefs.DeleteKey("create-screen-scene-path");
-                PlayerPrefs.DeleteKey("create-screen-root-name");
+                PlayerPrefs.DeleteKey(KEY_FILE_NAME);
+                PlayerPrefs.DeleteKey(KEY_SCENE_PATH);
+                PlayerPrefs.DeleteKey(KEY_ROOT_NAME);
+                PlayerPrefs.DeleteKey(KEY_PARENT_FOLDER_PATH);
+                PlayerPrefs.DeleteKey(KEY_VIEW_NAMESPACE);
+                PlayerPrefs.DeleteKey(KEY_CONTEXT_NAMESPACE);
+                PlayerPrefs.DeleteKey(KEY_CREATE_SCENE);
                 
                 Debug.LogError(e);
             }

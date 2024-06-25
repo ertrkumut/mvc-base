@@ -11,6 +11,7 @@ using MVC.Runtime.Injectable.Attributes;
 using MVC.Runtime.ViewMediators.Mediator;
 using MVC.Runtime.ViewMediators.View;
 using UnityEngine;
+using Object = System.Object;
 
 namespace MVC.Runtime.Injectable.Utils
 {
@@ -145,10 +146,26 @@ namespace MVC.Runtime.Injectable.Utils
             foreach (var signalField in signalFields)
             {
                 var paramType = signalField.FieldType;
-                var param = signalParams.FirstOrDefault(x => x.GetType() == paramType);
+                var param = signalParams.FirstOrDefault(x =>
+                {
+                    if(x is null)
+                    {
+                        Debug.LogError(
+                            $"[InjectionError] SignalParam couldn't injected Command:{command.GetType().Name}");
+                        return false;
+                    }
+                    
+                    return x.GetType() == paramType;
+                });
                 if (param == null)
                 {
-                    param = signalParams.FirstOrDefault(x => paramType.IsAssignableFrom(x.GetType()));
+                    param = signalParams.FirstOrDefault(x =>
+                    {
+                        if (x is null)
+                            return false;
+
+                        return paramType.IsAssignableFrom(x.GetType());
+                    });
                 }
 
                 if (param == null)
@@ -282,19 +299,9 @@ namespace MVC.Runtime.Injectable.Utils
                 "\n<b><color=#FF6666>► Injected Context:</color> "+ context + "</b>";
                 Debug.LogError(errString);
                 MVCConsole.LogError(ConsoleLogType.Injection, errString);
+                
                 return;
             }
-            // else
-            // {
-            //     var errString =
-            //         "<b><color=#66FF66>► INJECTION COMPLETED!</color></b>" +
-            //         "\n<b><color=#66FF66>► Instance Type:</color><color=#FFEFD5> " + objectInstance.GetType().Name + "</color></b>" +
-            //         "\n<b><color=#66FF66>► Injection Type:</color> " + injectionType.Name + " - " +
-            //         injectedMemberInfo.Name + "</b>"+
-            //         "\n<b><color=#66FF66>► Injected Context:</color> "+ context + "</b>";
-            //     Debug.Log(errString);
-            //     MVCConsole.Log(ConsoleLogType.Injection, errString);
-            // }
                 
             
             if (injectedMemberInfo.MemberType == MemberTypes.Field)
@@ -303,7 +310,7 @@ namespace MVC.Runtime.Injectable.Utils
                 (injectedMemberInfo as PropertyInfo).SetValue(objectInstance, injectionValue);
         }
         
-        private static object GetInjectedObject(this IContext context, MemberInfo memberInfo)
+        private static object GetInjectedObject(this IContext mainContext, MemberInfo memberInfo)
         {
             Type injectionType = null;
             if (memberInfo.MemberType == MemberTypes.Field)
@@ -312,9 +319,9 @@ namespace MVC.Runtime.Injectable.Utils
                 injectionType = (memberInfo as PropertyInfo).PropertyType;
             
             var injectAttribute = memberInfo.GetCustomAttributes(typeof(InjectAttribute)).ToList()[0] as InjectAttribute;
-            var crossContextInjectionBinder = context.InjectionBinderCrossContext;
+            var crossContextInjectionBinder = mainContext.InjectionBinderCrossContext;
 
-            var allContexts = context.AllContexts;
+            var allContexts = mainContext.AllContexts;
             
             object injectionValue = null;
             foreach (var cntxt in allContexts)
@@ -322,6 +329,7 @@ namespace MVC.Runtime.Injectable.Utils
                 injectionValue = cntxt.InjectionBinder.GetInstance(injectionType, injectAttribute.Name);
                 if (injectionValue != null)
                     return injectionValue;
+                
             }
             
             injectionValue = crossContextInjectionBinder.GetInstance(injectionType, injectAttribute.Name);
@@ -335,13 +343,19 @@ namespace MVC.Runtime.Injectable.Utils
 
             if (cashData != null)
                 return cashData.Children;
-            
-            var childTypes = Assembly
-                .GetAssembly(type)
-                .GetTypes()
-                .Where(x => x.IsAssignableFrom(type) && !x.IsInterface)
-                .ToList();
 
+            Type baseType = type.BaseType;
+            var childTypes = new List<Type>();
+            childTypes.Add(type);
+            while (baseType != null)
+            {
+                if(baseType is null || baseType.IsInterface || baseType == typeof(Object))
+                    break;
+                    
+                childTypes.Add(baseType);
+                baseType = baseType.BaseType;
+            }
+            
             InjectionCashing.AddCashData(type, childTypes);
             
             return childTypes;

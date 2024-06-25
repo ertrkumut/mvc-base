@@ -1,4 +1,5 @@
 #if UNITY_EDITOR
+using System;
 using System.Collections.Generic;
 using System.IO;
 using UnityEditor;
@@ -247,12 +248,12 @@ namespace MVC.Editor.CodeGenerator
             AssetDatabase.Refresh();
         }
 
-        public static void ShowScreenInLaunch(string contextPath, string screenName, string tempScreenName, string screenType)
+        public static void ShowScreenInLaunch(string contextPath, string screenName, string tempScreenName, string screenType, string parentFolderName)
         {
             var contextLines = File.ReadAllLines(contextPath);
             var newRootContent = new List<string>();
             
-            newRootContent.Add("using Runtime.Contexts.Screen.Enums;");
+            newRootContent.Add($"using {parentFolderName}.Contexts.Screen.Enums;");
             for (var ii = 0; ii < contextLines.Length; ii++)
             {
                 var content = contextLines[ii];
@@ -269,20 +270,23 @@ namespace MVC.Editor.CodeGenerator
             AssetDatabase.Refresh();
         }
         
-        public static void CreateScreenEnum(string screenType)
+        public static void CreateScreenEnum(string parentFolderName, string screenType)
         {
-            var gameScreenEnumPath = CodeGeneratorStrings.GetPath(CodeGeneratorStrings.ScreenTypeEnumPath) + "/" + CodeGeneratorStrings.ScreenTypeEnumFileName + ".cs";
+            // global screen enum path. ScreenEnum type doesn't has any parent folder.
+            var gameScreenEnumPath =
+                CodeGeneratorStrings.GetPath(CodeGeneratorStrings.ScreenTypeEnumPath, parentFolderName) + "/" +
+                CodeGeneratorStrings.ScreenTypeEnumFileName + ".cs";
 
             var isFileExist = File.Exists(gameScreenEnumPath);
 
             if (!isFileExist)
             {
-                if (!Directory.Exists(CodeGeneratorStrings.GetPath(CodeGeneratorStrings.ScreenTypeEnumPath)))
-                    Directory.CreateDirectory(CodeGeneratorStrings.GetPath(CodeGeneratorStrings.ScreenTypeEnumPath));
+                if (!Directory.Exists(CodeGeneratorStrings.GetPath(CodeGeneratorStrings.ScreenTypeEnumPath, parentFolderName)))
+                    Directory.CreateDirectory(CodeGeneratorStrings.GetPath(CodeGeneratorStrings.ScreenTypeEnumPath, parentFolderName));
                 
                 var lineList = new List<string>();
 
-                var namespaceTxt = CodeGeneratorStrings.GetPath(CodeGeneratorStrings.ScreenTypeEnumPath)
+                var namespaceTxt = CodeGeneratorStrings.GetPath(CodeGeneratorStrings.ScreenTypeEnumPath, parentFolderName)
                     .Replace(Application.dataPath + "/Scripts/", "")
                     .Replace("/", ".")
                     .TrimEnd('.');
