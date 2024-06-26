@@ -8,6 +8,7 @@ using MVC.Runtime.Pool;
 using MVC.Runtime.Screen.Enum;
 using MVC.Runtime.Screen.Pool;
 using MVC.Runtime.Screen.View;
+using MVC.Runtime.ScreenPool;
 using MVC.Runtime.ViewMediators.Utils;
 using UnityEngine;
 
@@ -158,6 +159,7 @@ namespace MVC.Runtime.Screen
             availableScreen.Register();
             ((ScreenBody) availableScreen).InitializeScreenParams(screenDataContainer.ScreenParameters);
             ((ScreenBody) availableScreen).ReturnToPoolAction = OnReturnToPoolAction;
+            ((ScreenBody) availableScreen).Setup();
             ((ScreenBody) availableScreen).Open();
             
             _screenDataContainerPool.Add(screenDataContainer);

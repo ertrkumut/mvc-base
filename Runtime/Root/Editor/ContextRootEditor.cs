@@ -1,9 +1,5 @@
 #if UNITY_EDITOR
 using System.Collections.Generic;
-using System.Linq;
-using System.Reflection;
-using MVC.Editor.CodeGenerator;
-using MVC.Runtime.Contexts;
 using MVC.Runtime.Root;
 using UnityEditor;
 using UnityEditor.SceneManagement;
@@ -31,6 +27,7 @@ namespace MVC.Root.Editor
             GUI_InitializeOrder();
             GUI_BindingOptions();
             GUI_InitializeOptions();
+            GUI_SetupOptions();
             GUI_LaunchOptions();
 
             GUI_RootStatus();
@@ -158,6 +155,42 @@ namespace MVC.Root.Editor
             EditorGUILayout.EndVertical();
         }
         
+        private void GUI_SetupOptions()
+        {
+            EditorGUILayout.BeginVertical("box");
+
+            EditorGUILayout.BeginHorizontal();
+
+            EditorGUI.BeginChangeCheck();
+
+            var autoSetup = EditorGUILayout.ToggleLeft("Auto Setup", _root.AutoSetup, GUILayout.Width(125));
+            GUI.enabled = (Application.isPlaying && !_root.HasSetupCompleted && _root.HasInitialized);
+
+            if (GUI.enabled && !_root.HasSetupCompleted)
+                GUI.backgroundColor = Color.green;
+            else
+                GUI.backgroundColor = Color.red;
+
+            var setupButton = GUILayout.Button("Setup");
+            if(setupButton)
+                _root.Setup(true);
+            
+            GUI.backgroundColor = Color.white;
+            
+            if (EditorGUI.EndChangeCheck())
+            {
+                Undo.RecordObject(_root, "auto-setup");
+                _root.AutoSetup = autoSetup;
+                
+                if(!Application.isPlaying)
+                    EditorSceneManager.MarkSceneDirty(SceneManager.GetActiveScene());
+            }
+
+            GUI.enabled = true;
+            EditorGUILayout.EndHorizontal();
+            
+            EditorGUILayout.EndVertical();
+        }
         private void GUI_LaunchOptions()
         {
             EditorGUILayout.BeginVertical("box");
@@ -194,7 +227,6 @@ namespace MVC.Root.Editor
             
             EditorGUILayout.EndVertical();
         }
-
         private void GUI_RootStatus()
         {
             var guiStyle = new GUIStyle(EditorStyles.textField);

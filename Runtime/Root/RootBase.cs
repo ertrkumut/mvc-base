@@ -24,11 +24,12 @@ namespace MVC.Runtime.Root
         
         [HideInInspector] public List<SubContextData> SubContextTypes;
         [HideInInspector] public int InitializeOrder;
-        
+
         [HideInInspector] public bool AutoBindInjections = true;
         [HideInInspector] public bool AutoBindMediations = true;
         [HideInInspector] public bool AutoInitialize = true;
         [HideInInspector] public bool AutoLaunch = true;
+        [HideInInspector] public bool AutoSetup = true;
         
         public IContext Context { get; set; }
         
@@ -86,12 +87,8 @@ namespace MVC.Runtime.Root
             context.Initialize(gameObject, InitializeOrder, _rootsManager.injectionBinderCrossContext, new List<IContext>());
             _subContexts.Add(context, subContextData);
         }
-        
-        protected virtual void BeforeCreateContext()
-        {
-            InitializeSubContexts();
-        }
 
+        protected virtual void BeforeCreateContext() {}
         protected virtual void AfterCreateBeforeStartContext(){}
         protected virtual void AfterBindingsBeforeInjections(){}
         protected virtual void AfterStarBeforeLaunchContext(){}
@@ -183,9 +180,12 @@ namespace MVC.Runtime.Root
             return list;
         }
 
-        public void Setup()
+        public void Setup(bool forceToSetup = false)
         {
             if(!HasInitialized)
+                return;
+            
+            if(!AutoSetup && !forceToSetup)
                 return;
             
             if(HasSetupCompleted)

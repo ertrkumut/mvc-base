@@ -1,7 +1,7 @@
 using System;
 using UnityEngine;
 
-namespace MVC.Runtime.Pool
+namespace MVC.Runtime.ScreenPool
 {
     public interface IPoolable
     {

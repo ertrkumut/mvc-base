@@ -49,7 +49,7 @@ namespace MVC.Editor.CodeGenerator.Menus
         private Dictionary<string, bool> _contextGUI;
 
         protected bool _isTestView;
-        
+
         protected List<Type> _contextTypes;
 
         protected string _viewCreationPath

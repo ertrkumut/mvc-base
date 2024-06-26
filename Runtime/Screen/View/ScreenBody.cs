@@ -3,6 +3,7 @@ using MVC.Editor.Console;
 using MVC.Runtime.Console;
 using MVC.Runtime.Pool;
 using MVC.Runtime.Screen.Enum;
+using MVC.Runtime.ScreenPool;
 using MVC.Runtime.ViewMediators.Utils;
 using UnityEngine;
 
@@ -27,13 +28,18 @@ namespace MVC.Runtime.Screen.View
         public bool CustomOpeningAnimation => _customOpeningAnimation;
         public bool CustomClosingAnimation => _customClosingAnimation;
 
-        // It runs by ScreenModel
-        internal void Open()
+        internal void Setup()
         {
             transform.localPosition = Vector3.zero;
             gameObject.SetActive(true);
             OnGetFromPool();
-            
+            Init();
+        }
+
+        // It runs by ScreenModel
+
+        internal void Open()
+        {
             if(!_customOpeningAnimation)
             {
                 OpenScreen();
@@ -61,6 +67,10 @@ namespace MVC.Runtime.Screen.View
             ClosingAnimation();
         }
 
+        protected virtual void Init()
+        {
+            
+        }
         private void OpenScreen()
         {
             ScreenState = ScreenState.InUse;

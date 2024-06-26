@@ -14,7 +14,7 @@ namespace MVC.Runtime.Controller.Sequencer
         void RunCommands();
 
         internal void ExecuteCommand(params object[] commandParameters);
-        internal void  ParallelAutoReleaseCommand(ICommandBody command);
+        internal void ParallelAutoReleaseCommand(ICommandBody command);
         internal void SequenceAutoReleaseCommand(ICommandBody command);
 
         void ReleaseCommand(ICommandBody command, params object[] commandParameters);

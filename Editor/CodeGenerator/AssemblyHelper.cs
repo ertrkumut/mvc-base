@@ -13,7 +13,7 @@ namespace MVC.Editor.CodeGenerator
         {
             var assemblyList = AppDomain.CurrentDomain.GetAssemblies();
             var mainAssembly = assemblyList.FirstOrDefault(x => x.FullName.StartsWith("Assembly-CSharp,"));
-            var codeGenerationSettings = Resources.Load<MVCCodeGenerationSettings>("MVCCodeGenerationSettings");
+            var codeGenerationSettings = CodeGeneratorStrings.GetCodeGenerationSettings();
 
             var result = new List<Type>();
             result.AddRange(mainAssembly.GetTypes());
