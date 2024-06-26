@@ -1,4 +1,5 @@
 ﻿#if UNITY_EDITOR
+using UnityEditor;
 using UnityEngine;
 
 namespace MVC.Editor.CodeGenerator
@@ -46,6 +47,11 @@ namespace MVC.Editor.CodeGenerator
             return string.IsNullOrEmpty(parentFolderName) 
                 ? path.Replace("$", "Runtime") 
                 : path.Replace("$", parentFolderName);
+        }
+        internal static MVCCodeGenerationSettings GetCodeGenerationSettings()
+        {
+            //return Resources.Load<MVCCodeGenerationSettings>("MVCCodeGenerationSettings");
+            return AssetDatabase.LoadAssetAtPath<MVCCodeGenerationSettings>("Assets/Editor/MVCCodeGenerationSettings.asset");
         }
     }
 }

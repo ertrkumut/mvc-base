@@ -38,7 +38,7 @@ namespace MVC.Editor.CodeGenerator.Menus
             _rootPath = "*Name*";
             _parentFolderTogglesState = new Dictionary<string, bool>();
 
-            _codeGenerationSettings = Resources.Load<MVCCodeGenerationSettings>("MVCCodeGenerationSettings");
+            _codeGenerationSettings = CodeGeneratorStrings.GetCodeGenerationSettings();
         }
 
         private void OnDisable()
@@ -118,24 +118,24 @@ namespace MVC.Editor.CodeGenerator.Menus
                 {
                     if(string.IsNullOrEmpty(parentFolder))
                         continue;
-
+            
                     _parentFolderTogglesState.TryAdd(parentFolder, false);
-
+            
                     var selectionValue = EditorGUILayout.ToggleLeft(new GUIContent(parentFolder),
                         _parentFolderTogglesState[parentFolder]);
-
+            
                     if (!selectionValue && _parentFolderName == parentFolder)
                     {
                         _parentFolderName = string.Empty;
                         _parentFolderTogglesState[parentFolder] = false;
                         continue;
                     }
-
+            
                     if (selectionValue)
                     {
                         if (!string.IsNullOrEmpty(_parentFolderName))
                             _parentFolderTogglesState[_parentFolderName] = false;
-
+            
                         _parentFolderName = parentFolder;
                         _parentFolderTogglesState[parentFolder] = true;
                     }
