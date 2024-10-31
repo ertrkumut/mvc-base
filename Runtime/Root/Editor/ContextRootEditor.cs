@@ -247,13 +247,13 @@ namespace MVC.Root.Editor
                     EditorGUILayout.EndHorizontal();
                     EditorGUI.BeginChangeCheck();
                     
-                    var contextDataAutoSetup =
+                    contextData.AutoSetup = 
                         EditorGUILayout.Toggle(new GUIContent("AutoSetup"), contextData.AutoSetup);
                     
                     if (EditorGUI.EndChangeCheck())
                     {
                         Undo.RecordObject(_root, "auto-setup");
-                        contextData.AutoSetup = contextDataAutoSetup;
+                        _root.SubContextTypes[ii] = contextData;
                         
                         if(!Application.isPlaying)
                             MarkDirty();
