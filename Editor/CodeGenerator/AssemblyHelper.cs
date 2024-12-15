@@ -16,7 +16,9 @@ namespace MVC.Editor.CodeGenerator
             var codeGenerationSettings = Resources.Load<MVCCodeGenerationSettings>("MVCCodeGenerationSettings");
 
             var result = new List<Type>();
-            result.AddRange(mainAssembly.GetTypes());
+            
+            if(mainAssembly is not null)
+                result.AddRange(mainAssembly.GetTypes());
             
             if (codeGenerationSettings != null)
             {

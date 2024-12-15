@@ -146,6 +146,7 @@ namespace MVC.Runtime.Screen
             var screenManager = GetScreenManager(screenDataContainer.ManagerIndex);
 
             var availableScreen = _screenPoolController.GetScreenFromPool(screenDataContainer.ScreenType);
+            availableScreen.ScreenManagerId = screenDataContainer.ManagerIndex;
             availableScreen.LayerIndex = screenDataContainer.LayerIndex;
             
             var isScreenAvailable = screenManager.ShowScreen(availableScreen);
