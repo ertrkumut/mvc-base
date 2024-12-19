@@ -47,7 +47,7 @@ namespace MVC.Runtime.Injectable.Components
             
             IContext bubbleUpContext = null;
             var rootsManager = RootsManager.Instance;
-            
+
             foreach (var viewInjectorData in viewDataList)
             {
                 if(viewInjectorData.SelectedRoot == null && bubbleUpContext == null)
@@ -85,14 +85,21 @@ namespace MVC.Runtime.Injectable.Components
         
         private void OnContextsReadyListener(IContext context)
         {
-            var view = _viewRegistrationDataDict.FirstOrDefault(x => x.Value == context).Key;
-            if(view == null)
-                return;
+            foreach (var (key, value) in _viewRegistrationDataDict)
+            {
+                if(value != context)
+                    continue;
+                
+                var view = key;
+                if(view == null)
+                    return;
 
-            RootsManager.Instance.OnContextReady -= OnContextsReadyListener;
+                RootsManager.Instance.OnContextReady -= OnContextsReadyListener;
             
-            var viewInjectorData = viewDataList.FirstOrDefault(x => x.View == (Object) view);
-            RegisterView(viewInjectorData);
+                var viewInjectorData = viewDataList.FirstOrDefault(x => x.View == (Object) view && !x.IsRegistered);
+                if(viewInjectorData is not null)
+                    RegisterView(viewInjectorData);
+            }
         }
 
         private void RegisterView(ViewInjectorData viewInjectorData)
