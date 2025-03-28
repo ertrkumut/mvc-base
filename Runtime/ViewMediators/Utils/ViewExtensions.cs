@@ -82,7 +82,7 @@ namespace MVC.Runtime.ViewMediators.Utils
             var viewInjector = view.transform.GetComponent<ViewInjector>();
             var viewInjectionData = viewInjector.GetViewInjectorData(view);
 
-            if (viewInjectionData.InjectableView)
+            if (viewInjectionData is not null && viewInjectionData.InjectableView)
                 InjectionExtensions.TryToInjectObject(context, view);
             
             var mediationBinder = viewBindingData.Context.MediationBinder;
