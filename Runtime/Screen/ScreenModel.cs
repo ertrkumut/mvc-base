@@ -175,7 +175,7 @@ namespace MVC.Runtime.Screen
         {
             if (!_screenManagerDict.ContainsKey(managerId))
             {
-                throw new Exception("There is no screen manager!! - Id: " + managerId);
+                Debug.LogWarning("[ScreenModel] There is no screen manager!! - Id: " + managerId);
             }
 
             return _screenManagerDict[managerId];
