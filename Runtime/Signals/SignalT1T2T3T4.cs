@@ -20,6 +20,7 @@ namespace MVC.Runtime.Signals
         public void RemoveListener(Action<T1, T2, T3, T4> listener)
         {
             _callback -= listener;
+            _callbackOnce -= listener;
         }
 
         public void Dispatch(T1 param1, T2 param2, T3 param3, T4 param4)
