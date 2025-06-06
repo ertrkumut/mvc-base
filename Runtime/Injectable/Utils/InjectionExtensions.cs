@@ -36,7 +36,7 @@ namespace MVC.Runtime.Injectable.Utils
             
             return true;
         }
-        internal static bool TryToInjectObject(this IContext context, object injectedObject)
+        public static bool TryToInjectObject(this IContext context, object injectedObject)
         {
             var injectableFields = GetInjectableFieldInfoList<InjectAttribute>(injectedObject);
             var injectableProperties = GetInjectablePropertyInfoList<InjectAttribute>(injectedObject);
