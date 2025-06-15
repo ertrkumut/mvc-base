@@ -33,7 +33,7 @@ namespace MVC.Runtime.Screen.Pool
                 .ToList();
             
             var availableScreen = availableScreenList.Count == 0 ? null : availableScreenList[0];
-            if(availableScreen != null)
+            if(false)
             {
                 RemoveScreenFromPoolDict(availableScreen);
             }
@@ -67,6 +67,8 @@ namespace MVC.Runtime.Screen.Pool
 
         public void AddScreenToPoolDict(IScreenBody screenBody)
         {
+            Object.Destroy(screenBody.gameObject);
+            return;
             var screenType = screenBody.ScreenType;
             
             CreateNewDisableScreenList(screenType);
