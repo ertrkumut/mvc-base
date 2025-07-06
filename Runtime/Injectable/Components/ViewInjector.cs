@@ -48,6 +48,22 @@ namespace MVC.Runtime.Injectable.Components
             IContext bubbleUpContext = null;
             var rootsManager = RootsManager.Instance;
 
+            if (viewDataList == null)
+            {
+                viewDataList = new();
+                var viewEntities = GetComponents<IView>().ToList();
+
+                foreach (var viewEntity in viewEntities)
+                {
+                    var injectorData = new ViewInjectorData
+                    {
+                        View = viewEntity as Object,
+                        AutoRegister = true
+                    };
+                    viewDataList.Add(injectorData);
+                }
+            }
+            
             foreach (var viewInjectorData in viewDataList)
             {
                 if(viewInjectorData.SelectedRoot == null && bubbleUpContext == null)
